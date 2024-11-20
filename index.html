@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="author" content="Maurizio Di Scipio" />
+        <title>Batalla Naval | Primer taller</title>
+        <link rel="icon" type="image/jpg" href="faviconbattleship.jpg" />
+        <link rel="stylesheet" href="help.css">
+    </head>
+    <body>
+        <audio src="wavesounds.mp3" autoplay loop></audio>
+        <header>
+            <h1>Batalla Naval</h1>
+            <nav>
+                <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#jugar">Jugar</a></li>
+                <li><a href="#instrucciones">Instrucciones</a></li>
+                <li><a href="#salir">Salir</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section id="inicio">
+                <h2 id="inicio">Inicio</h2>
+                <p>Este es un juego de batalla naval</p>
+                <p>Para iniciar a jugar, por favor registrate</p>
+            </section>
+            
+            <form id="registro-usuario">
+                <label for="username">Nombre de usuario:</label>
+                <input type="text" id="username" name="username" required />              
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required />               
+                <label for="game-mode">Modo de juego:</label>
+                <label for="single-player">Solitario:</label>
+                <input type="radio" id="single-player" name="game-mode" value="single-player" required />
+                <label for="multi-player">Multijugador:</label>
+                <input type="radio" id="multi-player" name="game-mode" value="multi-player" required />                
+                <label for="player">Jugador:</label>
+                <label for="player1">P1</label>
+                <input type="radio" id="player1" name="player" value="player1" />
+                <label for="player2">P2</label>
+                <input type="radio" id="player2" name="player" value="player2" />
+                <label for="player3">P3</label>
+                <input type="radio" id="player3" name="player" value="player3" />
+                <label for="player4">P4</label>
+                <input type="radio" id="player4" name="player" value="player4" />
+                <input type="submit" value="Registrarse" />
+            </form>            
+            <h2 id="jugar">Jugar</h2>
+            <div class="tables">
+                <div class="battleship-board-p1">
+                    <div class="position" id="p1@00"></div>
+                    <div class="position" id="p1@a0">a</div>
+                    <div class="position" id="p1@b0">b</div>
+                    <div class="position" id="p1@c0">c</div>
+                    <div class="position" id="p1@d0">d</div>
+                    <div class="position" id="p1@e0">e</div>
+                    <div class="position" id="p1@f0">f</div>
+                    <div class="position" id="p1@g0">g</div>
+                    <div class="position" id="p1@h0">h</div>
+                    <div class="position" id="p1@i0">i</div>
+                    <div class="position" id="p1@j0">j</div>
+                    <div class="position" id="p1@01">1</div>
+                    <div class="position" id="p1@a1"></div>
+                    <div class="position" id="p1@b1"></div>
+                    <div class="position" id="p1@c1"></div>
+                    <div class="position" id="p1@d1"></div>
+                    <div class="position" id="p1@e1"></div>
+                    <div class="position" id="p1@f1"></div>
+                    <div class="position" id="p1@g1"></div>
+                    <div class="position" id="p1@h1"></div>
+                    <div class="position" id="p1@i1"></div>
+                    <div class="position" id="p1@j1"></div>
+                    <div class="position" id="p1@02">2</div>
+                    <div class="position" id="p1@a2"></div>
+                    <div class="position" id="p1@b2"></div>
+                    <div class="position" id="p1@c2"></div>
+                    <div class="position" id="p1@d2"></div>
+                    <div class="position" id="p1@e2"></div>
+                    <div class="position" id="p1@f2"></div>
+                    <div class="position" id="p1@g2"></div>
+                    <div class="position" id="p1@h2"></div>
+                    <div class="position" id="p1@i2"></div>
+                    <div class="position" id="p1@j2"></div>
+                    <div class="position" id="p1@03">3</div>
+                    <div class="position" id="p1@a3"></div>
+                    <div class="position" id="p1@b3"></div>
+                    <div class="position" id="p1@c3"></div>
+                    <div class="position" id="p1@d3"></div>
+                    <div class="position" id="p1@e3"></div>
+                    <div class="position" id="p1@f3"></div>
+                    <div class="position" id="p1@g3"></div>
+                    <div class="position" id="p1@h3"></div>
+                    <div class="position" id="p1@i3"></div>
+                    <div class="position" id="p1@j3"></div>
+                    <div class="position" id="p1@04">4</div>
+                    <div class="position" id="p1@a4"></div>
+                    <div class="position" id="p1@b4"></div>
+                    <div class="position" id="p1@c4"></div>
+                    <div class="position" id="p1@d4"></div>
+                    <div class="position" id="p1@e4"></div>
+                    <div class="position" id="p1@f4"></div>
+                    <div class="position" id="p1@g4"></div>
+                    <div class="position" id="p1@h4"></div>
+                    <div class="position" id="p1@i4"></div>
+                    <div class="position" id="p1@j4"></div>
+                    <div class="position" id="p1@05">5</div>
+                    <div class="position" id="p1@a5"></div>
+                    <div class="position" id="p1@b5"></div>
+                    <div class="position" id="p1@c5"></div>
+                    <div class="position" id="p1@d5"></div>
+                    <div class="position" id="p1@e5"></div>
+                    <div class="position" id="p1@f5"></div>
+                    <div class="position" id="p1@g5"></div>
+                    <div class="position" id="p1@h5"></div>
+                    <div class="position" id="p1@i5"></div>
+                    <div class="position" id="p1@j5"></div>
+                    <div class="position" id="p1@06">6</div>
+                    <div class="position" id="p1@a6"></div>
+                    <div class="position" id="p1@b6"></div>
+                    <div class="position" id="p1@c6"></div>
+                    <div class="position" id="p1@d6"></div>
+                    <div class="position" id="p1@e6"></div>
+                    <div class="position" id="p1@f6"></div>
+                    <div class="position" id="p1@g6"></div>
+                    <div class="position" id="p1@h6"></div>
+                    <div class="position" id="p1@i6"></div>
+                    <div class="position" id="p1@j6"></div>
+                    <div class="position" id="p1@07">7</div>
+                    <div class="position" id="p1@a7"></div>
+                    <div class="position" id="p1@b7"></div>
+                    <div class="position" id="p1@c7"></div>
+                    <div class="position" id="p1@d7"></div>
+                    <div class="position" id="p1@e7"></div>
+                    <div class="position" id="p1@f7"></div>
+                    <div class="position" id="p1@g7"></div>
+                    <div class="position" id="p1@h7"></div>
+                    <div class="position" id="p1@i7"></div>
+                    <div class="position" id="p1@j7"></div>
+                    <div class="position" id="p1@08">8</div>
+                    <div class="position" id="p1@a8"></div>
+                    <div class="position" id="p1@b8"></div>
+                    <div class="position" id="p1@c8"></div>
+                    <div class="position" id="p1@d8"></div>
+                    <div class="position" id="p1@e8"></div>
+                    <div class="position" id="p1@f8"></div>
+                    <div class="position" id="p1@g8"></div>
+                    <div class="position" id="p1@h8"></div>
+                    <div class="position" id="p1@i8"></div>
+                    <div class="position" id="p1@j8"></div>
+                    <div class="position" id="p1@09">9</div>
+                    <div class="position" id="p1@a9"></div>
+                    <div class="position" id="p1@b9"></div>
+                    <div class="position" id="p1@c9"></div>
+                    <div class="position" id="p1@d9"></div>
+                    <div class="position" id="p1@e9"></div>
+                    <div class="position" id="p1@f9"></div>
+                    <div class="position" id="p1@g9"></div>
+                    <div class="position" id="p1@h9"></div>
+                    <div class="position" id="p1@i9"></div>
+                    <div class="position" id="p1@j9"></div>
+                    <div class="position" id="p1@010">10</div>
+                    <div class="position" id="p1@a10"></div>
+                    <div class="position" id="p1@b10"></div>
+                    <div class="position" id="p1@c10"></div>
+                    <div class="position" id="p1@d10"></div>
+                    <div class="position" id="p1@e10"></div>
+                    <div class="position" id="p1@f10"></div>
+                    <div class="position" id="p1@g10"></div>
+                    <div class="position" id="p1@h10"></div>
+                    <div class="position" id="p1@i10"></div>
+                    <div class="position" id="p1@j10"></div>
+                </div>
+                <div class="battleship-board-p2">
+                    <div class="position" id="p2@00"></div>
+                    <div class="position" id="p2@a0">a</div>
+                    <div class="position" id="p2@b0">b</div>
+                    <div class="position" id="p2@c0">c</div>
+                    <div class="position" id="p2@d0">d</div>
+                    <div class="position" id="p2@e0">e</div>
+                    <div class="position" id="p2@f0">f</div>
+                    <div class="position" id="p2@g0">g</div>
+                    <div class="position" id="p2@h0">h</div>
+                    <div class="position" id="p2@i0">i</div>
+                    <div class="position" id="p2@j0">j</div>
+                    <div class="position" id="p2@01">1</div>
+                    <div class="position" id="p2@a1"></div>
+                    <div class="position" id="p2@b1"></div>
+                    <div class="position" id="p2@c1"></div>
+                    <div class="position" id="p2@d1"></div>
+                    <div class="position" id="p2@e1"></div>
+                    <div class="position" id="p2@f1"></div>
+                    <div class="position" id="p2@g1"></div>
+                    <div class="position" id="p2@h1"></div>
+                    <div class="position" id="p2@i1"></div>
+                    <div class="position" id="p2@j1"></div>
+                    <div class="position" id="p2@02">2</div>
+                    <div class="position" id="p2@a2"></div>
+                    <div class="position" id="p2@b2"></div>
+                    <div class="position" id="p2@c2"></div>
+                    <div class="position" id="p2@d2"></div>
+                    <div class="position" id="p2@e2"></div>
+                    <div class="position" id="p2@f2"></div>
+                    <div class="position" id="p2@g2"></div>
+                    <div class="position" id="p2@h2"></div>
+                    <div class="position" id="p2@i2"></div>
+                    <div class="position" id="p2@j2"></div>
+                    <div class="position" id="p2@03">3</div>
+                    <div class="position" id="p2@a3"></div>
+                    <div class="position" id="p2@b3"></div>
+                    <div class="position" id="p2@c3"></div>
+                    <div class="position" id="p2@d3"></div>
+                    <div class="position" id="p2@e3"></div>
+                    <div class="position" id="p2@f3"></div>
+                    <div class="position" id="p2@g3"></div>
+                    <div class="position" id="p2@h3"></div>
+                    <div class="position" id="p2@i3"></div>
+                    <div class="position" id="p2@j3"></div>
+                    <div class="position" id="p2@04">4</div>
+                    <div class="position" id="p2@a4"></div>
+                    <div class="position" id="p2@b4"></div>
+                    <div class="position" id="p2@c4"></div>
+                    <div class="position" id="p2@d4"></div>
+                    <div class="position" id="p2@e4"></div>
+                    <div class="position" id="p2@f4"></div>
+                    <div class="position" id="p2@g4"></div>
+                    <div class="position" id="p2@h4"></div>
+                    <div class="position" id="p2@i4"></div>
+                    <div class="position" id="p2@j4"></div>
+                    <div class="position" id="p2@05">5</div>
+                    <div class="position" id="p2@a5"></div>
+                    <div class="position" id="p2@b5"></div>
+                    <div class="position" id="p2@c5"></div>
+                    <div class="position" id="p2@d5"></div>
+                    <div class="position" id="p2@e5"></div>
+                    <div class="position" id="p2@f5"></div>
+                    <div class="position" id="p2@g5"></div>
+                    <div class="position" id="p2@h5"></div>
+                    <div class="position" id="p2@i5"></div>
+                    <div class="position" id="p2@j5"></div>
+                    <div class="position" id="p2@06">6</div>
+                    <div class="position" id="p2@a6"></div>
+                    <div class="position" id="p2@b6"></div>
+                    <div class="position" id="p2@c6"></div>
+                    <div class="position" id="p2@d6"></div>
+                    <div class="position" id="p2@e6"></div>
+                    <div class="position" id="p2@f6"></div>
+                    <div class="position" id="p2@g6"></div>
+                    <div class="position" id="p2@h6"></div>
+                    <div class="position" id="p2@i6"></div>
+                    <div class="position" id="p2@j6"></div>
+                    <div class="position" id="p2@07">7</div>
+                    <div class="position" id="p2@a7"></div>
+                    <div class="position" id="p2@b7"></div>
+                    <div class="position" id="p2@c7"></div>
+                    <div class="position" id="p2@d7"></div>
+                    <div class="position" id="p2@e7"></div>
+                    <div class="position" id="p2@f7"></div>
+                    <div class="position" id="p2@g7"></div>
+                    <div class="position" id="p2@h7"></div>
+                    <div class="position" id="p2@i7"></div>
+                    <div class="position" id="p2@j7"></div>
+                    <div class="position" id="p2@08">8</div>
+                    <div class="position" id="p2@a8"></div>
+                    <div class="position" id="p2@b8"></div>
+                    <div class="position" id="p2@c8"></div>
+                    <div class="position" id="p2@d8"></div>
+                    <div class="position" id="p2@e8"></div>
+                    <div class="position" id="p2@f8"></div>
+                    <div class="position" id="p2@g8"></div>
+                    <div class="position" id="p2@h8"></div>
+                    <div class="position" id="p2@i8"></div>
+                    <div class="position" id="p2@j8"></div>
+                    <div class="position" id="p2@09">9</div>
+                    <div class="position" id="p2@a9"></div>
+                    <div class="position" id="p2@b9"></div>
+                    <div class="position" id="p2@c9"></div>
+                    <div class="position" id="p2@d9"></div>
+                    <div class="position" id="p2@e9"></div>
+                    <div class="position" id="p2@f9"></div>
+                    <div class="position" id="p2@g9"></div>
+                    <div class="position" id="p2@h9"></div>
+                    <div class="position" id="p2@i9"></div>
+                    <div class="position" id="p2@j9"></div>
+                    <div class="position" id="p2@010">10</div>
+                    <div class="position" id="p2@a10"></div>
+                    <div class="position" id="p2@b10"></div>
+                    <div class="position" id="p2@c10"></div>
+                    <div class="position" id="p2@d10"></div>
+                    <div class="position" id="p2@e10"></div>
+                    <div class="position" id="p2@f10"></div>
+                    <div class="position" id="p2@g10"></div>
+                    <div class="position" id="p2@h10"></div>
+                    <div class="position" id="p2@i10"></div>
+                    <div class="position" id="p2@j10"></div>
+                </div>
+                <div class="battleship-board-p3">
+                    <div class="position" id="p3@00"></div>
+                    <div class="position" id="p3@a0">a</div>
+                    <div class="position" id="p3@b0">b</div>
+                    <div class="position" id="p3@c0">c</div>
+                    <div class="position" id="p3@d0">d</div>
+                    <div class="position" id="p3@e0">e</div>
+                    <div class="position" id="p3@f0">f</div>
+                    <div class="position" id="p3@g0">g</div>
+                    <div class="position" id="p3@h0">h</div>
+                    <div class="position" id="p3@i0">i</div>
+                    <div class="position" id="p3@j0">j</div>
+                    <div class="position" id="p3@01">1</div>
+                    <div class="position" id="p3@a1"></div>
+                    <div class="position" id="p3@b1"></div>
+                    <div class="position" id="p3@c1"></div>
+                    <div class="position" id="p3@d1"></div>
+                    <div class="position" id="p3@e1"></div>
+                    <div class="position" id="p3@f1"></div>
+                    <div class="position" id="p3@g1"></div>
+                    <div class="position" id="p3@h1"></div>
+                    <div class="position" id="p3@i1"></div>
+                    <div class="position" id="p3@j1"></div>
+                    <div class="position" id="p3@02">2</div>
+                    <div class="position" id="p3@a2"></div>
+                    <div class="position" id="p3@b2"></div>
+                    <div class="position" id="p3@c2"></div>
+                    <div class="position" id="p3@d2"></div>
+                    <div class="position" id="p3@e2"></div>
+                    <div class="position" id="p3@f2"></div>
+                    <div class="position" id="p3@g2"></div>
+                    <div class="position" id="p3@h2"></div>
+                    <div class="position" id="p3@i2"></div>
+                    <div class="position" id="p3@j2"></div>
+                    <div class="position" id="p3@03">3</div>
+                    <div class="position" id="p3@a3"></div>
+                    <div class="position" id="p3@b3"></div>
+                    <div class="position" id="p3@c3"></div>
+                    <div class="position" id="p3@d3"></div>
+                    <div class="position" id="p3@e3"></div>
+                    <div class="position" id="p3@f3"></div>
+                    <div class="position" id="p3@g3"></div>
+                    <div class="position" id="p3@h3"></div>
+                    <div class="position" id="p3@i3"></div>
+                    <div class="position" id="p3@j3"></div>
+                    <div class="position" id="p3@04">4</div>
+                    <div class="position" id="p3@a4"></div>
+                    <div class="position" id="p3@b4"></div>
+                    <div class="position" id="p3@c4"></div>
+                    <div class="position" id="p3@d4"></div>
+                    <div class="position" id="p3@e4"></div>
+                    <div class="position" id="p3@f4"></div>
+                    <div class="position" id="p3@g4"></div>
+                    <div class="position" id="p3@h4"></div>
+                    <div class="position" id="p3@i4"></div>
+                    <div class="position" id="p3@j4"></div>
+                    <div class="position" id="p3@05">5</div>
+                    <div class="position" id="p3@a5"></div>
+                    <div class="position" id="p3@b5"></div>
+                    <div class="position" id="p3@c5"></div>
+                    <div class="position" id="p3@d5"></div>
+                    <div class="position" id="p3@e5"></div>
+                    <div class="position" id="p3@f5"></div>
+                    <div class="position" id="p3@g5"></div>
+                    <div class="position" id="p3@h5"></div>
+                    <div class="position" id="p3@i5"></div>
+                    <div class="position" id="p3@j5"></div>
+                    <div class="position" id="p3@06">6</div>
+                    <div class="position" id="p3@a6"></div>
+                    <div class="position" id="p3@b6"></div>
+                    <div class="position" id="p3@c6"></div>
+                    <div class="position" id="p3@d6"></div>
+                    <div class="position" id="p3@e6"></div>
+                    <div class="position" id="p3@f6"></div>
+                    <div class="position" id="p3@g6"></div>
+                    <div class="position" id="p3@h6"></div>
+                    <div class="position" id="p3@i6"></div>
+                    <div class="position" id="p3@j6"></div>
+                    <div class="position" id="p3@07">7</div>
+                    <div class="position" id="p3@a7"></div>
+                    <div class="position" id="p3@b7"></div>
+                    <div class="position" id="p3@c7"></div>
+                    <div class="position" id="p3@d7"></div>
+                    <div class="position" id="p3@e7"></div>
+                    <div class="position" id="p3@f7"></div>
+                    <div class="position" id="p3@g7"></div>
+                    <div class="position" id="p3@h7"></div>
+                    <div class="position" id="p3@i7"></div>
+                    <div class="position" id="p3@j7"></div>
+                    <div class="position" id="p3@08">8</div>
+                    <div class="position" id="p3@a8"></div>
+                    <div class="position" id="p3@b8"></div>
+                    <div class="position" id="p3@c8"></div>
+                    <div class="position" id="p3@d8"></div>
+                    <div class="position" id="p3@e8"></div>
+                    <div class="position" id="p3@f8"></div>
+                    <div class="position" id="p3@g8"></div>
+                    <div class="position" id="p3@h8"></div>
+                    <div class="position" id="p3@i8"></div>
+                    <div class="position" id="p3@j8"></div>
+                    <div class="position" id="p3@09">9</div>
+                    <div class="position" id="p3@a9"></div>
+                    <div class="position" id="p3@b9"></div>
+                    <div class="position" id="p3@c9"></div>
+                    <div class="position" id="p3@d9"></div>
+                    <div class="position" id="p3@e9"></div>
+                    <div class="position" id="p3@f9"></div>
+                    <div class="position" id="p3@g9"></div>
+                    <div class="position" id="p3@h9"></div>
+                    <div class="position" id="p3@i9"></div>
+                    <div class="position" id="p3@j9"></div>
+                    <div class="position" id="p3@010">10</div>
+                    <div class="position" id="p3@a10"></div>
+                    <div class="position" id="p3@b10"></div>
+                    <div class="position" id="p3@c10"></div>
+                    <div class="position" id="p3@d10"></div>
+                    <div class="position" id="p3@e10"></div>
+                    <div class="position" id="p3@f10"></div>
+                    <div class="position" id="p3@g10"></div>
+                    <div class="position" id="p3@h10"></div>
+                    <div class="position" id="p3@i10"></div>
+                    <div class="position" id="p3@j10"></div>
+                </div>
+                <div class="battleship-board-p4">
+                    <div class="position" id="p4@00"></div>
+                    <div class="position" id="p4@a0">a</div>
+                    <div class="position" id="p4@b0">b</div>
+                    <div class="position" id="p4@c0">c</div>
+                    <div class="position" id="p4@d0">d</div>
+                    <div class="position" id="p4@e0">e</div>
+                    <div class="position" id="p4@f0">f</div>
+                    <div class="position" id="p4@g0">g</div>
+                    <div class="position" id="p4@h0">h</div>
+                    <div class="position" id="p4@i0">i</div>
+                    <div class="position" id="p4@j0">j</div>
+                    <div class="position" id="p4@01">1</div>
+                    <div class="position" id="p4@a1"></div>
+                    <div class="position" id="p4@b1"></div>
+                    <div class="position" id="p4@c1"></div>
+                    <div class="position" id="p4@d1"></div>
+                    <div class="position" id="p4@e1"></div>
+                    <div class="position" id="p4@f1"></div>
+                    <div class="position" id="p4@g1"></div>
+                    <div class="position" id="p4@h1"></div>
+                    <div class="position" id="p4@i1"></div>
+                    <div class="position" id="p4@j1"></div>
+                    <div class="position" id="p4@02">2</div>
+                    <div class="position" id="p4@a2"></div>
+                    <div class="position" id="p4@b2"></div>
+                    <div class="position" id="p4@c2"></div>
+                    <div class="position" id="p4@d2"></div>
+                    <div class="position" id="p4@e2"></div>
+                    <div class="position" id="p4@f2"></div>
+                    <div class="position" id="p4@g2"></div>
+                    <div class="position" id="p4@h2"></div>
+                    <div class="position" id="p4@i2"></div>
+                    <div class="position" id="p4@j2"></div>
+                    <div class="position" id="p4@03">3</div>
+                    <div class="position" id="p4@a3"></div>
+                    <div class="position" id="p4@b3"></div>
+                    <div class="position" id="p4@c3"></div>
+                    <div class="position" id="p4@d3"></div>
+                    <div class="position" id="p4@e3"></div>
+                    <div class="position" id="p4@f3"></div>
+                    <div class="position" id="p4@g3"></div>
+                    <div class="position" id="p4@h3"></div>
+                    <div class="position" id="p4@i3"></div>
+                    <div class="position" id="p4@j3"></div>
+                    <div class="position" id="p4@04">4</div>
+                    <div class="position" id="p4@a4"></div>
+                    <div class="position" id="p4@b4"></div>
+                    <div class="position" id="p4@c4"></div>
+                    <div class="position" id="p4@d4"></div>
+                    <div class="position" id="p4@e4"></div>
+                    <div class="position" id="p4@f4"></div>
+                    <div class="position" id="p4@g4"></div>
+                    <div class="position" id="p4@h4"></div>
+                    <div class="position" id="p4@i4"></div>
+                    <div class="position" id="p4@j4"></div>
+                    <div class="position" id="p4@05">5</div>
+                    <div class="position" id="p4@a5"></div>
+                    <div class="position" id="p4@b5"></div>
+                    <div class="position" id="p4@c5"></div>
+                    <div class="position" id="p4@d5"></div>
+                    <div class="position" id="p4@e5"></div>
+                    <div class="position" id="p4@f5"></div>
+                    <div class="position" id="p4@g5"></div>
+                    <div class="position" id="p4@h5"></div>
+                    <div class="position" id="p4@i5"></div>
+                    <div class="position" id="p4@j5"></div>
+                    <div class="position" id="p4@06">6</div>
+                    <div class="position" id="p4@a6"></div>
+                    <div class="position" id="p4@b6"></div>
+                    <div class="position" id="p4@c6"></div>
+                    <div class="position" id="p4@d6"></div>
+                    <div class="position" id="p4@e6"></div>
+                    <div class="position" id="p4@f6"></div>
+                    <div class="position" id="p4@g6"></div>
+                    <div class="position" id="p4@h6"></div>
+                    <div class="position" id="p4@i6"></div>
+                    <div class="position" id="p4@j6"></div>
+                    <div class="position" id="p4@07">7</div>
+                    <div class="position" id="p4@a7"></div>
+                    <div class="position" id="p4@b7"></div>
+                    <div class="position" id="p4@c7"></div>
+                    <div class="position" id="p4@d7"></div>
+                    <div class="position" id="p4@e7"></div>
+                    <div class="position" id="p4@f7"></div>
+                    <div class="position" id="p4@g7"></div>
+                    <div class="position" id="p4@h7"></div>
+                    <div class="position" id="p4@i7"></div>
+                    <div class="position" id="p4@j7"></div>
+                    <div class="position" id="p4@08">8</div>
+                    <div class="position" id="p4@a8"></div>
+                    <div class="position" id="p4@b8"></div>
+                    <div class="position" id="p4@c8"></div>
+                    <div class="position" id="p4@d8"></div>
+                    <div class="position" id="p4@e8"></div>
+                    <div class="position" id="p4@f8"></div>
+                    <div class="position" id="p4@g8"></div>
+                    <div class="position" id="p4@h8"></div>
+                    <div class="position" id="p4@i8"></div>
+                    <div class="position" id="p4@j8"></div>
+                    <div class="position" id="p4@09">9</div>
+                    <div class="position" id="p4@a9"></div>
+                    <div class="position" id="p4@b9"></div>
+                    <div class="position" id="p4@c9"></div>
+                    <div class="position" id="p4@d9"></div>
+                    <div class="position" id="p4@e9"></div>
+                    <div class="position" id="p4@f9"></div>
+                    <div class="position" id="p4@g9"></div>
+                    <div class="position" id="p4@h9"></div>
+                    <div class="position" id="p4@i9"></div>
+                    <div class="position" id="p4@j9"></div>
+                    <div class="position" id="p4@010">10</div>
+                    <div class="position" id="p4@a10"></div>
+                    <div class="position" id="p4@b10"></div>
+                    <div class="position" id="p4@c10"></div>
+                    <div class="position" id="p4@d10"></div>
+                    <div class="position" id="p4@e10"></div>
+                    <div class="position" id="p4@f10"></div>
+                    <div class="position" id="p4@g10"></div>
+                    <div class="position" id="p4@h10"></div>
+                    <div class="position" id="p4@i10"></div>
+                    <div class="position" id="p4@j10"></div>
+                </div>
+            </div>
+        </main>
+        <aside id="instrucciones">
+            <h2>Instrucciones</h2>
+            <h3>1. Objetivo del Juego</h3>
+            <p>Hundir toda la flota enemiga antes que tu oponente hunda la tuya.</p>
+            <h3>2. Componentes del Juego</h3>
+            <p>
+                Tablero de juego para cada jugador (10x10 cuadrículas). Se debe mostrar
+                el tablero del propio jugador, donde se muestran la colocación dada a
+                los barcos por parte de dicho jugador, y otra cuadrícula que representa
+                el espacio donde el contrincante distribuyó sus barcos, y en donde se
+                mostrarán los tiros fallidos o acertados a medida que avanza el juego
+                VER NOTA AL PIE DE PÁGINA. Flota de barcos:
+            </p>
+            <ul class="lista-barcos">
+                <li>1 portaaviones (abarca 5 casillas, ya sea en sentido horizontal overtical)</li>
+                <li>1 acorazado (4 casillas, ya sea en sentido horizontal o vertical)</li>
+                <li>1 crucero (3 casillas, ya sea en sentido horizontal o vertical)</li>
+                <li>1 submarino (3 casillas, ya sea en sentido horizontal o vertical)</li>
+                <li>1 destructor (2 casillas, ya sea en sentido horizontal o vertical)</li>
+            </ul>
+            <h3>3. Preparación</h3>
+            <p>
+                Cada jugador coloca sus barcos en el tablero de manera oculta al
+                oponente. Los barcos pueden colocarse vertical u horizontalmente. Los
+                barcos no pueden superponerse.
+            </p>
+            <h3>4. Turnos</h3>
+            <p>
+                Los jugadores se turnan para "disparar" a las casillas del oponente,
+                intentando adivinar la posición de los barcos enemigos. Cada disparo se
+                indica seleccionando una casilla en el tablero del oponente. El jugador
+                a quien le corresponderá "disparar" por primera vez (primer turno) será
+                seleccionado al azar.
+            </p>
+            <h3>5. Impactos</h3>
+            <p>
+                Si un jugador acierta un disparo en una casilla que contiene parte de un
+                barco enemigo, se marca un "impacto" (hit). Si el disparo no acierta en
+                ningún barco, se marca un "fallo" (miss).
+            </p>
+            <h3>6. Hundimiento</h3>
+            <p>
+                Cuando todas las casillas de un barco han sido impactadas, el barco se
+                considera "hundido". Se debe informar al oponente qué barco ha sido
+                hundido.
+            </p>
+            <h3>7. Victoria</h3>
+            <p>El primer jugador en hundir toda la flota enemiga gana la partida.</p>
+            <h3>8. Duración del Turno</h3>
+            <p>
+                Se debe establecer un límite de tiempo para cada turno de 60 segundos (1
+                minuto) para mantener el ritmo del juego. Si un jugador no realiza su
+                movimiento dentro del límite de tiempo, se considera un turno perdido.
+            </p>
+        </aside>
+        <footer>
+            <h2 id="salir">Salir</h2>
+            <p>Gracias por jugar</p>
+            <a href="https://www.youtube.com/watch?v=nCtn6igpgP4">Pulse aqui para salir.</a>
+        </footer>
+    </body>
+</html>
