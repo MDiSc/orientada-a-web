@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
@@ -13,11 +13,12 @@
         <header>
             <h1>Batalla Naval</h1>
             <nav>
-                <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#jugar">Jugar</a></li>
-                <li><a href="#instrucciones">Instrucciones</a></li>
-                <li><a href="#salir">Salir</a></li>
+                <ul class="menu-hover-fill flex flex-col items-start leading-none text-2xl uppercase space-y-4">
+                    <li><a href="#inicio" data-text="inicio">Inicio</a></li>
+                    <li><a href="#registro-usuario" data-text="registrar">Registrar Usuario</a></li>
+                    <li><a href="#jugar" data-text="jugar">Jugar</a></li>
+                    <li><a href="#instrucciones" data-text="instrucciones">Instrucciones</a></li>
+                    <li><a href="#salir" data-text="salir">Salir</a></li>
                 </ul>
             </nav>
         </header>
@@ -52,18 +53,18 @@
             <h2 id="jugar">Jugar</h2>
             <div class="tables">
                 <div class="battleship-board-p1">
-                    <div class="position" id="p1@00"></div>
-                    <div class="position" id="p1@a0">a</div>
-                    <div class="position" id="p1@b0">b</div>
-                    <div class="position" id="p1@c0">c</div>
-                    <div class="position" id="p1@d0">d</div>
-                    <div class="position" id="p1@e0">e</div>
-                    <div class="position" id="p1@f0">f</div>
-                    <div class="position" id="p1@g0">g</div>
-                    <div class="position" id="p1@h0">h</div>
-                    <div class="position" id="p1@i0">i</div>
-                    <div class="position" id="p1@j0">j</div>
-                    <div class="position" id="p1@01">1</div>
+                    <div class="border" id="p1@00"></div>
+                    <div class="border" id="p1@a0">a</div>
+                    <div class="border" id="p1@b0">b</div>
+                    <div class="border" id="p1@c0">c</div>
+                    <div class="border" id="p1@d0">d</div>
+                    <div class="border" id="p1@e0">e</div>
+                    <div class="border" id="p1@f0">f</div>
+                    <div class="border" id="p1@g0">g</div>
+                    <div class="border" id="p1@h0">h</div>
+                    <div class="border" id="p1@i0">i</div>
+                    <div class="border" id="p1@j0">j</div>
+                    <div class="border" id="p1@01">1</div>
                     <div class="position" id="p1@a1"></div>
                     <div class="position" id="p1@b1"></div>
                     <div class="position" id="p1@c1"></div>
@@ -74,7 +75,7 @@
                     <div class="position" id="p1@h1"></div>
                     <div class="position" id="p1@i1"></div>
                     <div class="position" id="p1@j1"></div>
-                    <div class="position" id="p1@02">2</div>
+                    <div class="border" id="p1@02">2</div>
                     <div class="position" id="p1@a2"></div>
                     <div class="position" id="p1@b2"></div>
                     <div class="position" id="p1@c2"></div>
@@ -85,7 +86,7 @@
                     <div class="position" id="p1@h2"></div>
                     <div class="position" id="p1@i2"></div>
                     <div class="position" id="p1@j2"></div>
-                    <div class="position" id="p1@03">3</div>
+                    <div class="border" id="p1@03">3</div>
                     <div class="position" id="p1@a3"></div>
                     <div class="position" id="p1@b3"></div>
                     <div class="position" id="p1@c3"></div>
@@ -96,7 +97,7 @@
                     <div class="position" id="p1@h3"></div>
                     <div class="position" id="p1@i3"></div>
                     <div class="position" id="p1@j3"></div>
-                    <div class="position" id="p1@04">4</div>
+                    <div class="border" id="p1@04">4</div>
                     <div class="position" id="p1@a4"></div>
                     <div class="position" id="p1@b4"></div>
                     <div class="position" id="p1@c4"></div>
@@ -107,7 +108,7 @@
                     <div class="position" id="p1@h4"></div>
                     <div class="position" id="p1@i4"></div>
                     <div class="position" id="p1@j4"></div>
-                    <div class="position" id="p1@05">5</div>
+                    <div class="border" id="p1@05">5</div>
                     <div class="position" id="p1@a5"></div>
                     <div class="position" id="p1@b5"></div>
                     <div class="position" id="p1@c5"></div>
@@ -118,7 +119,7 @@
                     <div class="position" id="p1@h5"></div>
                     <div class="position" id="p1@i5"></div>
                     <div class="position" id="p1@j5"></div>
-                    <div class="position" id="p1@06">6</div>
+                    <div class="border" id="p1@06">6</div>
                     <div class="position" id="p1@a6"></div>
                     <div class="position" id="p1@b6"></div>
                     <div class="position" id="p1@c6"></div>
@@ -129,7 +130,7 @@
                     <div class="position" id="p1@h6"></div>
                     <div class="position" id="p1@i6"></div>
                     <div class="position" id="p1@j6"></div>
-                    <div class="position" id="p1@07">7</div>
+                    <div class="border" id="p1@07">7</div>
                     <div class="position" id="p1@a7"></div>
                     <div class="position" id="p1@b7"></div>
                     <div class="position" id="p1@c7"></div>
@@ -140,7 +141,7 @@
                     <div class="position" id="p1@h7"></div>
                     <div class="position" id="p1@i7"></div>
                     <div class="position" id="p1@j7"></div>
-                    <div class="position" id="p1@08">8</div>
+                    <div class="border" id="p1@08">8</div>
                     <div class="position" id="p1@a8"></div>
                     <div class="position" id="p1@b8"></div>
                     <div class="position" id="p1@c8"></div>
@@ -151,7 +152,7 @@
                     <div class="position" id="p1@h8"></div>
                     <div class="position" id="p1@i8"></div>
                     <div class="position" id="p1@j8"></div>
-                    <div class="position" id="p1@09">9</div>
+                    <div class="border" id="p1@09">9</div>
                     <div class="position" id="p1@a9"></div>
                     <div class="position" id="p1@b9"></div>
                     <div class="position" id="p1@c9"></div>
@@ -162,7 +163,7 @@
                     <div class="position" id="p1@h9"></div>
                     <div class="position" id="p1@i9"></div>
                     <div class="position" id="p1@j9"></div>
-                    <div class="position" id="p1@010">10</div>
+                    <div class="border" id="p1@010">10</div>
                     <div class="position" id="p1@a10"></div>
                     <div class="position" id="p1@b10"></div>
                     <div class="position" id="p1@c10"></div>
@@ -175,18 +176,18 @@
                     <div class="position" id="p1@j10"></div>
                 </div>
                 <div class="battleship-board-p2">
-                    <div class="position" id="p2@00"></div>
-                    <div class="position" id="p2@a0">a</div>
-                    <div class="position" id="p2@b0">b</div>
-                    <div class="position" id="p2@c0">c</div>
-                    <div class="position" id="p2@d0">d</div>
-                    <div class="position" id="p2@e0">e</div>
-                    <div class="position" id="p2@f0">f</div>
-                    <div class="position" id="p2@g0">g</div>
-                    <div class="position" id="p2@h0">h</div>
-                    <div class="position" id="p2@i0">i</div>
-                    <div class="position" id="p2@j0">j</div>
-                    <div class="position" id="p2@01">1</div>
+                    <div class="border" id="p2@00"></div>
+                    <div class="border" id="p2@a0">a</div>
+                    <div class="border" id="p2@b0">b</div>
+                    <div class="border" id="p2@c0">c</div>
+                    <div class="border" id="p2@d0">d</div>
+                    <div class="border" id="p2@e0">e</div>
+                    <div class="border" id="p2@f0">f</div>
+                    <div class="border" id="p2@g0">g</div>
+                    <div class="border" id="p2@h0">h</div>
+                    <div class="border" id="p2@i0">i</div>
+                    <div class="border" id="p2@j0">j</div>
+                    <div class="border" id="p2@01">1</div>
                     <div class="position" id="p2@a1"></div>
                     <div class="position" id="p2@b1"></div>
                     <div class="position" id="p2@c1"></div>
@@ -197,7 +198,7 @@
                     <div class="position" id="p2@h1"></div>
                     <div class="position" id="p2@i1"></div>
                     <div class="position" id="p2@j1"></div>
-                    <div class="position" id="p2@02">2</div>
+                    <div class="border" id="p2@02">2</div>
                     <div class="position" id="p2@a2"></div>
                     <div class="position" id="p2@b2"></div>
                     <div class="position" id="p2@c2"></div>
@@ -208,7 +209,7 @@
                     <div class="position" id="p2@h2"></div>
                     <div class="position" id="p2@i2"></div>
                     <div class="position" id="p2@j2"></div>
-                    <div class="position" id="p2@03">3</div>
+                    <div class="border" id="p2@03">3</div>
                     <div class="position" id="p2@a3"></div>
                     <div class="position" id="p2@b3"></div>
                     <div class="position" id="p2@c3"></div>
@@ -219,7 +220,7 @@
                     <div class="position" id="p2@h3"></div>
                     <div class="position" id="p2@i3"></div>
                     <div class="position" id="p2@j3"></div>
-                    <div class="position" id="p2@04">4</div>
+                    <div class="border" id="p2@04">4</div>
                     <div class="position" id="p2@a4"></div>
                     <div class="position" id="p2@b4"></div>
                     <div class="position" id="p2@c4"></div>
@@ -230,7 +231,7 @@
                     <div class="position" id="p2@h4"></div>
                     <div class="position" id="p2@i4"></div>
                     <div class="position" id="p2@j4"></div>
-                    <div class="position" id="p2@05">5</div>
+                    <div class="border" id="p2@05">5</div>
                     <div class="position" id="p2@a5"></div>
                     <div class="position" id="p2@b5"></div>
                     <div class="position" id="p2@c5"></div>
@@ -241,7 +242,7 @@
                     <div class="position" id="p2@h5"></div>
                     <div class="position" id="p2@i5"></div>
                     <div class="position" id="p2@j5"></div>
-                    <div class="position" id="p2@06">6</div>
+                    <div class="border" id="p2@06">6</div>
                     <div class="position" id="p2@a6"></div>
                     <div class="position" id="p2@b6"></div>
                     <div class="position" id="p2@c6"></div>
@@ -252,7 +253,7 @@
                     <div class="position" id="p2@h6"></div>
                     <div class="position" id="p2@i6"></div>
                     <div class="position" id="p2@j6"></div>
-                    <div class="position" id="p2@07">7</div>
+                    <div class="border" id="p2@07">7</div>
                     <div class="position" id="p2@a7"></div>
                     <div class="position" id="p2@b7"></div>
                     <div class="position" id="p2@c7"></div>
@@ -263,7 +264,7 @@
                     <div class="position" id="p2@h7"></div>
                     <div class="position" id="p2@i7"></div>
                     <div class="position" id="p2@j7"></div>
-                    <div class="position" id="p2@08">8</div>
+                    <div class="border" id="p2@08">8</div>
                     <div class="position" id="p2@a8"></div>
                     <div class="position" id="p2@b8"></div>
                     <div class="position" id="p2@c8"></div>
@@ -274,7 +275,7 @@
                     <div class="position" id="p2@h8"></div>
                     <div class="position" id="p2@i8"></div>
                     <div class="position" id="p2@j8"></div>
-                    <div class="position" id="p2@09">9</div>
+                    <div class="border" id="p2@09">9</div>
                     <div class="position" id="p2@a9"></div>
                     <div class="position" id="p2@b9"></div>
                     <div class="position" id="p2@c9"></div>
@@ -285,7 +286,7 @@
                     <div class="position" id="p2@h9"></div>
                     <div class="position" id="p2@i9"></div>
                     <div class="position" id="p2@j9"></div>
-                    <div class="position" id="p2@010">10</div>
+                    <div class="border" id="p2@010">10</div>
                     <div class="position" id="p2@a10"></div>
                     <div class="position" id="p2@b10"></div>
                     <div class="position" id="p2@c10"></div>
@@ -298,18 +299,18 @@
                     <div class="position" id="p2@j10"></div>
                 </div>
                 <div class="battleship-board-p3">
-                    <div class="position" id="p3@00"></div>
-                    <div class="position" id="p3@a0">a</div>
-                    <div class="position" id="p3@b0">b</div>
-                    <div class="position" id="p3@c0">c</div>
-                    <div class="position" id="p3@d0">d</div>
-                    <div class="position" id="p3@e0">e</div>
-                    <div class="position" id="p3@f0">f</div>
-                    <div class="position" id="p3@g0">g</div>
-                    <div class="position" id="p3@h0">h</div>
-                    <div class="position" id="p3@i0">i</div>
-                    <div class="position" id="p3@j0">j</div>
-                    <div class="position" id="p3@01">1</div>
+                    <div class="border" id="p3@00"></div>
+                    <div class="border" id="p3@a0">a</div>
+                    <div class="border" id="p3@b0">b</div>
+                    <div class="border" id="p3@c0">c</div>
+                    <div class="border" id="p3@d0">d</div>
+                    <div class="border" id="p3@e0">e</div>
+                    <div class="border" id="p3@f0">f</div>
+                    <div class="border" id="p3@g0">g</div>
+                    <div class="border" id="p3@h0">h</div>
+                    <div class="border" id="p3@i0">i</div>
+                    <div class="border" id="p3@j0">j</div>
+                    <div class="border" id="p3@01">1</div>
                     <div class="position" id="p3@a1"></div>
                     <div class="position" id="p3@b1"></div>
                     <div class="position" id="p3@c1"></div>
@@ -320,7 +321,7 @@
                     <div class="position" id="p3@h1"></div>
                     <div class="position" id="p3@i1"></div>
                     <div class="position" id="p3@j1"></div>
-                    <div class="position" id="p3@02">2</div>
+                    <div class="border" id="p3@02">2</div>
                     <div class="position" id="p3@a2"></div>
                     <div class="position" id="p3@b2"></div>
                     <div class="position" id="p3@c2"></div>
@@ -331,7 +332,7 @@
                     <div class="position" id="p3@h2"></div>
                     <div class="position" id="p3@i2"></div>
                     <div class="position" id="p3@j2"></div>
-                    <div class="position" id="p3@03">3</div>
+                    <div class="border" id="p3@03">3</div>
                     <div class="position" id="p3@a3"></div>
                     <div class="position" id="p3@b3"></div>
                     <div class="position" id="p3@c3"></div>
@@ -342,7 +343,7 @@
                     <div class="position" id="p3@h3"></div>
                     <div class="position" id="p3@i3"></div>
                     <div class="position" id="p3@j3"></div>
-                    <div class="position" id="p3@04">4</div>
+                    <div class="border" id="p3@04">4</div>
                     <div class="position" id="p3@a4"></div>
                     <div class="position" id="p3@b4"></div>
                     <div class="position" id="p3@c4"></div>
@@ -353,7 +354,7 @@
                     <div class="position" id="p3@h4"></div>
                     <div class="position" id="p3@i4"></div>
                     <div class="position" id="p3@j4"></div>
-                    <div class="position" id="p3@05">5</div>
+                    <div class="border" id="p3@05">5</div>
                     <div class="position" id="p3@a5"></div>
                     <div class="position" id="p3@b5"></div>
                     <div class="position" id="p3@c5"></div>
@@ -364,7 +365,7 @@
                     <div class="position" id="p3@h5"></div>
                     <div class="position" id="p3@i5"></div>
                     <div class="position" id="p3@j5"></div>
-                    <div class="position" id="p3@06">6</div>
+                    <div class="border" id="p3@06">6</div>
                     <div class="position" id="p3@a6"></div>
                     <div class="position" id="p3@b6"></div>
                     <div class="position" id="p3@c6"></div>
@@ -375,7 +376,7 @@
                     <div class="position" id="p3@h6"></div>
                     <div class="position" id="p3@i6"></div>
                     <div class="position" id="p3@j6"></div>
-                    <div class="position" id="p3@07">7</div>
+                    <div class="border" id="p3@07">7</div>
                     <div class="position" id="p3@a7"></div>
                     <div class="position" id="p3@b7"></div>
                     <div class="position" id="p3@c7"></div>
@@ -386,7 +387,7 @@
                     <div class="position" id="p3@h7"></div>
                     <div class="position" id="p3@i7"></div>
                     <div class="position" id="p3@j7"></div>
-                    <div class="position" id="p3@08">8</div>
+                    <div class="border" id="p3@08">8</div>
                     <div class="position" id="p3@a8"></div>
                     <div class="position" id="p3@b8"></div>
                     <div class="position" id="p3@c8"></div>
@@ -394,10 +395,10 @@
                     <div class="position" id="p3@e8"></div>
                     <div class="position" id="p3@f8"></div>
                     <div class="position" id="p3@g8"></div>
-                    <div class="position" id="p3@h8"></div>
+                    <div class="position" id="p3@h8"><div class="ship0 ship0-vertical"></div><div class="flame-container"><div class="flame"></div></div></div>
                     <div class="position" id="p3@i8"></div>
                     <div class="position" id="p3@j8"></div>
-                    <div class="position" id="p3@09">9</div>
+                    <div class="border" id="p3@09">9</div>
                     <div class="position" id="p3@a9"></div>
                     <div class="position" id="p3@b9"></div>
                     <div class="position" id="p3@c9"></div>
@@ -408,7 +409,7 @@
                     <div class="position" id="p3@h9"></div>
                     <div class="position" id="p3@i9"></div>
                     <div class="position" id="p3@j9"></div>
-                    <div class="position" id="p3@010">10</div>
+                    <div class="border" id="p3@010">10</div>
                     <div class="position" id="p3@a10"></div>
                     <div class="position" id="p3@b10"></div>
                     <div class="position" id="p3@c10"></div>
@@ -421,18 +422,18 @@
                     <div class="position" id="p3@j10"></div>
                 </div>
                 <div class="battleship-board-p4">
-                    <div class="position" id="p4@00"></div>
-                    <div class="position" id="p4@a0">a</div>
-                    <div class="position" id="p4@b0">b</div>
-                    <div class="position" id="p4@c0">c</div>
-                    <div class="position" id="p4@d0">d</div>
-                    <div class="position" id="p4@e0">e</div>
-                    <div class="position" id="p4@f0">f</div>
-                    <div class="position" id="p4@g0">g</div>
-                    <div class="position" id="p4@h0">h</div>
-                    <div class="position" id="p4@i0">i</div>
-                    <div class="position" id="p4@j0">j</div>
-                    <div class="position" id="p4@01">1</div>
+                    <div class="border" id="p4@00"></div>
+                    <div class="border" id="p4@a0">a</div>
+                    <div class="border" id="p4@b0">b</div>
+                    <div class="border" id="p4@c0">c</div>
+                    <div class="border" id="p4@d0">d</div>
+                    <div class="border" id="p4@e0">e</div>
+                    <div class="border" id="p4@f0">f</div>
+                    <div class="border" id="p4@g0">g</div>
+                    <div class="border" id="p4@h0">h</div>
+                    <div class="border" id="p4@i0">i</div>
+                    <div class="border" id="p4@j0">j</div>
+                    <div class="border" id="p4@01">1</div>
                     <div class="position" id="p4@a1"></div>
                     <div class="position" id="p4@b1"></div>
                     <div class="position" id="p4@c1"></div>
@@ -443,7 +444,7 @@
                     <div class="position" id="p4@h1"></div>
                     <div class="position" id="p4@i1"></div>
                     <div class="position" id="p4@j1"></div>
-                    <div class="position" id="p4@02">2</div>
+                    <div class="border" id="p4@02">2</div>
                     <div class="position" id="p4@a2"></div>
                     <div class="position" id="p4@b2"></div>
                     <div class="position" id="p4@c2"></div>
@@ -454,7 +455,7 @@
                     <div class="position" id="p4@h2"></div>
                     <div class="position" id="p4@i2"></div>
                     <div class="position" id="p4@j2"></div>
-                    <div class="position" id="p4@03">3</div>
+                    <div class="border" id="p4@03">3</div>
                     <div class="position" id="p4@a3"></div>
                     <div class="position" id="p4@b3"></div>
                     <div class="position" id="p4@c3"></div>
@@ -465,7 +466,7 @@
                     <div class="position" id="p4@h3"></div>
                     <div class="position" id="p4@i3"></div>
                     <div class="position" id="p4@j3"></div>
-                    <div class="position" id="p4@04">4</div>
+                    <div class="border" id="p4@04">4</div>
                     <div class="position" id="p4@a4"></div>
                     <div class="position" id="p4@b4"></div>
                     <div class="position" id="p4@c4"></div>
@@ -476,7 +477,7 @@
                     <div class="position" id="p4@h4"></div>
                     <div class="position" id="p4@i4"></div>
                     <div class="position" id="p4@j4"></div>
-                    <div class="position" id="p4@05">5</div>
+                    <div class="border" id="p4@05">5</div>
                     <div class="position" id="p4@a5"></div>
                     <div class="position" id="p4@b5"></div>
                     <div class="position" id="p4@c5"></div>
@@ -487,7 +488,7 @@
                     <div class="position" id="p4@h5"></div>
                     <div class="position" id="p4@i5"></div>
                     <div class="position" id="p4@j5"></div>
-                    <div class="position" id="p4@06">6</div>
+                    <div class="border" id="p4@06">6</div>
                     <div class="position" id="p4@a6"></div>
                     <div class="position" id="p4@b6"></div>
                     <div class="position" id="p4@c6"></div>
@@ -498,7 +499,7 @@
                     <div class="position" id="p4@h6"></div>
                     <div class="position" id="p4@i6"></div>
                     <div class="position" id="p4@j6"></div>
-                    <div class="position" id="p4@07">7</div>
+                    <div class="border" id="p4@07">7</div>
                     <div class="position" id="p4@a7"></div>
                     <div class="position" id="p4@b7"></div>
                     <div class="position" id="p4@c7"></div>
@@ -509,7 +510,7 @@
                     <div class="position" id="p4@h7"></div>
                     <div class="position" id="p4@i7"></div>
                     <div class="position" id="p4@j7"></div>
-                    <div class="position" id="p4@08">8</div>
+                    <div class="border" id="p4@08">8</div>
                     <div class="position" id="p4@a8"></div>
                     <div class="position" id="p4@b8"></div>
                     <div class="position" id="p4@c8"></div>
@@ -520,7 +521,7 @@
                     <div class="position" id="p4@h8"></div>
                     <div class="position" id="p4@i8"></div>
                     <div class="position" id="p4@j8"></div>
-                    <div class="position" id="p4@09">9</div>
+                    <div class="border" id="p4@09">9</div>
                     <div class="position" id="p4@a9"></div>
                     <div class="position" id="p4@b9"></div>
                     <div class="position" id="p4@c9"></div>
@@ -531,7 +532,7 @@
                     <div class="position" id="p4@h9"></div>
                     <div class="position" id="p4@i9"></div>
                     <div class="position" id="p4@j9"></div>
-                    <div class="position" id="p4@010">10</div>
+                    <div class="border" id="p4@010">10</div>
                     <div class="position" id="p4@a10"></div>
                     <div class="position" id="p4@b10"></div>
                     <div class="position" id="p4@c10"></div>
@@ -547,59 +548,49 @@
         </main>
         <aside id="instrucciones">
             <h2>Instrucciones</h2>
-            <h3>1. Objetivo del Juego</h3>
-            <p>Hundir toda la flota enemiga antes que tu oponente hunda la tuya.</p>
-            <h3>2. Componentes del Juego</h3>
-            <p>
-                Tablero de juego para cada jugador (10x10 cuadrículas). Se debe mostrar
-                el tablero del propio jugador, donde se muestran la colocación dada a
-                los barcos por parte de dicho jugador, y otra cuadrícula que representa
-                el espacio donde el contrincante distribuyó sus barcos, y en donde se
-                mostrarán los tiros fallidos o acertados a medida que avanza el juego
-                VER NOTA AL PIE DE PÁGINA. Flota de barcos:
-            </p>
-            <ul class="lista-barcos">
-                <li>1 portaaviones (abarca 5 casillas, ya sea en sentido horizontal overtical)</li>
-                <li>1 acorazado (4 casillas, ya sea en sentido horizontal o vertical)</li>
-                <li>1 crucero (3 casillas, ya sea en sentido horizontal o vertical)</li>
-                <li>1 submarino (3 casillas, ya sea en sentido horizontal o vertical)</li>
-                <li>1 destructor (2 casillas, ya sea en sentido horizontal o vertical)</li>
-            </ul>
-            <h3>3. Preparación</h3>
-            <p>
-                Cada jugador coloca sus barcos en el tablero de manera oculta al
-                oponente. Los barcos pueden colocarse vertical u horizontalmente. Los
-                barcos no pueden superponerse.
-            </p>
-            <h3>4. Turnos</h3>
-            <p>
-                Los jugadores se turnan para "disparar" a las casillas del oponente,
-                intentando adivinar la posición de los barcos enemigos. Cada disparo se
-                indica seleccionando una casilla en el tablero del oponente. El jugador
-                a quien le corresponderá "disparar" por primera vez (primer turno) será
-                seleccionado al azar.
-            </p>
-            <h3>5. Impactos</h3>
-            <p>
-                Si un jugador acierta un disparo en una casilla que contiene parte de un
-                barco enemigo, se marca un "impacto" (hit). Si el disparo no acierta en
-                ningún barco, se marca un "fallo" (miss).
-            </p>
-            <h3>6. Hundimiento</h3>
-            <p>
-                Cuando todas las casillas de un barco han sido impactadas, el barco se
-                considera "hundido". Se debe informar al oponente qué barco ha sido
-                hundido.
-            </p>
-            <h3>7. Victoria</h3>
-            <p>El primer jugador en hundir toda la flota enemiga gana la partida.</p>
-            <h3>8. Duración del Turno</h3>
-            <p>
-                Se debe establecer un límite de tiempo para cada turno de 60 segundos (1
-                minuto) para mantener el ritmo del juego. Si un jugador no realiza su
-                movimiento dentro del límite de tiempo, se considera un turno perdido.
-            </p>
+            <div id="container-for-instructions">
+                <div class="box">
+                    <h3>1. Objetivo del Juego</h3>
+                    <p>Hundir toda la flota enemiga antes que tu oponente hunda la tuya.</p>
+                </div>
+                <div class="box">
+                    <h3>2. Componentes del Juego</h3>
+                    <p>Tablero de juego para cada jugador (10x10 cuadrículas)...</p>
+                    <ul class="lista-barcos">
+                        <li>1 portaaviones (5 casillas)</li>
+                        <li>1 acorazado (4 casillas)</li>
+                        <li>1 crucero (3 casillas)</li>
+                        <li>1 submarino (3 casillas)</li>
+                        <li>1 destructor (2 casillas)</li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <h3>3. Preparación</h3>
+                    <p>Cada jugador coloca sus barcos en el tablero de manera oculta al oponente...</p>
+                </div>
+                <div class="box">
+                    <h3>4. Turnos</h3>
+                    <p>Los jugadores se turnan para "disparar" a las casillas del oponente...</p>
+                </div>
+                <div class="box">
+                    <h3>5. Impactos</h3>
+                    <p>Si un jugador acierta un disparo en una casilla que contiene parte de un barco enemigo...</p>
+                </div>
+                <div class="box">
+                    <h3>6. Hundimiento</h3>
+                    <p>Cuando todas las casillas de un barco han sido impactadas, el barco se considera "hundido"...</p>
+                </div>
+                <div class="box">
+                    <h3>7. Victoria</h3>
+                    <p>El primer jugador en hundir toda la flota enemiga gana la partida.</p>
+                </div>
+                <div class="box">
+                    <h3>8. Duración del Turno</h3>
+                    <p>Se debe establecer un límite de tiempo para cada turno de 60 segundos...</p>
+                </div>
+            </div>
         </aside>
+              
         <footer>
             <h2 id="salir">Salir</h2>
             <p>Gracias por jugar</p>
