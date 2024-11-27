@@ -195,7 +195,8 @@ body {
     height: 100%; 
     background-image: url('ship0.png'); 
     /* Replace with your image path */ 
-    background-size: cover; z-index: 1; 
+    background-size: cover; 
+    z-index: 1; 
     pointer-events: none;
 }
  /* Styling for a horizontal ship */ 
@@ -232,6 +233,7 @@ body {
   border: 5px solid black;
   border-left-width: 2.5px;
   border-top-width: 2.5px;
+  z-index: 2;
 
   &:after,
   &:before {
