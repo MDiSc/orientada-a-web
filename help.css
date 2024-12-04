@@ -38,7 +38,7 @@ form#registro-usuario input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
-    background-color: #1669DE;
+    background-color: #023535;
     color: white;
     border: none;
     border-radius: 4px;
@@ -46,7 +46,7 @@ form#registro-usuario input[type="submit"] {
 }
 
 form#registro-usuario input[type="submit"]:hover {
-    background-color: #00E0D3;
+    background-color: #015958;
 }
 
 .container {
@@ -72,12 +72,6 @@ main {
     justify-content: center;
 }
 
-aside#instrucciones {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
 
 aside#instrucciones h2 {
     width: 100%;
@@ -95,18 +89,15 @@ aside#instrucciones h2 {
 aside#instrucciones .box { 
     padding: 15px; 
     margin-bottom: 20px; 
-    border: 1px solid #ccc; 
+    border: 1px solid #008F8C; 
     border-radius: 8px; 
-    background-color: #f9f9f9; 
+    background-color: #023535; 
     width: fit-content;
     height: fit-content;
+    text-align: center;
+    color: white;
 }
 
-@media (min-width: 200px) {
-    aside#instrucciones .box {
-        width: 100%; 
-    }
-}
 section#inicio {
     background-color: white;
     padding: 20px;
@@ -117,21 +108,8 @@ section#inicio {
     border-radius: 10px;
 }
 
-@media (min-width: 500px) {
-    aside#instrucciones .box {
-        width: 30%; 
-    }
-}
-
-@media (min-width: 900px) {
-    aside#instrucciones .box {
-        width: 20%; 
-    }
-}
-
 body {
-    background: rgb(0,64,252);
-    background: radial-gradient(circle, #0040fc 0%, rgba(148,167,233,0.6418942577030813) 100%);
+    background: #0FC2C0;
 }
 
 .battleship-board-p1, .battleship-board-p2, .battleship-board-p3, .battleship-board-p4 {
@@ -147,15 +125,16 @@ body {
 }*/
 
 .position, .border {
-    background-color: #1cafd4;
+    background-color: #015958;
+    color: white;
     padding: 10px;
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid white;
     position: relative;
     border-radius: 5px;
 }
 .position:hover {
-    background-color: #0b5061;
+    background-color: #0CABA8;
 }
 
 .header {
@@ -289,12 +268,12 @@ footer a {
     text-decoration: none;
     font-weight: bold;
     padding: 10px 20px;
-    background-color: #1669DE;
+    background-color: #023535;
     border-radius: 4px;
 }
 
 footer a:hover {
-    background-color: #00E0D3;
+    background-color: #008F8C;
 }
 header {
     background-color: transparent; 
@@ -318,12 +297,12 @@ nav ul li a {
     text-decoration: none;
     font-size: 18px;
     padding: 10px 20px;
-    background-color: #1669DE;
+    background-color: #023535;
     border-radius: 4px;
     transition: background-color 0.3s ease;
 }
 
 nav ul li a:hover {
-    background-color: #00E0D3;
+    background-color: #0CABA8;
 }
 
