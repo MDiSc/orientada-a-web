@@ -2,10 +2,11 @@ form#registro-usuario {
     max-width: 250px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #008F8C;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #023535;
     text-align: center;
+    color: white;
 }
 
 form#registro-usuario label {
@@ -20,7 +21,7 @@ form#registro-usuario input[type="email"] {
     width: 90%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #008F8C;
     border-radius: 4px;
 }
 
@@ -38,7 +39,7 @@ form#registro-usuario input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
-    background-color: #023535;
+    background-color: #015958;
     color: white;
     border: none;
     border-radius: 4px;
@@ -46,7 +47,7 @@ form#registro-usuario input[type="submit"] {
 }
 
 form#registro-usuario input[type="submit"]:hover {
-    background-color: #015958;
+    background-color: #008F8C;
 }
 
 .container {
@@ -76,6 +77,7 @@ main {
 aside#instrucciones h2 {
     width: 100%;
     text-align: center;
+    color: white;
 }
 
 #container-for-instructions {
@@ -93,19 +95,20 @@ aside#instrucciones .box {
     border-radius: 8px; 
     background-color: #023535; 
     width: fit-content;
-    height: fit-content;
+    height: 200px;
     text-align: center;
     color: white;
 }
 
 section#inicio {
-    background-color: white;
+    background-color: #023535;
     padding: 20px;
     text-align: center;
     width: fit-content;
     height: fit-content;
     margin: 0 auto;
     border-radius: 10px;
+    color: white;
 }
 
 body {
@@ -118,6 +121,7 @@ body {
     grid-row: repeat(11, 1fr);
     gap: 1px;
     background-color: transparent;
+    border-radius: 50%;
 }
 
 /*.battleship-board-p2, .battleship-board-p3, .battleship-board-p4 {
@@ -129,9 +133,9 @@ body {
     color: white;
     padding: 10px;
     text-align: center;
-    border: 1px solid white;
+    border: 1px solid #008F8C;
     position: relative;
-    border-radius: 5px;
+    border-radius: 50%;
 }
 .position:hover {
     background-color: #0CABA8;
@@ -152,44 +156,9 @@ body {
     background-color: red;
     width: 100%;
     height: 100%;
-    border-radius: 5px;
+    border-radius: 50%;
 }
 
-
-.portaaviones-vertical {
-    height: calc(100% * 5 + 3px * 4);
-}
-.acorazado-vertical {
-    height: calc(100% * 4 + 3px * 3);
-}
-.crucero-vertical {
-    height: calc(100% * 3 + 3px * 2);
-}
-.submarino-vertical {
-    height: calc(100% * 3 + 3px * 2);
-}
-.destructor-vertical {
-    height: calc(100% * 2 + 3px * 1);
-}
-.portaaviones-horizontal {
-    width: calc(100% * 5 + 3px * 4);
-}
-
-.acorazado-horizontal {
-    width: calc(100% * 4 + 3px * 3);
-}
-
-.crucero-horizontal {
-    width: calc(100% * 3 + 3px * 2);
-}
-
-.submarino-horizontal {
-    width: calc(100% * 3 + 3px * 2);
-}
-
-.destructor-horizontal {
-    width: calc(100% * 2 + 3px * 1);
-}
 
 @keyframes flame {
   0% {height: 100%; width: 100%;}
@@ -234,9 +203,6 @@ body {
 }
 
 
-.position {
-  position: relative; 
-}
 
 .flame-container {
   position: absolute;
