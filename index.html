@@ -51,8 +51,31 @@
                 <input type="submit" value="Registrarse" />
             </form>            
             <h2 id="jugar">Jugar</h2>
-            <div class="tables" id="tables">
-                
+            <div class="container">
+                <div class="deck" id="deck">
+                    <h3>Colocar Barcos</h3>
+                    <form id="ship-placement-form">
+                        <label for="ship-type">Tipo de Barco:</label>
+                        <select id="ship-type" name="ship-type" required>
+                            <option value="5">Portaaviones (5 casillas)</option>
+                            <option value="4">Acorazado (4 casillas)</option>
+                            <option value="3">Crucero (3 casillas)</option>
+                            <option value="3">Submarino (3 casillas)</option>
+                            <option value="2">Destructor (2 casillas)</option>
+                        </select>
+                        <label for="start-coordinates">Coordenadas Iniciales:</label>
+                        <input type="text" id="start-coordinates" name="start-coordinates" placeholder="Ej: 01" required />
+                        <label for="direction">Dirección:</label>
+                        <select id="direction" name="direction" required>
+                            <option value="0">Horizontal</option>
+                            <option value="1">Vertical</option>
+                        </select>
+                        <input type="submit" value="Colocar" />
+                    </form>
+                </div>
+                <div class="tables" id="tables">
+
+                </div>
             </div>
         </main>
         <aside id="instrucciones">
@@ -66,7 +89,7 @@
                     <h3>2. Componentes del Juego</h3>
                     <p>Tablero de juego para cada jugador (10x10 cuadrículas)...</p>
                     <ul class="lista-barcos">
-                        <li>1 portaaviones </li>
+                        <li>1 portaaviones (5 casillas)</li>
                         <li>1 acorazado (4 casillas)</li>
                         <li>1 crucero (3 casillas)</li>
                         <li>1 submarino (3 casillas)</li>

@@ -49,6 +49,51 @@ form#registro-usuario input[type="submit"] {
 form#registro-usuario input[type="submit"]:hover {
     background-color: #008F8C;
 }
+.deck {
+    border: 2px solid #008F8C;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #023535;
+    border-radius: 10px;
+    width: 250px;
+}
+
+.deck h3 {
+    margin-top: 0;
+    color: white;
+}
+
+#ship-placement-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#ship-placement-form label {
+    margin-top: 10px;
+    color: white;
+}
+
+#ship-placement-form input[type="text"],
+#ship-placement-form select {
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #008F8C;
+    border-radius: 5px;
+}
+
+#ship-placement-form input[type="submit"] {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #0CABA8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#ship-placement-form input[type="submit"]:hover {
+    background-color: #008F8C;
+}
 
 .container {
     display: flex;
@@ -146,72 +191,26 @@ body {
     background-color: white;
 }
 
-.ship { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    background-size: cover; 
-    z-index: 1; 
-    pointer-events: none;
+.ship {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    pointer-events: none;
+}
+
+.position .ship {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-}
-
-
-@keyframes flame {
-  0% {height: 100%; width: 100%;}
-  50% {height: 90%; width: 90%;}
-  100% {height: 100%; width: 100%;}
-}
-
-.flame {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(-45deg, red, orange);
-  border-radius: 50% 50% 0 50%;
-  transform: rotate(-135deg);
-  animation: .1s flame infinite;
-  filter: blur(2px); 
-  position: absolute;
-  box-shadow: 10px 12px 30px #700;
-  border: 5px solid black;
-  border-left-width: 2.5px;
-  border-top-width: 2.5px;
-  z-index: 2;
-
-  &:after,
-  &:before {
-    content: '';
-    width: 60%;
-    height: 60%;
-    display: block;
-    position: absolute;
-    background: linear-gradient(-45deg, red, orange);
-    animation: .2s flame infinite;
-    transform: scale(.8) rotate(20deg);
-    border-radius: 50% 50% 0 50%;
-    top: 10%;
-  }
-
-  &:before {
+    position: absolute; /* Absolute positioning for ships on the board */
     top: 0;
-    animation-duration: .09s;
-    transform: scale(.9) rotate(-15deg) translate(10px, 0);
-  }
+    left: 0;
 }
 
-
-
-.flame-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
 
 footer {
     padding: 20px;
