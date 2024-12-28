@@ -52,36 +52,7 @@
             </form>            
             <h2 id="jugar">Jugar</h2>
             <div class="tables" id="tables">
-                <script>
-                    function createTable(name){
-                        const boards = document.getElementById('tables');
-                        const board = document.createElement('div');
-                        board.className = 'battleship-board-p1';
-                        const headers = [ name, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-                        for(let i = 0; i < 11; i++){
-                            const cell = document.createElement('div');
-                            cell.className = "border";
-                            cell.id = headers[i];
-                            cell.textContent = headers[i];
-                            board.appendChild(cell);
-                        }
-                        for (let i = 0; i < 10; i++) { 
-                            const rowHeader = document.createElement('div'); 
-                            rowHeader.className = 'border'; 
-                            rowHeader.id = i; 
-                            rowHeader.textContent = i+1; 
-                            board.appendChild(rowHeader); 
-                            for (let j = 0; j < 10; j++) { 
-                                cell = document.createElement('div'); 
-                                cell.className = 'position'; 
-                                cell.id = i; 
-                                board.appendChild(cell); 
-                            } 
-                        }
-                        boards.appendChild(board);
-                    }
-                    createTable('Maurizio');
-                </script>
+                
             </div>
         </main>
         <aside id="instrucciones">
@@ -135,4 +106,5 @@
             <a href="https://www.youtube.com/watch?v=nCtn6igpgP4">Pulse aqui para salir.</a>
         </footer>
     </body>
+    <script src="help.js"></script>
 </html>
