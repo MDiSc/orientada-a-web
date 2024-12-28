@@ -70,3 +70,33 @@ function placeShip(shipType, startCoordinates, direction){
         }
     }
 }
+
+// Obtiene los elementos relevantes
+const multiPlayerRadio = document.getElementById('multi-player');
+const singlePLayerRadio = document.getElementById('single-player');
+const multiplayerDiv = document.getElementById('multiplayer-div');
+const foreverAloneDiv = document.getElementById('forever-alone-div');
+
+// Función para manejar la visibilidad del contenedor de jugadores
+function toggleJugadores() {
+    if (multiPlayerRadio.checked) {
+        multiplayerDiv.style.display = 'block'; // Muestra el contenedor si se selecciona "Multijugador"
+        foreverAloneDiv.style = 'none';
+    } 
+    if(singlePLayerRadio.checked){
+        foreverAloneDiv.style = 'block';
+        multiplayerDiv.style.display = 'none';
+    }
+    /*else {
+        multiplayerDiv.style.display = 'none';
+        foreverAloneDiv.style.display = 'none'; // Oculta el contenedor si se selecciona "Solitario"
+    }*/
+}
+
+// Agrega eventos a los radios para detectar cambios
+document.querySelectorAll('input[name="game-mode"]').forEach(radio => {
+    radio.addEventListener('change', toggleJugadores);
+});
+
+// Llama a la función al cargar la página para establecer el estado inicial
+toggleJugadores();

@@ -38,16 +38,25 @@
                 <label for="single-player">Solitario:</label>
                 <input type="radio" id="single-player" name="game-mode" value="single-player" required />
                 <label for="multi-player">Multijugador:</label>
-                <input type="radio" id="multi-player" name="game-mode" value="multi-player" required />                
-                <label for="player">Jugador:</label>
-                <label for="player1">P1</label>
-                <input type="radio" id="player1" name="player" value="player1" />
-                <label for="player2">P2</label>
-                <input type="radio" id="player2" name="player" value="player2" />
-                <label for="player3">P3</label>
-                <input type="radio" id="player3" name="player" value="player3" />
-                <label for="player4">P4</label>
-                <input type="radio" id="player4" name="player" value="player4" />
+                <input type="radio" id="multi-player" name="game-mode" value="multi-player" required />
+                 
+                <div id="forever-alone-div" style="display: none;">
+                    <label for="player">Jugador:</label>
+                    <label for="player1">P1</label>
+                    <input type="radio" id="player1" name="player" value="player1" />
+                </div>             
+                
+                <!-- Container for player options -->
+                <div id="multiplayer-div" style="display: none;">
+                    
+                    <label for="player2">P2</label>
+                    <input type="radio" id="player2" name="player" value="player2" />
+                    <label for="player3">P3</label>
+                    <input type="radio" id="player3" name="player" value="player3" />
+                    <label for="player4">P4</label>
+                    <input type="radio" id="player4" name="player" value="player4" />
+                </div>
+            
                 <input type="submit" value="Registrarse" />
             </form>            
             <h2 id="jugar">Jugar</h2>
