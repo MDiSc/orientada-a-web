@@ -94,6 +94,46 @@ form#registro-usuario input[type="submit"]:hover {
 #ship-placement-form input[type="submit"]:hover {
     background-color: #008F8C;
 }
+#placed-ships {
+    border: 2px solid #008F8C;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #023535;
+    border-radius: 10px;
+    width: 250px;
+    list-style-type: none;
+    padding: 0;
+}
+
+#placed-ships h3 {
+    margin-top: 0;
+    color: white;
+    text-align: center;
+}
+
+#placed-ships li {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: white;
+    border: 1px solid #008F8C;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#placed-ships li button {
+    padding: 5px 10px;
+    background-color: #0CABA8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#placed-ships li button:hover {
+    background-color: #008F8C;
+}
 
 .container {
     display: flex;
@@ -168,10 +208,6 @@ body {
     background-color: transparent;
     border-radius: 50%;
 }
-
-/*.battleship-board-p2, .battleship-board-p3, .battleship-board-p4 {
-    visibility: hidden;
-}*/
 
 .position, .border {
     background-color: #015958;

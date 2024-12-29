@@ -53,20 +53,68 @@ document.getElementById('ship-placement-form').addEventListener('submit', functi
     placeShip(shipType, startCoordinates, direction);
 });
 
-function placeShip(shipType, startCoordinates, direction){
+function placeShip(shipType, startCoordinates, direction) {
     const board = document.getElementById('battleship-board-player1');
     const startRow = parseInt(startCoordinates[0]);
     const startCol = parseInt(startCoordinates[1]);
-    const shipLength = shipType;
+    const shipLength = parseInt(shipType);
     const cells = board.getElementsByClassName('position');
-    let cellIndex = startRow * 10 + startCol;
-    for(let i = 0; i < shipLength; i++){
-        if(direction == 1){
-            cells[cellIndex + i * 10].classList.add('ships');
-            cells[cellIndex + i * 10].classList.add('ship');
-        }else{
-            cells[cellIndex + i].classList.add('ship');
-            cells[cellIndex + i].classList.add('ship');
+
+    if (direction == 0 && (startCol + shipLength > 10)) {
+        alert('El barco está fuera de los límites horizontales.');
+        return;
+    }
+    if (direction == 1 && (startRow + shipLength > 10)) {
+        alert('El barco está fuera de los límites verticales.');
+        return;
+    }
+    try {
+        // Validate and place the ship
+        for (let i = 0; i < shipLength; i++) {
+            let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
+            if (!cells[currentIndex] || cells[currentIndex].classList.contains('ship')) {
+                alert('El barco interfiere con otro barco existente o está fuera de los límites.');
+                return;
+            }
+        }
+        for (let i = 0; i < shipLength; i++) {
+            let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
+            if (cells[currentIndex]) {
+                cells[currentIndex].classList.add('ship');
+            }
+        }
+
+        const placedShips = document.getElementById('placed-ships');
+        const listItem = document.createElement('li');
+        listItem.textContent = `${shipType} casillas en ${startCoordinates} ${direction == 0 ? 'horizontal' : 'vertical'}`;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Eliminar';
+        deleteBtn.addEventListener('click', function() {
+            deleteShip(shipType, startCoordinates, direction);
+            listItem.remove();
+            shipTypeSelect.add(new Option(`${shipType} casillas`, shipType));
+        });
+        listItem.appendChild(deleteBtn);
+        placedShips.appendChild(listItem);
+
+        const shipTypeSelect = document.getElementById('ship-type');
+        shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
+    } catch (error) {
+        console.error('Error placing ship:', error);
+        alert('Ocurrió un error al colocar el barco. Por favor, inténtelo de nuevo.');
+    }
+}
+function deleteShip(shipType, startCoordinates, direction) {
+    const board = document.getElementById('battleship-board-player1');
+    const startRow = parseInt(startCoordinates[0]);
+    const startCol = parseInt(startCoordinates[1]);
+    const shipLength = parseInt(shipType);
+    const cells = board.getElementsByClassName('position');
+
+    for (let i = 0; i < shipLength; i++) {
+        let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
+        if (cells[currentIndex]) {
+            cells[currentIndex].classList.remove('ship');
         }
     }
 }
