@@ -5,16 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="author" content="Maurizio Di Scipio" />
         <title>Batalla Naval | Primer taller</title>
-        <link rel="icon" type="image/jpg" href="faviconbattleship.jpg" />
+        <link rel="icon" type="image/jpg" href="faviconbattleship.webp" />
         <link rel="stylesheet" href="help.css">
     </head>
     <body>
         <audio src="wavesounds.mp3" autoplay loop></audio>
         <header>
-            <h1>Batalla Naval</h1>
+            <h1>BATALLA NAVAL</h1>
             <nav>
                 <ul class="menu-hover-fill flex flex-col items-start leading-none text-2xl uppercase space-y-4">
                     <li><a href="#inicio" data-text="inicio">Inicio</a></li>
+                    <li><a href="#log-in" data-text="iniciar-sesion">Iniciar sesión</a></li>
                     <li><a href="#registro-usuario" data-text="registrar">Registrar Usuario</a></li>
                     <li><a href="#jugar" data-text="jugar">Jugar</a></li>
                     <li><a href="#instrucciones" data-text="instrucciones">Instrucciones</a></li>
@@ -26,9 +27,17 @@
             <section id="inicio">
                 <h2 id="inicio">Inicio</h2>
                 <p>Este es un juego de batalla naval</p>
-                <p>Para iniciar a jugar, por favor registrate</p>
+                <p>Para empezar a jugar, por favor registrate</p>
             </section>
             
+            <form id="log-in" style="display: block">
+                <label for="username-log-in">Nombre de usuario:</label>
+                <input type="text" id="username-log-in" name="username" required />              
+                <label for="password-log-in">Contraseña:</label>
+                <input type="password" id="password-log-in" name="password" required />               
+                <input type="submit" value="Ingresar" />
+            </form>
+
             <form id="registro-usuario">
                 <label for="username">Nombre de usuario:</label>
                 <input type="text" id="username" name="username" required />              
@@ -43,18 +52,18 @@
                 <div id="forever-alone-div" style="display: none;">
                     <label for="player">Jugador:</label>
                     <label for="player1">P1</label>
-                    <input type="radio" id="player1" name="player" value="player1" />
-                </div>             
+                    <input type="radio" id="player1" name="player" value="player1" data-exists="false"/>
+                </div>              
                 
                 <!-- Container for player options -->
                 <div id="multiplayer-div" style="display: none;">
                     
                     <label for="player2">P2</label>
-                    <input type="radio" id="player2" name="player" value="player2" />
+                    <input type="radio" id="player2" name="player" value="player2" data-exists="false"/>
                     <label for="player3">P3</label>
-                    <input type="radio" id="player3" name="player" value="player3" />
+                    <input type="radio" id="player3" name="player" value="player3" data-exists="false"/>
                     <label for="player4">P4</label>
-                    <input type="radio" id="player4" name="player" value="player4" />
+                    <input type="radio" id="player4" name="player" value="player4" data-exists="false"/>
                 </div>
             
                 <input type="submit" value="Registrarse" />
