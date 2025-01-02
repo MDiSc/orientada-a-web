@@ -80,6 +80,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+let shipCount = 0;
+
+const socket = new WebSocket('ws://localhost:8080');
+socket.addEventListener('open', function (event) {
+    console.log('Connected to WebSocket server');
+});
+socket.addEventListener('message', function (event) {
+    console.log('Message from server ', event.data);
+    const message = JSON.parse(event.data);
+    if (message.type == 'updateBoard') {
+        updateBoard(message.boardId, message.boardData);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registro-usuario');
     form.addEventListener('submit', function(event) {
@@ -88,29 +102,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
         const gameMode = document.querySelector('input[name="game-mode"]:checked').value;
         const player = document.querySelector('input[name="player"]:checked').value;
-        const currentPlayer = document.getElementById(player);
-        if(currentPlayer.dataset.exists==='false'){
-            if(playersList.some(player => player.username === username)){
-                alert('Username already in use! Try another one')
-            }else{
-                console.log(username, password, gameMode, player);
-                createTable(`battleship-board-${player}`, username, gameMode);
-                currentPlayer.dataset.exists='true';
-                playersList.push(new Player(username,password));
-                //savePlayer(playersList.find(player => player.username===username));
-                //savePlayersToJSON();
-                console.log(typeof playersList);
-                printPlayers(playersList);
+        console.log(username, password, gameMode, player);
+        const deck = document.getElementById('deck');
+        const placedShips = document.getElementById('placed-ships');
+        deck.style.display = 'block';
+        placedShips.style.display = 'block';
+        createTable(`battleship-board-1`, username);
+        form.style.display = 'none';
 
-                
-
-            }
-        }else{
-            alert(`${player} already created`);
-        }
     });
 });
-function createTable(name, userName, gameMode){
+function createTable(name, userName){
     const boards = document.getElementById('tables');
     const board = document.createElement('div');
     board.className = name;
@@ -154,7 +156,7 @@ document.getElementById('ship-placement-form').addEventListener('submit', functi
 });
 
 function placeShip(shipType, startCoordinates, direction) {
-    const board = document.getElementById('battleship-board-player1');
+    const board = document.getElementById('battleship-board-1');
     const startRow = parseInt(startCoordinates[0]);
     const startCol = parseInt(startCoordinates[1]);
     const shipLength = parseInt(shipType);
@@ -169,7 +171,6 @@ function placeShip(shipType, startCoordinates, direction) {
         return;
     }
     try {
-        // Validate and place the ship
         for (let i = 0; i < shipLength; i++) {
             let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
             if (!cells[currentIndex] || cells[currentIndex].classList.contains('ship')) {
@@ -196,16 +197,20 @@ function placeShip(shipType, startCoordinates, direction) {
         });
         listItem.appendChild(deleteBtn);
         placedShips.appendChild(listItem);
+        shipCount++;
+        console.log('Ship count:', shipCount);
 
         const shipTypeSelect = document.getElementById('ship-type');
         shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
+
+        checkShips();
     } catch (error) {
         console.error('Error placing ship:', error);
         alert('Ocurrió un error al colocar el barco. Por favor, inténtelo de nuevo.');
     }
 }
 function deleteShip(shipType, startCoordinates, direction) {
-    const board = document.getElementById('battleship-board-player1');
+    const board = document.getElementById('battleship-board-1');
     const startRow = parseInt(startCoordinates[0]);
     const startCol = parseInt(startCoordinates[1]);
     const shipLength = parseInt(shipType);
@@ -217,36 +222,42 @@ function deleteShip(shipType, startCoordinates, direction) {
             cells[currentIndex].classList.remove('ship');
         }
     }
+    shipCount--;
+    checkShips();
 }
-
-
-
-
-
-function togglePLayerOptions() {
-    const multiPlayerRadio = document.getElementById('multi-player');
-    const singlePLayerRadio = document.getElementById('single-player');
-    const multiplayerDiv = document.getElementById('multiplayer-div');
-    const foreverAloneDiv = document.getElementById('forever-alone-div');
-
-    if (multiPlayerRadio.checked) {
-        multiplayerDiv.style = 'display: block'; 
-        foreverAloneDiv.style = 'display: block';
-    } 
-    if(singlePLayerRadio.checked){
-        foreverAloneDiv.style = 'display: block';
-        multiplayerDiv.style = 'display: none';
+function checkShips() {
+    const addButton = document.getElementById('add-button');
+    const confirmButton = document.getElementById('confirm-button');
+    if (shipCount == 5) {
+        confirmButton.style.display = 'block';
+        addButton.style.display = 'none';
+    } else {
+        confirmButton.style.display = 'none';
+        addButton.style.display = 'block';
     }
-    /*else {
-        multiplayerDiv.style.display = 'none';
-        foreverAloneDiv.style.display = 'none'; 
-    }*/
 }
 
+document.getElementById('confirm-button').addEventListener('click', function() {
+    document.getElementById('deck').style.display = 'none';
+    document.getElementById('placed-ships').style.display = 'none';
+    const playerCount = parseInt(document.querySelector('input[name="player"]:checked').value);
 
-document.querySelectorAll('input[name="game-mode"]').forEach(radio => {
-    radio.addEventListener('change', togglePLayerOptions);
+    const tables = document.getElementById('tables');
+    tables.innerHTML = '';
+    for(let i = 1; i <= playerCount; i++){
+        createTable(`battleship-board-${i}`, i, 'normal');
+    }
 });
 
-togglePLayerOptions();
-
+function updateBoard(boardId, boardData) {
+    const board = document.getElementById(boardId);
+    if (!board) return;
+    const cells = board.getElementsByClassName('position');
+    boardData.forEach((cellData, index) => {
+        if (cellData === 1) {
+            cells[index].classList.add('ship');
+        } else {
+            cells[index].classList.remove('ship');
+        }
+    });
+}

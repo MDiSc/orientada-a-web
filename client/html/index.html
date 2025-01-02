@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="author" content="Maurizio Di Scipio" />
         <title>Batalla Naval | Primer taller</title>
-        <link rel="icon" type="image/jpg" href="faviconbattleship.webp" />
-        <link rel="stylesheet" href="help.css">
+        <link rel="icon" type="image/jpg" href="..\media\faviconbattleship.webp" />
+        <link rel="stylesheet" href="..\styles\help.css">
     </head>
     <body>
-        <audio src="wavesounds.mp3" autoplay loop></audio>
+        <audio src="..\media\wavesounds.mp3" autoplay loop></audio>
         <header>
             <h1>BATALLA NAVAL</h1>
             <nav>
@@ -47,30 +47,21 @@
                 <label for="single-player">Solitario:</label>
                 <input type="radio" id="single-player" name="game-mode" value="single-player" required />
                 <label for="multi-player">Multijugador:</label>
-                <input type="radio" id="multi-player" name="game-mode" value="multi-player" required />
-                 
-                <div id="forever-alone-div" style="display: none;">
-                    <label for="player">Jugador:</label>
-                    <label for="player1">P1</label>
-                    <input type="radio" id="player1" name="player" value="player1" data-exists="false"/>
-                </div>              
-                
-                <!-- Container for player options -->
-                <div id="multiplayer-div" style="display: none;">
-                    
-                    <label for="player2">P2</label>
-                    <input type="radio" id="player2" name="player" value="player2" data-exists="false"/>
-                    <label for="player3">P3</label>
-                    <input type="radio" id="player3" name="player" value="player3" data-exists="false"/>
-                    <label for="player4">P4</label>
-                    <input type="radio" id="player4" name="player" value="player4" data-exists="false"/>
-                </div>
-            
+                <input type="radio" id="multi-player" name="game-mode" value="multi-player" required />                
+                <label for="player">Cantidad de jugadores:</label>
+                <label for="player1">CPU</label>
+                <input type="radio" id="player1" name="player" value="1" />
+                <label for="player2">2</label>
+                <input type="radio" id="player2" name="player" value="2" />
+                <label for="player3">3</label>
+                <input type="radio" id="player3" name="player" value="3" />
+                <label for="player4">4</label>
+                <input type="radio" id="player4" name="player" value="4" />
                 <input type="submit" value="Registrarse" />
             </form>            
             <h2 id="jugar">Jugar</h2>
             <div class="container">
-                <div class="deck" id="deck">
+                <div class="deck" id="deck" style="display: none;">
                     <h3>Colocar Barcos</h3>
                     <form id="ship-placement-form">
                         <label for="ship-type">Tipo de Barco:</label>
@@ -88,13 +79,14 @@
                             <option value="0">Horizontal</option>
                             <option value="1">Vertical</option>
                         </select>
-                        <input type="submit" value="Colocar" />
+                        <input type="submit" id="add-button" value="Colocar" />
+                        <button id="confirm-button" style="display: none;">Confirmar</button>
                     </form>
                 </div>
                 <div class="tables" id="tables">
 
                 </div>
-                <div id="placed-ships">
+                <div id="placed-ships" style="display: none;">
                     <h3>Barcos Colocados</h3>
                     <ul id="placed-ships-list"></ul>
             </div>
@@ -150,5 +142,5 @@
             <a href="https://www.youtube.com/watch?v=nCtn6igpgP4">Pulse aqui para salir.</a>
         </footer>
     </body>
-    <script src="help.js"></script>
+    <script src="..\scripts\help.js"></script>
 </html>
