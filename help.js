@@ -13,12 +13,33 @@ class Player{
     }
 }
 
-function savePlayer(player){
+/*function savePlayer(player) {
+    playersList.push(player); // Agrega el nuevo jugador a la lista
+     // Convertir la lista de jugadores a formato JSON
+     const jsonData = JSON.stringify(playersList, null, 2); // El segundo parámetro es para formatear el JSON
+
+     // Guardar el archivo
+     fs.writeFile('players.json', jsonData, (err) => {
+         if (err) {
+             console.error('Error al guardar el archivo:', err);
+         } else {
+             console.log('Archivo players.json guardado exitosamente.');
+         }
+     });
+}*/
+
+function savePlayer2(player){
     let playerToSave = JSON.stringify(player);
     let parsedPlayer = JSON.parse(playerToSave);
     console.log(`Player to save ${playerToSave}`);
     console.log(parsedPlayer);
 }
+
+function savePlayersToJSON() {
+    const jsonPlayers = JSON.stringify(playersList); // Convertir a JSON
+    localStorage.setItem('players.json', jsonPlayers); // Guardar en localStorage
+}
+
 function loadPlayers(){}
 
 function printPlayers(players) {
@@ -58,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registro-usuario');
     form.addEventListener('submit', function(event) {
@@ -75,9 +97,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 createTable(`battleship-board-${player}`, username, gameMode);
                 currentPlayer.dataset.exists='true';
                 playersList.push(new Player(username,password));
-                savePlayer(playersList.find(player => player.username===username));
+                //savePlayer(playersList.find(player => player.username===username));
+                //savePlayersToJSON();
                 console.log(typeof playersList);
                 printPlayers(playersList);
+
+                
+
             }
         }else{
             alert(`${player} already created`);
