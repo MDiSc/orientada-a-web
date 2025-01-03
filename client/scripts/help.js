@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registro-usuario');
     form.addEventListener('submit', function(event) {
@@ -8,6 +9,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const player = document.querySelector('input[name="player"]:checked').value;
         console.log(username, password, gameMode, player);
         createTable(`battleship-board-${player}`, username, gameMode);
+=======
+let shipCount = 0;
+
+const socket = new WebSocket('ws://localhost:8080');
+socket.addEventListener('open', function (event) {
+    console.log('Connected to WebSocket server');
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('register');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const deck = document.getElementById('deck');
+        const placedShips = document.getElementById('placed-ships');
+        deck.style.display = 'block';
+        placedShips.style.display = 'block';
+        createTable(`battleship-board-1`, username);
+        form.style.display = 'none';
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
     });
 });
 function createTable(name, userName, gameMode){
@@ -117,4 +138,46 @@ function deleteShip(shipType, startCoordinates, direction) {
             cells[currentIndex].classList.remove('ship');
         }
     }
+<<<<<<< HEAD
 }
+=======
+    shipCount--;
+    checkShips();
+}
+function checkShips() {
+    const addButton = document.getElementById('add-button');
+    const confirmButton = document.getElementById('confirm-button');
+    if (shipCount == 5) {
+        confirmButton.style.display = 'block';
+        addButton.style.display = 'none';
+    } else {
+        confirmButton.style.display = 'none';
+        addButton.style.display = 'block';
+    }
+}
+
+document.getElementById('confirm-button').addEventListener('click', function() {
+    document.getElementById('deck').style.display = 'none';
+    document.getElementById('placed-ships').style.display = 'none';
+    const playerCount = parseInt(document.querySelector('input[name="player"]:checked').value);
+
+    const tables = document.getElementById('tables');
+    tables.innerHTML = '';
+    for(let i = 1; i <= playerCount; i++){
+        createTable(`battleship-board-${i}`, i, 'normal');
+    }
+});
+
+function updateBoard(boardId, boardData) {
+    const board = document.getElementById(boardId);
+    if (!board) return;
+    const cells = board.getElementsByClassName('position');
+    boardData.forEach((cellData, index) => {
+        if (cellData === 1) {
+            cells[index].classList.add('ship');
+        } else {
+            cells[index].classList.remove('ship');
+        }
+    });
+}
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228

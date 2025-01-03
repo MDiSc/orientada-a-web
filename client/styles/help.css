@@ -1,4 +1,23 @@
+<<<<<<< HEAD
 form#registro-usuario {
+=======
+html{
+    font-family: 'Bahnschrift';
+}
+
+section#inicio,
+header a,
+form#register,
+.deck, 
+.box
+{
+    -webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
+       box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
+}
+
+form#register {
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
     max-width: 250px;
     margin: 0 auto;
     padding: 20px;
@@ -9,15 +28,15 @@ form#registro-usuario {
     color: white;
 }
 
-form#registro-usuario label {
+form#register label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
 }
 
-form#registro-usuario input[type="text"],
-form#registro-usuario input[type="password"],
-form#registro-usuario input[type="email"] {
+form#register input[type="text"],
+form#register input[type="password"],
+form#register input[type="email"] {
     width: 90%;
     padding: 10px;
     margin-bottom: 10px;
@@ -25,17 +44,8 @@ form#registro-usuario input[type="email"] {
     border-radius: 4px;
 }
 
-form#registro-usuario label[for="single-player"],
-form#registro-usuario label[for="multi-player"],
-form#registro-usuario label[for="player1"],
-form#registro-usuario label[for="player2"],
-form#registro-usuario label[for="player3"],
-form#registro-usuario label[for="player4"] {
-    display: inline-block;
-    margin-right: 10px;
-}
 
-form#registro-usuario input[type="submit"] {
+form#register input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
@@ -46,9 +56,17 @@ form#registro-usuario input[type="submit"] {
     cursor: pointer;
 }
 
+<<<<<<< HEAD
 form#registro-usuario input[type="submit"]:hover {
     background-color: #008F8C;
 }
+=======
+form#register input[type="submit"]:hover {
+    background-color: #015958;
+}
+
+
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 .deck {
     border: 2px solid #008F8C;
     padding: 10px;
@@ -203,7 +221,7 @@ body {
 .battleship-board-1, .battleship-board-2, .battleship-board-3, .battleship-board-4 {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
-    grid-row: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
     gap: 1px;
     background-color: transparent;
     border-radius: 50%;
@@ -220,6 +238,12 @@ body {
 }
 .position:hover {
     background-color: #0CABA8;
+<<<<<<< HEAD
+=======
+    -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+    box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+    box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 }
 
 .header {
@@ -271,6 +295,12 @@ footer a {
     padding: 10px 20px;
     background-color: #023535;
     border-radius: 4px;
+<<<<<<< HEAD
+=======
+    -webkit-box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+       box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 }
 
 footer a:hover {
@@ -283,6 +313,15 @@ header {
     text-align: center;
 }
 
+<<<<<<< HEAD
+=======
+header a:hover{
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
+       box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
+}
+
+>>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 
 nav ul {
     list-style-type: none;
