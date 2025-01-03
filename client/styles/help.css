@@ -1,9 +1,52 @@
-<<<<<<< HEAD
-form#registro-usuario {
-=======
 html{
     font-family: 'Bahnschrift';
 }
+
+div#game-options,div#game-operations{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#game-options button,#game-operations input{
+    transition: color ease 0.505s;
+    transition: background-color ease 0.505s;
+    transition: box-shadow ease 0.505s;
+    height: calc(100vh*0.0505);
+    width: auto;
+    border-radius: 7px;  
+}
+
+#game-options button{
+    background-color: #016666;
+    color:lightgray;
+}
+
+
+#game-options button:hover{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #8c00ff;
+    color: rgb(255, 255, 255);
+    align-items: center;
+    -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+}
+
+#game-operations input:hover{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #ffffff;
+    color: rgb(255, 255, 255);
+    align-items: center;
+    -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+}
+
 
 section#inicio,
 header a,
@@ -12,12 +55,11 @@ form#register,
 .box
 {
     -webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
-       box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
             box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
 }
 
 form#register {
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
     max-width: 250px;
     margin: 0 auto;
     padding: 20px;
@@ -56,17 +98,11 @@ form#register input[type="submit"] {
     cursor: pointer;
 }
 
-<<<<<<< HEAD
-form#registro-usuario input[type="submit"]:hover {
-    background-color: #008F8C;
-}
-=======
 form#register input[type="submit"]:hover {
     background-color: #015958;
 }
 
 
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 .deck {
     border: 2px solid #008F8C;
     padding: 10px;
@@ -238,12 +274,9 @@ body {
 }
 .position:hover {
     background-color: #0CABA8;
-<<<<<<< HEAD
-=======
     -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
     box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
     box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 }
 
 .header {
@@ -295,12 +328,9 @@ footer a {
     padding: 10px 20px;
     background-color: #023535;
     border-radius: 4px;
-<<<<<<< HEAD
-=======
     -webkit-box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
        box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
             box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
 }
 
 footer a:hover {
@@ -313,17 +343,27 @@ header {
     text-align: center;
 }
 
-<<<<<<< HEAD
-=======
 header a:hover{
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
        box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
             box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
 }
 
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
+h1{
+    font-family: 'Century Gothic';
+    text-shadow: 0px 0px 14px rgb(0, 0, 0);
+    transition: text-shadow ease 0.7s;
+}
+
+h1:hover{
+    text-shadow: 0px 0px 25px rgb(68, 0, 255);
+}
+
 
 nav ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     list-style-type: none;
     padding: 0;
     margin: 10px 0 0;
@@ -345,4 +385,3 @@ nav ul li a {
 nav ul li a:hover {
     background-color: #0CABA8;
 }
-

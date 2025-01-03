@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('registro-usuario');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const gameMode = document.querySelector('input[name="game-mode"]:checked').value;
-        const player = document.querySelector('input[name="player"]:checked').value;
-        console.log(username, password, gameMode, player);
-        createTable(`battleship-board-${player}`, username, gameMode);
-=======
 let shipCount = 0;
 
 const socket = new WebSocket('ws://localhost:8080');
@@ -28,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         placedShips.style.display = 'block';
         createTable(`battleship-board-1`, username);
         form.style.display = 'none';
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
     });
 });
 function createTable(name, userName, gameMode){
@@ -138,9 +125,6 @@ function deleteShip(shipType, startCoordinates, direction) {
             cells[currentIndex].classList.remove('ship');
         }
     }
-<<<<<<< HEAD
-}
-=======
     shipCount--;
     checkShips();
 }
@@ -180,4 +164,3 @@ function updateBoard(boardId, boardData) {
         }
     });
 }
->>>>>>> 26248f01abcd6365ebc184490bb58fe5a2d6d228
