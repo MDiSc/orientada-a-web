@@ -12,9 +12,11 @@ div#game-options,div#game-operations{
     transition: color ease 0.505s;
     transition: background-color ease 0.505s;
     transition: box-shadow ease 0.505s;
+    transition: opacity ease 0.505s;
     height: calc(100vh*0.0505);
     width: auto;
-    border-radius: 7px;  
+    border-radius: 7px; 
+    opacity: 50%; 
 }
 
 #game-options button{
@@ -24,6 +26,7 @@ div#game-options,div#game-operations{
 
 
 #game-options button:hover{
+    opacity: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -36,6 +39,7 @@ div#game-options,div#game-operations{
 }
 
 #game-operations input:hover{
+    opacity: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
