@@ -3,9 +3,15 @@ html{
 }
 
 section#lobby{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: #023535;
     background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
     border-radius: 1%;
+    background-image: url(/client/media/bg-img-3p.jpg);
+    background-size: contain;
+    background-position: 55%;
     -webkit-box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
@@ -30,6 +36,7 @@ div#lobby-elements{
     display:flex;
     justify-content: space-around;
     margin-bottom: 4%;
+    
 }
 
 div#connected-players{
