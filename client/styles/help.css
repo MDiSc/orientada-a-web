@@ -218,9 +218,15 @@ body {
 }
 .hit{
     background-color: red;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 .miss {
     background-color: blue;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 .position, .border {
     background-color: #015958;
