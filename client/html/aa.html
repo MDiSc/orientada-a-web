@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boat Animation</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to top, #87CEEB, #fff);
+        }
+        .sea {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50%;
+            background: #1E90FF;
+        }
+        .boat {
+            position: absolute;
+            bottom: 20%;
+            left: 10%;
+            width: 150px;
+            height: 60px;
+            background: #8B4513;
+            border-radius: 0 0 30px 30px;
+            animation: sail 10s linear infinite;
+        }
+        .sail {
+            position: absolute;
+            bottom: 60px;
+            left: 50px;
+            width: 50px;
+            height: 70px;
+            background: white;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+        .mast {
+            position: absolute;
+            bottom: 60px;
+            left: 75px;
+            width: 5px;
+            height: 80px;
+            background: #8B4513;
+        }
+        .flag {
+            position: absolute;
+            bottom: 140px;
+            left: 75px;
+            width: 30px;
+            height: 20px;
+            background: red;
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+        .cabin {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            width: 50px;
+            height: 30px;
+            background: #D2691E;
+            border-radius: 5px;
+        }
+        .windows {
+            position: absolute;
+            bottom: 30px;
+            left: 15px;
+            width: 40px;
+            height: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .window {
+            width: 10px;
+            height: 10px;
+            background: #87CEEB;
+            border-radius: 50%;
+        }
+        .waves {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 10%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: wave 2s infinite linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="sea"></div>
+    <div class="waves"></div>
+    <div class="boat">
+        <div class="mast"></div>
+        <div class="sail"></div>
+        <div class="flag"></div>
+        <div class="cabin">
+            <div class="windows">
+                <div class="window"></div>
+                <div class="window"></div>
+                <div class="window"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
