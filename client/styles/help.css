@@ -2,10 +2,66 @@ html{
     font-family: 'Bahnschrift';
 }
 
+section#lobby{
+    background-color: #023535;
+    background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    border-radius: 1%;
+    -webkit-box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
+}
+
+section#lobby h3{
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    text-shadow: 0px 0px 5px rgb(190, 190, 190);
+    transition: text-shadow ease 0.7s;
+}
+
+section#lobby h3:hover{
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    text-shadow: 0px 0px 10px rgb(255, 255, 255);
+}
+
+div#lobby-elements{
+    display:flex;
+    justify-content: space-around;
+    margin-bottom: 4%;
+}
+
+div#connected-players{
+    background-color: #686868;
+    border-radius: 2.5%;
+    width: fit-content;
+}
+
+div#connected-players-header {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #5329c7;
+    border-top-left-radius: 2.5%;
+    border-top-left-radius: 2.5%;
+    -webkit-box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
+    border-bottom: 3px solid #5329c7;
+}
+
+div#connected-players b{
+    margin: 5px;
+}
+
 div#game-options,div#game-operations{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: start;
+    
 }
 
 #game-options button,#game-operations input{
@@ -16,7 +72,10 @@ div#game-options,div#game-operations{
     height: calc(100vh*0.0505);
     width: auto;
     border-radius: 7px; 
-    opacity: 50%; 
+    -webkit-box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);
+    
 }
 
 #game-options button{
@@ -26,7 +85,7 @@ div#game-options,div#game-operations{
 
 
 #game-options button:hover{
-    opacity: 100%;
+   
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
