@@ -1,5 +1,7 @@
 let shipCount = 0;
 let ships = new Map();
+let currentGameId=-777;
+let inGameLobby=false;
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('register');
@@ -222,18 +224,38 @@ function displayMove(coordinates) {
 function generatePlayerId() {
     return Math.floor(Math.random() * 1000);
 }
-
+let readyToConnectToServer = false;
+let mainUsername ='John Doe';
 const playerId = generatePlayerId();
 const ws = new WebSocket('ws://localhost:8080');
+let playersOnline = 0;
 
-ws.onopen = function() {
-    console.log('Connected to server');
-    const message = JSON.stringify({
-        type: 'connection',
-        playerId: playerId
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameForm = document.getElementById('main-username-form');
+    usernameForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newMainUsername = document.getElementById('main-username');
+        mainUsername=newMainUsername.value;
+        readyToConnectToServer=true;
+        console.log(`The main username now is ${mainUsername}`);
+        console.log(readyToConnectToServer);
+
+        console.log('Connected to server');
+        const message = JSON.stringify({
+            type: 'connection',
+            playerId: playerId,
+            playerUsername: mainUsername
+        });
+        ws.send(message);
+    
     });
-    ws.send(message);
-};
+});
+
+const onlineGames = document.getElementById('online-games');
+const connectedPlayers = document.getElementById('connected-players');
+const connectedPlayersUl = document.getElementById('connected-players-ul');
+const matchId = document.getElementById('match-id');
+    
 ws.onmessage = function(event) {
     try {
         const data = JSON.parse(event.data);
@@ -243,6 +265,24 @@ ws.onmessage = function(event) {
                 console.log('Coordinates:', data.coordinates);
                 displayMove(data.coordinates);
                 break;
+            case 'gameCreated':
+                console.log('Game created with the id of', data.gameId);
+                console.log('Creator:', data.creatorId);
+                console.log('la data dice: ', data);
+                currentGameId=data.gameId;
+                inGameLobby=true;
+                onlineGames.style = 'display: none;';
+                connectedPlayers.style = 'display: block;';
+                connectedPlayersUl.innerHTML = `<li>${data.creatorId}</li>`;
+                matchId.innerHTML += data.gameId;
+                break;
+            case 'join-game':
+                //if(playerId!==data.playerId){
+                console.log('A player with the id of', data.playerId ,'has joined the game!');
+                console.log('la data dice: ', data);
+                connectedPlayersUl.innerHTML += `<li>${data.creatorId}</li>`;
+                //}
+                break;    
             default:
                 console.log('Unknown message type:', data);
         }
@@ -302,3 +342,5 @@ function sendMessage() {
 document.addEventListener('DOMContentLoaded', (event) => {
     sendMessage();
 });
+
+console.log(playerId)

@@ -25,6 +25,22 @@ section#lobby h3{
     transition: text-shadow ease 0.7s;
 }
 
+b#match-id{
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    text-shadow: 0px 0px 5px rgb(190, 190, 190);
+    transition: text-shadow ease 0.7s;
+    margin-bottom: 3%;
+}
+
+b#match-id:hover{
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    text-shadow: 0px 0px 10px rgb(255, 255, 255);
+}
+
 section#lobby h3:hover{
     display: flex;
     justify-content: center;
@@ -39,13 +55,13 @@ div#lobby-elements{
     
 }
 
-div#connected-players{
+div#connected-players,div#online-games{
     background-color: #686868;
     border-radius: 2.5%;
     width: fit-content;
 }
 
-div#connected-players-header {
+div#connected-players-header,div#online-games-header {
     color: white;
     display: flex;
     justify-content: center;
@@ -59,7 +75,7 @@ div#connected-players-header {
     border-bottom: 3px solid #5329c7;
 }
 
-div#connected-players b{
+div#connected-players b,div#online-games b{
     margin: 5px;
 }
 
@@ -110,7 +126,7 @@ div#game-options,div#game-operations{
     flex-wrap: wrap;
     justify-content: center;
     background-color: #ffffff;
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     align-items: center;
     -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);

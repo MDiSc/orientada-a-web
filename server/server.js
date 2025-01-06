@@ -2,6 +2,60 @@ import { WebSocketServer, WebSocket } from 'ws';
 
 const wsServer = new WebSocketServer({ port: 8080 });
 const players = new Map();
+const games = {};
+
+function iteratePlayers(gameId, callback) {
+    const game = games[gameId]; // Busca el juego por su ID
+
+    if (!game) {
+        console.error(`No se encontró el juego con ID: ${gameId}`);
+        return;
+    }
+
+    // Recorre la lista de jugadores
+    game.players.forEach((playerId) => {
+        callback(playerId); // Ejecuta la función callback para cada jugador
+    });
+}
+
+function sendMessage(socket, message) {
+    const messageString = JSON.stringify(message);
+    socket.send(messageString);
+    console.log(`Sent to ${socket.url}: ${messageString}`);
+}
+
+function generateGameId() {
+    return Math.random().toString(36).substring(2, 10);
+}
+
+function handleCreateGame(gameId,creatorId) {
+    // Se genera un ID de juego único y se crea un nuevo juego con el jugador como único participante.
+    
+    games[gameId] = { id: gameId, players: [creatorId], started: false, turn: 0 };
+
+    // Se envía un mensaje de confirmación al jugador.
+    const targetWsSendGameCreateed = players.get(creatorId);
+    targetWsSendGameCreateed.send(`{ "type": "gameCreated", "gameId": ${gameId}, "creatorId": ${creatorId} }`);
+}
+
+function handleJoinGame(socket, gameId) {
+    const game = games[gameId];
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    if (game.players.length >= 4) {
+        sendMessage(socket, { type: 'error', message: 'Game is full' });
+        return;
+    }
+    game.players.push(socket);
+    game.players.forEach((player) => {
+        if (player !== socket) {
+            sendMessage(player, { type: 'playerJoined', gameId, playerCount: game.players.length });
+        }
+    });
+    sendMessage(socket, { type: 'playerJoined', gameId, playerCount: game.players.length });
+}
 
 wsServer.on('connection', function connection(ws) {
     ws.on('message', function message(data) {
@@ -27,7 +81,7 @@ wsServer.on('connection', function connection(ws) {
                         console.error('Invalid connection message: missing playerId', parsedData);
                         return;
                     }
-                    console.log('Player connected with id: ', parsedData.playerId);
+                    console.log(parsedData.playerUsername,' connected with id: ', parsedData.playerId);
                     players.set(parsedData.playerId, ws);
                     break;
                 case 'create-game':
@@ -36,6 +90,9 @@ wsServer.on('connection', function connection(ws) {
                         return;
                     }
                     console.log('Game created game with id: ', parsedData.gameId, ' and player id: ', parsedData.playerId);
+                    handleCreateGame(parsedData.gameId,parsedData.playerId);
+                    const targetWsSendGameCreated = players.get(parsedData.playerId);
+                    targetWsSendGameCreated.send(JSON.stringify(parsedData));
                     break;
                 case 'join-game':
                     if (!parsedData.gameId || !parsedData.playerId) {
@@ -44,6 +101,10 @@ wsServer.on('connection', function connection(ws) {
                     }
                     console.log('Player joined game with id: ', parsedData.gameId, ' and player id: ', parsedData.playerId);
                     players.set(parsedData.playerId, ws);
+                    iteratePlayers(parsedData.gameId, (playerId) => {
+                        const targetWsJoiningPlayer = playerId;
+                        targetWsJoiningPlayer.send(JSON.stringify(parsedData));
+                    });
                     break;
                 case 'send-move':
                     if (!parsedData.coordinates || !parsedData.gameId || !parsedData.sender || !parsedData.receiver) {
