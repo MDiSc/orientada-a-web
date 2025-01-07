@@ -1,45 +1,57 @@
 import { WebSocketServer, WebSocket } from 'ws';
 
-const wsServer = new WebSocketServer({ port: 8080 });
 const players = new Map();
-const games = {};
+const games = new Map();
 
-function iteratePlayers(gameId, callback) {
-    const game = games[gameId]; // Busca el juego por su ID
-
-    if (!game) {
-        console.error(`No se encontró el juego con ID: ${gameId}`);
-        return;
-    }
-
-    // Recorre la lista de jugadores
-    game.players.forEach((playerId) => {
-        callback(playerId); // Ejecuta la función callback para cada jugador
-    });
+/**
+ * Genera un ID de sala aleatorio de 8 caracteres de longitud.
+ *
+ * @returns {string} - Un ID de sala generado aleatoriamente.
+ */
+function generateGameId() {
+    return Math.random().toString(36).substring(2, 10);
 }
 
+/**
+ * Envía un mensaje a través de la conexión WebSocket y lo imprime en la consola.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {Object} message - El mensaje a enviar.
+ */
 function sendMessage(socket, message) {
     const messageString = JSON.stringify(message);
     socket.send(messageString);
     console.log(`Sent to ${socket.url}: ${messageString}`);
 }
 
-function generateGameId() {
-    return Math.random().toString(36).substring(2, 10);
+/**
+ * Maneja la creación de un nuevo juego.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {string} playerId - El ID del jugador que crea el juego.
+ */
+function handleCreateGame(socket, playerId) {
+    let gameId;
+    do {
+        gameId = generateGameId();
+    } while (games.has(gameId));
+
+    const game = { id: gameId, players: [playerId], started: false, turn: 0 };
+    games.set(gameId, game);
+    players.set(playerId, socket);
+    sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId });
+    console.log(`Game created with ID: ${gameId} by player: ${playerId}`);
 }
 
-function handleCreateGame(gameId,creatorId) {
-    // Se genera un ID de juego único y se crea un nuevo juego con el jugador como único participante.
-    
-    games[gameId] = { id: gameId, players: [creatorId], started: false, turn: 0 };
-
-    // Se envía un mensaje de confirmación al jugador.
-    const targetWsSendGameCreateed = players.get(creatorId);
-    targetWsSendGameCreateed.send(`{ "type": "gameCreated", "gameId": ${gameId}, "creatorId": ${creatorId} }`);
-}
-
-function handleJoinGame(socket, gameId) {
-    const game = games[gameId];
+/**
+ * Maneja la unión a un juego existente.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {string} gameId - El ID del juego al que unirse.
+ * @param {string} playerId - El ID del jugador que se une al juego.
+ */
+function handleJoinGame(socket, gameId, playerId) {
+    const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
         return;
@@ -48,110 +60,132 @@ function handleJoinGame(socket, gameId) {
         sendMessage(socket, { type: 'error', message: 'Game is full' });
         return;
     }
-    game.players.push(socket);
+    game.players.push(playerId);
+    players.set(playerId, socket);
     game.players.forEach((player) => {
-        if (player !== socket) {
-            sendMessage(player, { type: 'playerJoined', gameId, playerCount: game.players.length });
+        const playerSocket = players.get(player);
+        if (playerSocket) {
+            sendMessage(playerSocket, { type: 'join-game', gameId, playerId, playerCount: game.players.length });
         }
     });
-    sendMessage(socket, { type: 'playerJoined', gameId, playerCount: game.players.length });
 }
 
-wsServer.on('connection', function connection(ws) {
-    ws.on('message', function message(data) {
-        console.log('Raw data received:', data.toString());
-
-        let parsedData;
-        try {
-            parsedData = JSON.parse(data);
-        } catch (e) {
-            console.error('Error parsing JSON:', e, 'Data received:', data);
-            return;
+/**
+ * Maneja los movimientos de los jugadores.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {string} gameId - El ID del juego.
+ * @param {string} move - El movimiento del jugador.
+ */
+function handleMove(socket, gameId, move) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    if (!game.started) {
+        sendMessage(socket, { type: 'error', message: 'Game not started' });
+        return;
+    }
+    if (game.players[game.turn] !== socket) {
+        sendMessage(socket, { type: 'error', message: 'Not your turn' });
+        return;
+    }
+    game.players.forEach((player) => {
+        if (player !== socket) {
+            sendMessage(player, { type: 'move', gameId, move });
         }
+    });
+    sendMessage(socket, { type: 'move', gameId, move });
+    game.turn = (game.turn + 1) % game.players.length;
+}
 
-        if (!parsedData.type) {
-            console.error('Invalid message: missing type', parsedData);
-            return;
-        }
+/**
+ * Maneja el abandono de un juego.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {string} gameId - El ID del juego.
+ */
+function handleLeaveGame(socket, gameId) {
+    if (!gameId) {
+        sendMessage(socket, { type: 'error', message: 'No game ID specified' });
+        return;
+    }
 
-        try {
-            switch(parsedData.type){
-                case 'connection':
-                    if (!parsedData.playerId) {
-                        console.error('Invalid connection message: missing playerId', parsedData);
-                        return;
-                    }
-                    console.log(parsedData.playerUsername,' connected with id: ', parsedData.playerId);
-                    players.set(parsedData.playerId, ws);
-                    break;
-                case 'create-game':
-                    if (!parsedData.gameId || !parsedData.playerId) {
-                        console.error('Invalid create-game message: missing gameId or playerId', parsedData);
-                        return;
-                    }
-                    console.log('Game created game with id: ', parsedData.gameId, ' and player id: ', parsedData.playerId);
-                    handleCreateGame(parsedData.gameId,parsedData.playerId);
-                    const targetWsSendGameCreated = players.get(parsedData.playerId);
-                    targetWsSendGameCreated.send(JSON.stringify(parsedData));
-                    break;
-                case 'join-game':
-                    if (!parsedData.gameId || !parsedData.playerId) {
-                        console.error('Invalid join-game message: missing gameId or playerId', parsedData);
-                        return;
-                    }
-                    console.log('Player joined game with id: ', parsedData.gameId, ' and player id: ', parsedData.playerId);
-                    players.set(parsedData.playerId, ws);
-                    iteratePlayers(parsedData.gameId, (playerId) => {
-                        const targetWsJoiningPlayer = playerId;
-                        targetWsJoiningPlayer.send(JSON.stringify(parsedData));
-                    });
-                    break;
-                case 'send-move':
-                    if (!parsedData.coordinates || !parsedData.gameId || !parsedData.sender || !parsedData.receiver) {
-                        console.error('Invalid send-move message: missing coordinates, gameId, sender, or receiver', parsedData);
-                        return;
-                    }
-                    console.log('Move sent: ', parsedData.coordinates, 'game id: ', parsedData.gameId, 'from player: ', parsedData.sender);
-                    const targetWsSendMove = players.get(parsedData.receiver);
-                    if (targetWsSendMove && targetWsSendMove.readyState === WebSocket.OPEN) {
-                        targetWsSendMove.send(JSON.stringify(parsedData));
-                    } else {
-                        console.log('Player not connected or WebSocket not open');
-                    }
-                    break;           
-                case 'move':
-                    if (!parsedData.coordinates || !parsedData.gameId || !parsedData.sender || !parsedData.receiver) {
-                        console.error('Invalid move message: missing coordinates, gameId, sender, or receiver', parsedData);
-                        return;
-                    }
-                    console.log('Move received: ', parsedData);
-                    console.log('Sending move to player: ', parsedData.receiver);
-                    const targetWs = players.get(parsedData.receiver);
-                    if (targetWs && targetWs.readyState === WebSocket.OPEN) {
-                        targetWs.send(JSON.stringify(parsedData));
-                    } else {
-                        console.log('Player not connected or WebSocket not open');
-                    }
-                    break;
-                default:
-                    console.log('Unknown message type: ', parsedData);
-            }
-        } catch (e) {
-            console.error('Error handling message:', e, 'Parsed data:', parsedData);
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: `No game found with ID "${gameId}"` });
+        return;
+    }
+
+    game.players = game.players.filter((player) => player !== socket);
+
+    if (game.players.length === 0) {
+        games.delete(gameId);
+    } else {
+        game.players.forEach((player) =>
+            sendMessage(player, { type: 'playerLeft', gameId, playerCount: game.players.length }),
+        );
+    }
+
+    sendMessage(socket, { type: 'leftGame', gameId });
+}
+
+/**
+ * Maneja la desconexión de un jugador.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ */
+function handleDisconnect(socket) {
+    for (const gameId of games.keys()) {
+        const game = games.get(gameId);
+        if (game.players.includes(socket)) {
+            handleLeaveGame(socket, gameId);
+            break;
         }
+    }
+}
+
+/**
+ * Maneja los mensajes recibidos a través de la conexión WebSocket.
+ *
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {Object} message - El mensaje recibido.
+ */
+function handleMessage(socket, message) {
+    switch (message.type) {
+        case 'connection':
+            sendMessage(socket, { type: 'connection', message: 'Connected to server' });
+            break;
+        case 'create-game':
+            handleCreateGame(socket, message.playerId);
+            break;
+        case 'join-game':
+            handleJoinGame(socket, message.gameId, message.playerId);
+            break;
+        case 'move':
+            handleMove(socket, message.gameId, message.coordinates);
+            break;
+        case 'leave-game':
+            handleLeaveGame(socket, message.gameId);
+            break;
+        default:
+            sendMessage(socket, { type: 'error', message: 'Unknown message type' });
+            console.error(`Unknown message type: ${message.type}`);
+    }
+}
+
+// Inicia el servidor WebSocket
+const wsServer = new WebSocketServer({ port: 8080 });
+
+wsServer.on('connection', (ws) => {
+    ws.on('message', (data) => {
+        const message = JSON.parse(data);
+        handleMessage(ws, message);
     });
 
     ws.on('close', () => {
-        try {
-            for (const [playerId, clientWs] of players.entries()) {
-                if (clientWs === ws) {
-                    players.delete(playerId);
-                    break;
-                }
-            }
-        } catch (e) {
-            console.error('Error handling close event:', e);
-        }
+        handleDisconnect(ws);
     });
 
     ws.on('error', (error) => {

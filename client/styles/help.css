@@ -340,7 +340,7 @@ body {
     background: #0FC2C0;
 }
 
-.battleship-board-0, .battleship-board-1, .battleship-board-2, .battleship-board-3, .battleship-board-4 {
+.battleship-board{
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(11, 1fr);

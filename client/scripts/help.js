@@ -1,53 +1,40 @@
 let shipCount = 0;
 let ships = new Map();
-let currentGameId=-777;
-let inGameLobby=false;
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('register');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const deck = document.getElementById('deck');
-        const placedShips = document.getElementById('placed-ships');
-        deck.style.display = 'block';
-        placedShips.style.display = 'block';
-        createTable(`battleship-board-0`, 'P1');
-        form.style.display = 'none';
-    });
-});
-function createTable(name, userName, gameMode){
+let currentGameId = -777;
+let inGameLobby = false;
+let players = new Map();
+function createTable(userName) {
     const boards = document.getElementById('tables');
     const board = document.createElement('div');
-    board.className = name;
-    for(let i = 0; i < 11; i++){
+    board.setAttribute('data-player', userName);
+    board.className = 'battleship-board';
+    for (let i = 0; i < 11; i++) {
         const cell = document.createElement('div');
         cell.className = "border";
-        if(i == 0){
-            cell.textContent = userName;
-        }else{
-            cell.textContent = i-1;
-        }
-        cell.id = i-1;
+        i == 0 ? cell.textContent = '' : cell.textContent = i - 1;
+        cell.id = i - 1;
         board.appendChild(cell);
     }
-    for (let i = 0; i < 10; i++) { 
-        const rowHeader = document.createElement('div'); 
-        rowHeader.className = 'border'; 
-        rowHeader.id = i; 
-        rowHeader.textContent = i; 
-        board.appendChild(rowHeader); 
-        for (let j = 0; j < 10; j++) { 
-            cell = document.createElement('div'); 
-            cell.className = 'position'; 
-            cell.id = i.toString() + j.toString();
-            board.appendChild(cell); 
-        } 
+    for (let i = 0; i < 10; i++) {
+        const rowHeader = document.createElement('div');
+        rowHeader.className = 'border';
+        rowHeader.id = i;
+        rowHeader.textContent = i;
+        board.appendChild(rowHeader);
+        for (let j = 0; j < 10; j++) {
+            cell = document.createElement('div');
+            cell.className = "position";
+            cell.setAttribute('data-player', userName);
+            cell.setAttribute('data-row', i);
+            cell.setAttribute('data-col', j);
+            board.appendChild(cell);
+        }
     }
-    board.id = name;
-    console.log(board.id);
     boards.appendChild(board);
+    console.log('Table created for', userName);
+    console.log(board);
 }
-document.getElementById('ship-placement-form').addEventListener('submit', function(event) {
+document.getElementById('ship-placement-form').addEventListener('submit', function (event) {
     event.preventDefault();
     const shipType = document.getElementById('ship-type').value;
     const startCoordinates = document.getElementById('start-coordinates').value;
@@ -55,16 +42,14 @@ document.getElementById('ship-placement-form').addEventListener('submit', functi
     console.log('Ship type:', shipType);
     console.log('Start coordinates:', startCoordinates);
     console.log('Direction:', direction);
-    placeShip(0, shipType, startCoordinates, direction);
+    placeShip(shipType, startCoordinates, direction, 1);
 });
 
-function placeShip(id, shipType, startCoordinates, direction) {
-    const board = document.getElementById(`battleship-board-${id}`);
+function placeShip(shipType, startCoordinates, direction, time) {
     const startRow = parseInt(startCoordinates[0]);
     const startCol = parseInt(startCoordinates[1]);
     const shipLength = parseInt(shipType);
-    const cells = board.getElementsByClassName('position');
-
+    const board = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     if (direction == 0 && (startCol + shipLength > 10)) {
         alert('El barco está fuera de los límites horizontales.');
         return;
@@ -74,60 +59,70 @@ function placeShip(id, shipType, startCoordinates, direction) {
         return;
     }
     try {
-        // Validate and place the ship
         for (let i = 0; i < shipLength; i++) {
-            let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
-            if (!cells[currentIndex] || cells[currentIndex].classList.contains('ship')) {
+            const row = direction == 0 ? startRow : startRow + i;
+            const col = direction == 0 ? startCol + i : startCol;
+            const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+
+            if (!cell) {
+                alert(`Cell not found at row ${row}, col ${col}`);
+                return;
+            }
+            if (cell.classList.contains('ship')) {
                 alert('El barco interfiere con otro barco existente o está fuera de los límites.');
                 return;
             }
         }
         for (let i = 0; i < shipLength; i++) {
-            let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
-            if (cells[currentIndex]) {
-                cells[currentIndex].classList.add('ship');
-            }
+            const row = direction == 0 ? startRow : startRow + i;
+            const col = direction == 0 ? startCol + i : startCol;
+            const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+            cell.classList.add('ship');
+
         }
-        const COORD = `${startRow}${startCol}`;
-        ships.set(startCoordinates, {
-            startCoordinates: COORD,
-            direction: direction,
-            length: shipLength
-        });
+        shipCount++;
 
-        const placedShips = document.getElementById('placed-ships');
-        const listItem = document.createElement('li');
-        listItem.textContent = `${shipType} casillas en ${startCoordinates} ${direction == 0 ? 'horizontal' : 'vertical'}`;
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Eliminar';
-        deleteBtn.addEventListener('click', function() {
-            deleteShip(shipType, startCoordinates, direction);
-            listItem.remove();
-            shipTypeSelect.add(new Option(`${shipType} casillas`, shipType));
-            
-        });
-        listItem.appendChild(deleteBtn);
-        placedShips.appendChild(listItem);
+        if (time == 1) {
+            checkShips();
+            const COORD = `${startRow}${startCol}`;
+            ships.set(startCoordinates, {
+                startCoordinates: COORD,
+                direction: direction,
+                length: shipLength
+            });
+            const placedShips = document.getElementById('placed-ships');
+            const listItem = document.createElement('li');
+            listItem.textContent = `${shipType} casillas en ${startCoordinates} ${direction == 0 ? 'horizontal' : 'vertical'}`;
 
-        const shipTypeSelect = document.getElementById('ship-type');
-        shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Eliminar';
+            deleteBtn.addEventListener('click', function () {
+                deleteShip(shipType, startCoordinates, direction);
+                listItem.remove();
+                shipTypeSelect.add(new Option(`${shipType} casillas`, shipType));
+            });
+            listItem.appendChild(deleteBtn);
+            placedShips.appendChild(listItem);
+
+            const shipTypeSelect = document.getElementById('ship-type');
+            shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
+        }
     } catch (error) {
         console.error('Error placing ship:', error);
         alert('Ocurrió un error al colocar el barco. Por favor, inténtelo de nuevo.');
     }
 }
-function deleteShip(id, shipType, startCoordinates, direction) {
-    const board = document.getElementById(`battleship-board-${id}`);
+function deleteShip(shipType, startCoordinates, direction) {
+    const board = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const startRow = parseInt(startCoordinates[0]);
     const startCol = parseInt(startCoordinates[1]);
     const shipLength = parseInt(shipType);
-    const cells = board.getElementsByClassName('position');
-
     for (let i = 0; i < shipLength; i++) {
-        let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
-        if (cells[currentIndex]) {
-            cells[currentIndex].classList.remove('ship');
+        const row = direction == 0 ? startRow : startRow + i;
+        const col = direction == 0 ? startCol + i : startCol;
+        const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+        if (cell) {
+            cell.classList.remove('ship');
         }
     }
     ships.delete(startCoordinates);
@@ -140,74 +135,43 @@ function checkShips() {
     if (shipCount == 5) {
         confirmButton.style.display = 'block';
         addButton.style.display = 'none';
+        console.log("Ships: ", ships);
     } else {
         confirmButton.style.display = 'none';
         addButton.style.display = 'block';
     }
 }
 
-document.getElementById('confirm-button').addEventListener('click', function() {
+document.getElementById('confirm-button').addEventListener('click', function () {
+    console.log('Confirm button clicked');
     document.getElementById('deck').style.display = 'none';
     document.getElementById('placed-ships').style.display = 'none';
-    const playerCount = parseInt(document.querySelector('input[name="player"]:checked').value);
-
-    const tables = document.getElementById('tables');
-    console.log(tables);
-    tables.innerHTML = '';
-    shipCount = 0;
-    loadTables(playerCount, ships);
+    console.log(players);
+    console.log("Ships map: ", ships);
+    loadTables(players);
 });
 
-function updateBoard(boardId, boardData) {
-    const board = document.getElementById(boardId);
-    if (!board) return;
-    const cells = board.getElementsByClassName('position');
-    boardData.forEach((cellData, index) => {
-        if (cellData === 1) {
-            cells[index].classList.add('ship');
-        } else {
-            cells[index].classList.remove('ship');
-        }
-    });
-}
-function loadTables(playerCount, ships){
-    const board = document.getElementById(`battleship-board-0`);
-    if (board) {
-        const cells = board.getElementsByClassName('position');
-        for (let cell of cells) {
-            cell.classList.remove('ship');
-        }
-    }
-    for(let i = 0; i<playerCount; i++){
-        createTable(`battleship-board-${i+1}`, `P${i+1}`);
-        const BOARD = document.getElementById('battleship-board-'+(i+1));
-        if(BOARD){
-            const CELLS = BOARD.getElementsByClassName('position');
-            for(let cell of CELLS){
-                cell.classList.remove('ship');
+function loadTables(players) {
+    players.forEach((player, playerId) => {
+        if (playerId != userName) {
+            createTable(playerId);
+            const board = document.querySelector(`[data-player="${playerId}"]`);
+            if (board) {
+                const cells = board.querySelectorAll('[data-position]');
+                cells.forEach(cell => {
+                    cell.classList.remove('ship');
+                });
+            } else {
+                console.error('Board not found for player:', playerId);
             }
         }
-        if(i == 0){
-            const CELLS = BOARD.getElementsByClassName('position');
-            ships.forEach((ship) => {
-                const {length, direction, startCoordinates: coordinates} = ship; 
-                const startRow = parseInt(coordinates[0]);
-                const startCol = parseInt(coordinates[1]);
-                for (let i = 0; i < length; i++) {
-                    let currentIndex = direction == 0 ? `${startRow}${startCol + i}` : `${startRow + i}${startCol}`;
-                    if (CELLS[currentIndex]) {
-                        CELLS[currentIndex].classList.add('ship');
-                    }
-                }
-            })
-        }
-
-    }
+    });
 }
 
 function displayMove(coordinates) {
     console.log(coordinates);
-    const cell = document.getElementById(coordinates);
+    const { playerId, row, col } = coordinates;
+    const cell = document.querySelector(`[data-player-id="${playerId}"][data-row="${row}"][data-col="${col}"]`);
     if (cell) {
         const div = document.createElement('div');
         if (cell.classList.contains('ship')) {
@@ -225,64 +189,89 @@ function generatePlayerId() {
     return Math.floor(Math.random() * 1000);
 }
 let readyToConnectToServer = false;
-let mainUsername ='John Doe';
+let userName = 'John Doe';
 const playerId = generatePlayerId();
 const ws = new WebSocket('ws://localhost:8080');
-let playersOnline = 0;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const usernameForm = document.getElementById('main-username-form');
-    usernameForm.addEventListener('submit', function(event) {
+    usernameForm.addEventListener('submit', function (event) {
         event.preventDefault();
-        const newMainUsername = document.getElementById('main-username');
-        mainUsername=newMainUsername.value;
-        readyToConnectToServer=true;
-        console.log(`The main username now is ${mainUsername}`);
-        console.log(readyToConnectToServer);
-
-        console.log('Connected to server');
+        userName = document.getElementById('main-username').value;
+        readyToConnectToServer = true;
         const message = JSON.stringify({
             type: 'connection',
             playerId: playerId,
-            playerUsername: mainUsername
+            playerUsername: userName
         });
         ws.send(message);
-    
+        document.getElementById('inicio').style.display = 'none';
+        document.getElementById('lobby').style.display = 'block';
     });
 });
+
+document.getElementById('start-game').addEventListener('click', function (event) {
+    event.preventDefault();
+    document.getElementById('lobby').style.display = 'none';
+    document.getElementById('deck').style.display = 'block';
+    document.getElementById('placed-ships').style.display = 'block';
+    console.log("userName: ", userName);
+    createTable(userName);
+});
+
+
+
+
 
 const onlineGames = document.getElementById('online-games');
 const connectedPlayers = document.getElementById('connected-players');
 const connectedPlayersUl = document.getElementById('connected-players-ul');
 const matchId = document.getElementById('match-id');
-    
-ws.onmessage = function(event) {
+
+function addPlayerToList(playerId) {
+    const li = document.createElement('li');
+    li.textContent = playerId;
+    connectedPlayersUl.appendChild(li);
+}
+ws.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data);
         switch (data.type) {
-            case 'send-move':
+            case 'connection':
+                console.log('Connected to server:', data.message);
+                break;
+            case 'move':
                 console.log('Move received:', data);
                 console.log('Coordinates:', data.coordinates);
                 displayMove(data.coordinates);
                 break;
-            case 'gameCreated':
+            case 'create-game':
                 console.log('Game created with the id of', data.gameId);
                 console.log('Creator:', data.creatorId);
                 console.log('la data dice: ', data);
-                currentGameId=data.gameId;
-                inGameLobby=true;
+                currentGameId = data.gameId;
+                inGameLobby = true;
                 onlineGames.style = 'display: none;';
                 connectedPlayers.style = 'display: block;';
                 connectedPlayersUl.innerHTML = `<li>${data.creatorId}</li>`;
                 matchId.innerHTML += data.gameId;
+                players.set(data.creatorId, { playerId: data.creatorId });
+                console.log("Players map on create-game: ", players);
+                document.getElementById('create-game').style = 'display: none;';
+                document.getElementById('join-game').style = 'display: none;';
+                document.getElementById('start-game').style = 'display: block;';
+                document.getElementById('game-id').style = 'display: none;';
                 break;
             case 'join-game':
-                //if(playerId!==data.playerId){
-                console.log('A player with the id of', data.playerId ,'has joined the game!');
+                console.log('A player with the id of', data.playerId, 'has joined the game!');
                 console.log('la data dice: ', data);
-                connectedPlayersUl.innerHTML += `<li>${data.creatorId}</li>`;
-                //}
-                break;    
+                addPlayerToList(data.playerId);
+                players.set(data.playerId, { playerId: data.playerId });
+                document.getElementById('create-game').style = 'display: none;';
+                document.getElementById('join-game').style = 'display: none;';
+                document.getElementById('start-game').style = 'display: block;';
+                document.getElementById('game-id').style = 'display: none;';                
+                break;
             default:
                 console.log('Unknown message type:', data);
         }
@@ -295,11 +284,9 @@ function sendMessage() {
 
     document.getElementById('create-game').addEventListener('click', () => {
         console.log('click');
-        const id = generatePlayerId();
         const message = JSON.stringify({
             type: 'create-game',
-            playerId: playerId,
-            gameId: id
+            playerId: userName
         });
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(message);
@@ -312,7 +299,7 @@ function sendMessage() {
     document.getElementById('join-game').addEventListener('click', () => {
         const message = JSON.stringify({
             type: 'join-game',
-            playerId: playerId,
+            playerId: userName,
             gameId: gameIdInput.value
         });
         if (ws.readyState === WebSocket.OPEN) {
@@ -320,20 +307,21 @@ function sendMessage() {
             console.log('Sent:', message);
         } else {
             console.log('WebSocket is not open');
+            console.log(message);
         }
     });
     document.getElementById('send-move').addEventListener('click', () => {
         const message = JSON.stringify({
-            type: 'send-move',
+            type: 'move',
             coordinates: document.getElementById('move').value,
             sender: playerId,
             receiver: receiverPlayerId,
             gameId: gameIdInput.value
         });
-        if(ws.readyState === WebSocket.OPEN){
+        if (ws.readyState === WebSocket.OPEN) {
             ws.send(message);
             console.log('Sent: ', message);
-        }else {
+        } else {
             console.log('WebSocket is not open');
         }
     });
@@ -342,5 +330,3 @@ function sendMessage() {
 document.addEventListener('DOMContentLoaded', (event) => {
     sendMessage();
 });
-
-console.log(playerId)

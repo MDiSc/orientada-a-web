@@ -1,14 +1,4 @@
-/**
- * Este es un servidor de juego multijugador simple que utiliza WebSockets para la comunicación en tiempo real.
- * El servidor admite la creación de juegos, la unión a juegos existentes, el inicio de juegos, los movimientos de los
- * jugadores, el abandono de juegos y la gestión de errores.
- */
 
-/**
- * Registro de juegos activos.
- * Cada juego se identifica por un ID de sala único y contiene una lista de jugadores, un indicador de si el juego ha
- * comenzado y un índice de turno.
- */
 const games = {};
 
 /**
@@ -100,6 +90,10 @@ function handleJoinGame(socket, gameId) {
     }
     if (game.players.length >= 4) {
         sendMessage(socket, { type: 'error', message: 'Game is full' });
+        return;
+    }
+    if (game.players.includes(socket)) {
+        sendMessage(socket, { type: 'error', message: 'Player already in the game' });
         return;
     }
     game.players.push(socket);
