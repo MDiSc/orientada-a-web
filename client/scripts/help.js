@@ -212,6 +212,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.getElementById('start-game').addEventListener('click', function (event) {
     event.preventDefault();
+    const message = JSON.stringify({
+        type: 'start-game',
+        gameId: currentGameId
+    });
+    ws.send(message);
     document.getElementById('lobby').style.display = 'none';
     document.getElementById('deck').style.display = 'block';
     document.getElementById('placed-ships').style.display = 'block';
@@ -271,6 +276,12 @@ ws.onmessage = function (event) {
                 document.getElementById('join-game').style = 'display: none;';
                 document.getElementById('start-game').style = 'display: block;';
                 document.getElementById('game-id').style = 'display: none;';                
+                break;
+            case 'start-game':
+                console.log('The game has started!');
+                document.getElementById('lobby').style.display = 'none';
+                document.getElementById('deck').style.display = 'block';
+                document.getElementById('placed-ships').style.display = 'block';
                 break;
             default:
                 console.log('Unknown message type:', data);
