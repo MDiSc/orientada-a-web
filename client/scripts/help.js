@@ -135,6 +135,7 @@ function checkShips() {
     if (shipCount == 5) {
         confirmButton.style.display = 'block';
         addButton.style.display = 'none';
+        
         console.log("Ships: ", ships);
     } else {
         confirmButton.style.display = 'none';
@@ -146,6 +147,7 @@ document.getElementById('confirm-button').addEventListener('click', function () 
     console.log('Confirm button clicked');
     document.getElementById('deck').style.display = 'none';
     document.getElementById('placed-ships').style.display = 'none';
+    document.getElementById('send-moves-container').style.display = 'block';
     console.log(players);
     console.log("Ships map: ", ships);
     loadTables(players);
@@ -215,6 +217,7 @@ document.getElementById('start-game').addEventListener('click', function (event)
     document.getElementById('lobby').style.display = 'none';
     document.getElementById('deck').style.display = 'block';
     document.getElementById('placed-ships').style.display = 'block';
+    
     console.log("userName: ", userName);
     createTable(userName);
 });
