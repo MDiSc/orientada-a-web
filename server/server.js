@@ -93,6 +93,20 @@ function handleStartGame(socket, gameId) {
     console.log(`Game with ID: ${gameId} has started`);
 }
 
+function parseMove(move) {
+    if (move.length !== 2) {
+        console.error("Invalid move format");
+        return null;
+    }
+    const row = parseInt(move[0], 10);
+    const col = parseInt(move[1], 10);
+    if (isNaN(row) || isNaN(col)) {
+        console.error("Invalid move coordinates");
+        return null;
+    }
+    return { row, col };
+}
+
 /**
  * Maneja los movimientos de los jugadores.
  *
@@ -101,6 +115,7 @@ function handleStartGame(socket, gameId) {
  * @param {string} move - El movimiento del jugador.
  */
 function handleMove(socket, gameId, move) {
+    console.log(`Received move ${move} for game ${gameId}`, "Type of move: ", typeof(move));
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
@@ -110,13 +125,20 @@ function handleMove(socket, gameId, move) {
         sendMessage(socket, { type: 'error', message: 'Game not started' });
         return;
     }
-    if (game.players[game.turn] !== socket) {
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (game.players[game.turn] !== playerId) {
         sendMessage(socket, { type: 'error', message: 'Not your turn' });
         return;
     }
-    game.players.forEach((player) => {
-        if (player !== socket) {
-            sendMessage(player, { type: 'move', gameId, move });
+    const coordinates = parseMove(move);
+    if (!coordinates) {
+        sendMessage(socket, { type: 'error', message: 'Invalid move' });
+        return;
+    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            sendMessage(playerSocket, { type: 'move', gameId, move});
         }
     });
     sendMessage(socket, { type: 'move', gameId, move });
