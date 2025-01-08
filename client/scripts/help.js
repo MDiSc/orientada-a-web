@@ -177,21 +177,43 @@ function loadTables(players) {
 }
 
 function displayMove(coordinates) {
-    console.log(coordinates);
-    const { playerId, row, col } = coordinates;
-    const cell = document.querySelector(`[data-player-id="${playerId}"][data-row="${row}"][data-col="${col}"]`);
-    if (cell) {
-        const div = document.createElement('div');
-        if (cell.classList.contains('ship')) {
-            div.className = 'hit';
-        } else {
-            div.className = 'miss';
-        }
-        cell.appendChild(div);
-    } else {
-        console.error('Cell not found for coordinates:', coordinates);
+    if (!coordinates || coordinates.length !== 2) {
+        console.error("Error: coordinates is undefined or invalid");
+        return;
     }
+
+    const row = parseInt(coordinates[0], 10);
+    const col = parseInt(coordinates[1], 10);
+    if (isNaN(row) || isNaN(col)) {
+        console.error("Error: Invalid coordinates format");
+        return;
+    }
+
+    const positions = document.querySelectorAll('.position');
+    if (!positions.length) {
+        console.error("Error: No positions found");
+        return;
+    }
+    positions.forEach(position => {
+        const positionRow = parseInt(position.dataset.row, 10);
+        const positionCol = parseInt(position.dataset.col, 10);
+        if (positionRow === row && positionCol === col) {
+            if (position.querySelector('.hit') || position.querySelector('.miss')) {
+                return;
+            }
+            if (position.classList.contains('ship')) {
+                const hitDiv = document.createElement('div');
+                hitDiv.className = 'hit';
+                position.appendChild(hitDiv);
+            } else {
+                const missDiv = document.createElement('div');
+                missDiv.className = 'miss';
+                position.appendChild(missDiv);
+            }
+        }
+    });
 }
+
 
 function generatePlayerId() {
     return Math.floor(Math.random() * 1000);
@@ -233,9 +255,18 @@ document.getElementById('start-game').addEventListener('click', function (event)
     createTable(userName);
 });
 
-
-
-
+document.getElementById('send-moves-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const moveInput = event.target.querySelector('input[type="text"]').value;
+    console.log('Move input:', moveInput);
+    const message = JSON.stringify({
+        type: 'move',
+        coordinates: moveInput,
+        gameId: currentGameId
+    });
+    ws.send(message);
+    moveInput.value = '';
+});
 
 const onlineGames = document.getElementById('online-games');
 const connectedPlayers = document.getElementById('connected-players');
@@ -256,8 +287,8 @@ ws.onmessage = function (event) {
                 break;
             case 'move':
                 console.log('Move received:', data);
-                console.log('Coordinates:', data.coordinates);
-                displayMove(data.coordinates);
+                console.log('Coordinates:', data.move, "Type: ", typeof(data.move));
+                displayMove(data.move);
                 break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
