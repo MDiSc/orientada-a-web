@@ -78,6 +78,10 @@ function placeShip(shipType, startCoordinates, direction, time) {
             const col = direction == 0 ? startCol + i : startCol;
             const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
             cell.classList.add('ship');
+            cell.classList.add(`ship-${shipLength}`);
+                if (direction==0){
+                    cell.classList.add('horizontal');
+                }
 
         }
         shipCount++;
@@ -123,6 +127,8 @@ function deleteShip(shipType, startCoordinates, direction) {
         const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
         if (cell) {
             cell.classList.remove('ship');
+            cell.classList.remove(`ship-${shipLength}`);
+            cell.classList.remove('horizontal');
         }
     }
     ships.delete(startCoordinates);

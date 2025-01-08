@@ -308,6 +308,7 @@ form#register input[type="submit"]:hover {
 }
 
 .container {
+    margin: 0 auto;
     display: flex;
     flex-wrap: nowrap;
     gap: 20px;
@@ -467,6 +468,8 @@ body {
     border: 1px solid #405aa1;
     position: relative;
     border-radius: 50%;
+    width: 20px;
+    height: 20px;
 }
 .position:hover {
     background-color: #354161;
@@ -484,13 +487,40 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white;
     border-radius: 50%;
+    background-size: 230px;
     width: 20px;
     height: 20px;
     position: relative;
     pointer-events: none;
 }
+
+.ship-5{
+    background-image: url(/client/media/Boat\ Free\ Fast\ Moving\ Green.png);
+    animation: sprite-animation 1.7s steps(1)infinite;
+}
+.ship-4{
+    background-image: url(/client/media/Boat\ Free\ Fast\ Moving\ Purple.png);
+    animation: sprite-animation 1.7s steps(1)infinite;
+}
+.ship-3{
+    background-image: url(/client/media/Boat\ Free\ Fast\ Moving\ Redish.png);
+    animation: sprite-animation 1.7s steps(1)infinite;
+}
+.ship-2{
+    background-image: url(/client/media/Boat\ free\ Fast\ Moving.png);
+    animation: sprite-animation 1.7s steps(1)infinite;
+}
+.horizontal{
+    transform: rotateZ(-90deg);
+}
+@keyframes sprite-animation {
+    0% { background-position: 0 0; }
+    25% { background-position: -75px 0px; }
+    50% { background-position: -150px 0px; }
+    75% { background-position: 0px -75px; }
+    100% { background-position: 0 0; }
+  }
 
 .position .ship {
     width: 100%;
