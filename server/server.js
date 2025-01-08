@@ -69,6 +69,29 @@ function handleJoinGame(socket, gameId, playerId) {
         }
     });
 }
+function handleStartGame(socket, gameId) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    if (game.started) {
+        sendMessage(socket, { type: 'error', message: 'Game already started' });
+        return;
+    }
+    if (game.players.length < 2) {
+        sendMessage(socket, { type: 'error', message: 'Not enough players to start' });
+        return;
+    }
+    game.started = true;
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket) {
+            sendMessage(playerSocket, { type: 'start-game', gameId });
+        }
+    });
+    console.log(`Game with ID: ${gameId} has started`);
+}
 
 /**
  * Maneja los movimientos de los jugadores.
@@ -162,6 +185,9 @@ function handleMessage(socket, message) {
             break;
         case 'join-game':
             handleJoinGame(socket, message.gameId, message.playerId);
+            break;
+        case 'start-game':
+            handleStartGame(socket, message.gameId);
             break;
         case 'move':
             handleMove(socket, message.gameId, message.coordinates);
