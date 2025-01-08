@@ -9,28 +9,37 @@
         <link rel="stylesheet" href="..\styles\help.css">
     </head>
     <body>
-        <audio src="..\media\wavesounds.mp3" autoplay loop></audio>
+        <audio src="..\media\bo2-main-theme.mp3" autoplay loop></audio>
+        <audio id="hover-sound" src="..\media\hover.mp3"></audio>
+        <audio id="click-medium-sound" src="..\media\medium-click-selection.mp3"></audio>
+        <video autoplay loop muted id="video_background">
+            <source src="../media/bg-video.webm" type="video/webm">
+        </video>
+        
         <header>
-            <h1>BATALLA NAVAL</h1>
             <nav>
+                <h1>BATALLA NAVAL</h1>
                 <ul class="menu-hover-fill flex flex-col items-start leading-none text-2xl uppercase space-y-4">
-                    <li><a href="#inicio" data-text="inicio">Inicio</a></li>
-                    <li><a href="#log-in" data-text="iniciar-sesion">Iniciar sesión</a></li>
-                    <li><a href="#registro-usuario" data-text="registrar">Registrar Usuario</a></li>
-                    <li><a href="#jugar" data-text="jugar">Jugar</a></li>
-                    <li><a href="#instrucciones" data-text="instrucciones">Instrucciones</a></li>
-                    <li><a href="#salir" data-text="salir">Salir</a></li>
+                    <li><a href="#jugar" data-text="jugar">JUGAR</a></li>
+                    <li><a href="#instrucciones" data-text="instrucciones">INSTRUCCIONES</a></li>
+                    <li><a href="#salir" data-text="salir">SALIR</a></li>
                 </ul>
             </nav>
         </header>
         <main>
             <section id="inicio">
-                <h2 id="inicio">Inicio</h2>
-                <p>Este es un juego de batalla naval</p>
+                <h2 id="inicio-h2">INICIO</h2>
+                <hr/>
+                <b>CADA DISPARO CUENTA, CADA DECISIÓN PUEDE SER LA ÚLTIMA.</b>
+                <p>La estrategia es la clave y la astucia tu mejor arma. La flota enemiga se oculta en las profundidades del océano, y solo tú puedes desvelar su ubicación.</p> 
+                
+                <p>¿Tienes lo que se necesita para hundir a tu enemigo antes de que él te hunda a ti?</p>
+                <hr/>
+                <b>¡Comienza la misión! La batalla está a punto de estallar</b>
                 <p>Para empezar a jugar, por favor introduce tu nombre de usuario</p>
                 <form id="main-username-form">
                     <input type="text" id="main-username" required/>
-                    <input type="submit" value="Hecho">
+                    <input type="submit" value="JUGAR">
                 </form>
             </section>
             
@@ -47,10 +56,10 @@
                 <input type="submit" value="Jugar" />           
             </form>
           
-            <h2 id="jugar">Jugar</h2>
+            <h2 id="jugar">JUGAR</h2>
             <section id="lobby" style="display: none;">
-                <h3>Lobby</h3>
-                <b id="match-id">AYUDA JODER el id de la sala es </b>
+                <h3>LOBBY</h3>
+                <b id="match-id">ID de sala: </b>
                 <div id="lobby-elements" class="container">
                   <div id="game-elements">
                     <div id="game-options">
@@ -83,7 +92,7 @@
               </section>
             <div class="container">
                 <div class="deck" id="deck" style="display: none;">
-                    <h3>Colocar Barcos</h3>
+                    <h3>COLOCAR BARCOS</h3>
                     <form id="ship-placement-form">
                         <label for="ship-type">Tipo de Barco:</label>
                         <select id="ship-type" name="ship-type" required>
@@ -108,19 +117,19 @@
 
                 </div>
                 <div id="placed-ships" style="display: none;">
-                    <h3>Barcos Colocados</h3>
+                    <h3>BARCOS COLOCADOS</h3>
                     <ul id="placed-ships-list"></ul>
             </div>
         </main>
         <aside id="instrucciones">
-            <h2>Instrucciones</h2>
+            <h2>INSTRUCCIONES</h2>
             <div id="container-for-instructions">
                 <div class="box">
-                    <h3>1. Objetivo del Juego</h3>
+                    <h3>1. OBJETIVO DEL JUEGO</h3>
                     <p>Hundir toda la flota enemiga antes que tu oponente hunda la tuya.</p>
                 </div>
                 <div class="box">
-                    <h3>2. Componentes del Juego</h3>
+                    <h3>2. COMPONENTES DEL JUEGO</h3>
                     <p>Tablero de juego para cada jugador (10x10 cuadrículas)...</p>
                     <ul class="lista-barcos">
                         <li>1 portaaviones (5 casillas)</li>
@@ -131,34 +140,34 @@
                     </ul>
                 </div>
                 <div class="box">
-                    <h3>3. Preparación</h3>
+                    <h3>3. PREPARACIÓN</h3>
                     <p>Cada jugador coloca sus barcos en el tablero de manera oculta al oponente...</p>
                 </div>
                 <div class="box">
-                    <h3>4. Turnos</h3>
+                    <h3>4. TURNOS</h3>
                     <p>Los jugadores se turnan para "disparar" a las casillas del oponente...</p>
                 </div>
                 <div class="box">
-                    <h3>5. Impactos</h3>
+                    <h3>5. IMPACTOS</h3>
                     <p>Si un jugador acierta un disparo en una casilla que contiene parte de un barco enemigo...</p>
                 </div>
                 <div class="box">
-                    <h3>6. Hundimiento</h3>
+                    <h3>6. HUNDIMIENTO</h3>
                     <p>Cuando todas las casillas de un barco han sido impactadas, el barco se considera "hundido"...</p>
                 </div>
                 <div class="box">
-                    <h3>7. Victoria</h3>
+                    <h3>7. VICTORIA</h3>
                     <p>El primer jugador en hundir toda la flota enemiga gana la partida.</p>
                 </div>
                 <div class="box">
-                    <h3>8. Duración del Turno</h3>
+                    <h3>8. DURACIÓN DEL TURNO</h3>
                     <p>Se debe establecer un límite de tiempo para cada turno de 60 segundos</p>
                 </div>
             </div>
         </aside>
               
         <footer>
-            <h2 id="salir">Salir</h2>
+            <h2 id="salir">SALIR</h2>
             <p>Gracias por jugar</p>
             <a href="https://www.youtube.com/watch?v=nCtn6igpgP4">Pulse aqui para salir.</a>
         </footer>

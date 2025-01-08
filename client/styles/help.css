@@ -2,15 +2,20 @@ html{
     font-family: 'Bahnschrift';
 }
 
+@font-face {
+    font-family: 'PuristaMedium';
+    src: url('../media/PuristaMedium.woff');
+}
 section#lobby{
     display:flex;
     flex-direction: column;
     justify-content: center;
     background-color: #023535;
     background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    height: calc(70vh - 72px);
     border-radius: 1%;
-    background-image: url(/client/media/bg-img-3p.jpg);
-    background-size: contain;
+    background-image: url('/client/media/lobby-bg.png');
+    background-size: cover;
     background-position: 55%;
     -webkit-box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 25px 7px rgba(0,0,0,1);
@@ -66,17 +71,23 @@ div#connected-players-header,div#online-games-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #5329c7;
+    background-color: #e28250;
     border-top-left-radius: 2.5%;
     border-top-left-radius: 2.5%;
     -webkit-box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
             box-shadow: inset 0px 0px 20px -1px rgba(0,0,0,1);
-    border-bottom: 3px solid #5329c7;
+    border-bottom: 3px solid #e28250;
 }
 
 div#connected-players b,div#online-games b{
-    margin: 5px;
+    margin: 7px;
+}
+
+div#game-elements{
+    display: flex;
+    flex-direction: column;
+    gap:7px;
 }
 
 div#game-options,div#game-operations{
@@ -84,6 +95,7 @@ div#game-options,div#game-operations{
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: start;
+    gap: 5px;
     
 }
 
@@ -102,8 +114,10 @@ div#game-options,div#game-operations{
 }
 
 #game-options button{
-    background-color: #016666;
-    color:lightgray;
+    background-color: #20273a;
+    
+    transition: background-color ease 0.3s, border-left ease 0.3s, border-right ease 0.3s;
+    color:white;
 }
 
 
@@ -112,7 +126,24 @@ div#game-options,div#game-operations{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-color: #8c00ff;
+    background-color: #e28250;
+    border-left: 2px solid #4d9393; 
+    border-right: 2px solid #4d9393; 
+    color: rgb(255, 255, 255);
+    align-items: center;
+    -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
+}
+
+#game-options button:active{
+   
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #fc9e6b;
+    border-left: 2px solid #ffffff; 
+    border-right: 2px solid #ffffff; 
     color: rgb(255, 255, 255);
     align-items: center;
     -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
@@ -126,6 +157,8 @@ div#game-options,div#game-operations{
     flex-wrap: wrap;
     justify-content: center;
     background-color: #ffffff;
+    border-left: 2px solid #4d9393; 
+    border-right: 2px solid #4d9393;
     color: rgb(0, 0, 0);
     align-items: center;
     -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
@@ -134,11 +167,10 @@ div#game-options,div#game-operations{
 }
 
 
-section#inicio,
-header a,
 form#register,
+.position,
 .deck, 
-.box
+.box,#shipl-placement-form,#placed-ships
 {
     -webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
             box-shadow: 0px 0px 14px 0px rgba(0,0,0,1);
@@ -190,10 +222,10 @@ form#register input[type="submit"]:hover {
 
 
 .deck {
-    border: 2px solid #008F8C;
+    border: 2px solid #405aa1;
     padding: 10px;
     margin: 10px 0;
-    background-color: #023535;
+    background-color: #20273a;
     border-radius: 10px;
     width: 250px;
 }
@@ -217,14 +249,14 @@ form#register input[type="submit"]:hover {
 #ship-placement-form select {
     padding: 5px;
     margin-top: 5px;
-    border: 1px solid #008F8C;
+    border: 1px solid #405aa1;
     border-radius: 5px;
 }
 
 #ship-placement-form input[type="submit"] {
     margin-top: 20px;
     padding: 10px;
-    background-color: #0CABA8;
+    background-color: #405aa1;
     color: white;
     border: none;
     border-radius: 5px;
@@ -232,13 +264,13 @@ form#register input[type="submit"]:hover {
 }
 
 #ship-placement-form input[type="submit"]:hover {
-    background-color: #008F8C;
+    background-color: #5877cc;
 }
 #placed-ships {
-    border: 2px solid #008F8C;
+    border: 2px solid #405aa1;
     padding: 20px;
     margin: 20px 0;
-    background-color: #023535;
+    background-color: #20273a;
     border-radius: 10px;
     width: 250px;
     list-style-type: none;
@@ -255,7 +287,7 @@ form#register input[type="submit"]:hover {
     padding: 10px;
     margin: 10px 0;
     background-color: white;
-    border: 1px solid #008F8C;
+    border: 1px solid #405aa1;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
@@ -264,7 +296,7 @@ form#register input[type="submit"]:hover {
 
 #placed-ships li button {
     padding: 5px 10px;
-    background-color: #0CABA8;
+    background-color: #405aa1;
     color: white;
     border: none;
     border-radius: 5px;
@@ -272,7 +304,7 @@ form#register input[type="submit"]:hover {
 }
 
 #placed-ships li button:hover {
-    background-color: #008F8C;
+    background-color: #4b6ac0;
 }
 
 .container {
@@ -282,12 +314,17 @@ form#register input[type="submit"]:hover {
 }
 
 main {
+    width: auto;
+    margin: 0;
+    margin-top: 72px;
     flex: 2 2 60%;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-#jugar {
+#jugar,#instrucciones,#salir {
+    color: white;
+    text-shadow: 0px 0px 5px rgb(190, 190, 190);
     text-align: center;
 }
 
@@ -296,13 +333,6 @@ main {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-}
-
-
-aside#instrucciones h2 {
-    width: 100%;
-    text-align: center;
-    color: white;
 }
 
 #container-for-instructions {
@@ -316,9 +346,9 @@ aside#instrucciones h2 {
 aside#instrucciones .box { 
     padding: 15px; 
     margin-bottom: 20px; 
-    border: 1px solid #008F8C; 
+    border: 1px solid #e28250; 
     border-radius: 8px; 
-    background-color: #023535; 
+    background-color: #20273ada; 
     width: fit-content;
     height: 200px;
     text-align: center;
@@ -326,18 +356,87 @@ aside#instrucciones .box {
 }
 
 section#inicio {
-    background-color: #023535;
+    text-shadow: 0px 0px 7px rgb(0, 0, 0);
     padding: 20px;
     text-align: center;
-    width: fit-content;
-    height: fit-content;
-    margin: 0 auto;
-    border-radius: 10px;
+    font-size: 120%;
+    width: 97%;
+    height: calc(100vh - 72px);
+    margin: 0;
     color: white;
+    background-image: url('../media/Promoscreen_6.2_Mobile_Release_1200x600_WOWSL.jpg.fcd7029cc0d20241b0d5a702425f7050.jpg');
+    background-size: cover;
+    transition: max-height 0.5s ease; /* Transición suave */
+    overflow: hidden; /* Oculta el contenido que excede la altura */
+    max-height: 1000px; /* Altura máxima inicial (ajusta según sea necesario) */
+
+    -webkit-box-shadow: inset 0px 0px 250px 0px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 250px 0px rgba(0,0,0,1);
+            box-shadow: inset 0px 0px 250px 0px rgba(0,0,0,1);
+}
+section#inicio form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap:15px
 }
 
+#inicio input[type="text"]{
+    font-family: 'Bahnschrift';
+    font-weight: bold;
+    border-radius:7px;
+    padding: 0.7%;
+    transition: background ease 0.3s;
+    -webkit-box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+}
+
+#inicio input[type="text"]:hover{
+    font-family: 'Bahnschrift';
+    font-weight: bold;
+    background: linear-gradient(0deg, rgba(191,191,191,1) 0%, rgba(255,255,255,1) 25%, rgba(254,254,254,1) 75%, rgba(191,191,191,1) 100%);
+    border-radius:7px;
+    padding: 0.7%;
+    -webkit-box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+}
+
+#inicio input[type="submit"]{
+    font-size: large;
+    font-family: 'Bahnschrift';
+    font-weight: bold;
+    background: linear-gradient(0deg, rgba(139,49,0,1) 0%, rgba(255,89,0,1) 45%, rgba(255,89,0,1) 85%);
+    color: white;
+    border: none;
+    border-radius:7px;
+    padding: 0.7%;
+    transition: border-left ease 0.3s,border-right ease 0.3s,background ease 1.3s;
+    -webkit-box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 22px 0px rgba(0,0,0,1);
+}
+#inicio input[type="submit"]:hover{
+background: linear-gradient(0deg, rgba(139,49,0,1) 0%, rgb(243, 117, 50) 45%, rgb(233, 83, 2) 85%);
+border-left: 3px solid  rgb(243, 117, 50);
+border-right: 3px solid rgb(243, 117, 50);
+}
+
+#inicio-h2{
+    font-size: 200%;
+}
+
+#inicio.collapsed {
+    max-height: 0; /* Altura mínima cuando está colapsado */
+}
+
+
 body {
-    background: #0FC2C0;
+    margin: 0;
+   /*background: #0FC2C0;*/
+   background: linear-gradient(45deg, rgb(136, 0, 0) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
 }
 
 .battleship-board{
@@ -361,16 +460,16 @@ body {
     border-radius: 50%;
 }
 .position, .border {
-    background-color: #015958;
+    background-color: #20273a;
     color: white;
     padding: 10px;
     text-align: center;
-    border: 1px solid #008F8C;
+    border: 1px solid #405aa1;
     position: relative;
     border-radius: 50%;
 }
 .position:hover {
-    background-color: #0CABA8;
+    background-color: #354161;
     -webkit-box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
     box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
     box-shadow: inset 0px 0px 6px -1px rgba(0,0,0,1);
@@ -423,62 +522,104 @@ footer a {
     text-decoration: none;
     font-weight: bold;
     padding: 10px 20px;
-    background-color: #023535;
+    background-color: #20273a;
+    transition: background-color ease 0.3s;
     border-radius: 4px;
     -webkit-box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
-       box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
             box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
 }
 
 footer a:hover {
-    background-color: #008F8C;
+    background-color: rgb(151, 108, 91);
 }
 header {
-    background-color: transparent; 
-    padding: 20px;
+    margin: 0;
+    padding-left: 2%; 
+    background-color: rgb(31, 31, 31);
     color: white;
     text-align: center;
+    width: 100%; 
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    -webkit-box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 7px 0px rgba(0,0,0,1);
 }
-
-header a:hover{
-    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
-       box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
-            box-shadow: 0px 0px 5px 0px rgba(0,0,0,1);
+header nav{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:2%;
+    
 }
 
 h1{
-    font-family: 'Century Gothic';
+    font-size: 25px;
+    font-family: 'PuristaMedium';
     text-shadow: 0px 0px 14px rgb(0, 0, 0);
     transition: text-shadow ease 0.7s;
+    padding-right: 2%;
 }
 
 h1:hover{
-    text-shadow: 0px 0px 25px rgb(68, 0, 255);
+    
+    text-shadow: 0px 0px 25px rgb(255, 166, 0);
 }
 
+h2,h3{
+    font-family: 'PuristaMedium';
+}
+
+nav{
+    height: 100%;
+}
 
 nav ul {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
     list-style-type: none;
     padding: 0;
-    margin: 10px 0 0;
+    margin: 5px 0 0;
     display: flex;
-    justify-content: center;
     gap: 20px;
+    height: 100%;
 }
 
 nav ul li a {
+    font-family: 'Bahnschrift SemiCondensed';
     color: white;
     text-decoration: none;
     font-size: 18px;
-    padding: 10px 20px;
-    background-color: #023535;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+    padding: 10px 5px;
+    background-color: transparent;
+    transition: border-left 0.3s ease, border-right 0.3s ease, color 0.3s ease; 
+    align-items: center;
+    height: 100%;
 }
 
 nav ul li a:hover {
-    background-color: #0CABA8;
+    color: #a1c7ff;
+    border-left: 1px solid #2a7af3;
+    border-right: 1px solid #2a7af3;
+}
+
+nav ul li a:active {
+    color: #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+}
+
+#video_background {
+    position: fixed; /* Fijo para que se mantenga en su lugar */
+    right: 0;
+    bottom: 0;
+    min-width: 100%; /* Asegura que cubra todo el ancho */
+    min-height: 100%; /* Asegura que cubra toda la altura */
+    width: auto; /* Ajusta automáticamente */
+    height: auto; /* Ajusta automáticamente */
+    z-index: -1; /* Coloca el video detrás del contenido */
 }

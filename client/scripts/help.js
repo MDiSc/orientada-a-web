@@ -330,3 +330,44 @@ function sendMessage() {
 document.addEventListener('DOMContentLoaded', (event) => {
     sendMessage();
 });
+
+//codiguito para el inicio
+
+let isCollapsed = false; // Estado del colapso
+
+window.addEventListener('wheel', function(event) {
+    const section = document.getElementById('inicio');
+    
+    if (event.deltaY > 0 && !isCollapsed) { // Si se hace scroll hacia abajo
+        section.classList.add('collapsed'); // Colapsa la sección
+        isCollapsed = true; // Cambia el estado
+    } else if (event.deltaY < 0 && isCollapsed) { // Si se hace scroll hacia arriba
+        section.classList.remove('collapsed'); // Expande la sección
+        isCollapsed = false; // Cambia el estado
+    }
+});
+
+// Obtener el elemento de audio
+const hoverSound = document.getElementById('hover-sound');
+const clickSound = document.getElementById('click-medium-sound')
+
+// Obtener todos los enlaces dentro de la lista
+const menuItems = document.querySelectorAll('.menu-hover-fill a, button, input, footer a');
+
+// Función para reproducir sonido
+function playSound() {
+    hoverSound.currentTime = 0; // Reiniciar el sonido para que se reproduzca desde el inicio
+    hoverSound.play(); // Reproducir el sonido
+}
+
+// Función para reproducir sonido de clic
+function playClickSound() {
+    clickSound.currentTime = 0; // Reiniciar el sonido para que se reproduzca desde el inicio
+    clickSound.play(); // Reproducir el sonido
+}
+
+// Añadir un evento mouseover a cada enlace
+menuItems.forEach(item => {
+    item.addEventListener('mouseover', playSound);
+    item.addEventListener('click', playClickSound);
+});
