@@ -7,17 +7,20 @@ Una vez creada la partida, la pagina mostarara el id con el cual se creo el jueg
 Una vez unidos los jugadores, puede presionar iniciar partida para llenar el tablero y empezar a "jugar" (esta entre comillas
 ya que por los momentos solo se pueden enviar movimientos y mostrarlos en todos los tableros).
 Aqui dejamos la estructura de los comandos para facilitar su uso:
+
+dirección: ws://localhost:8080
+
 {
     "type": "connection",
-    "playerId": "Hola"
+    "playerId": "jim"
 }
 {
     "type": "join-game",
-    "playerId": "henlo",
-    "gameId": "idquedelapagina"
+    "playerId": "dwight",
+    "gameId": "idquedélapagina"
 }
 {
     "type": "move",
-    "gameId": "idquedelapagina",
+    "gameId": "idquedélapagina",
     "coordinates": "00"
 }

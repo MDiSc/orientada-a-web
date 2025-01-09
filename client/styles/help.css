@@ -120,6 +120,19 @@ div#game-options,div#game-operations{
     color:white;
 }
 
+#send-moves-container form input[type="text"]{
+    transition: color ease 0.505s;
+    transition: background-color ease 0.505s;
+    transition: box-shadow ease 0.505s;
+    transition: opacity ease 0.505s;
+    height: calc(100vh*0.0505);
+    width: 100%;
+    border-radius: 7px; 
+    -webkit-box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);
+            box-shadow: 0px 0px 17px 0px rgba(0,0,0,1);  
+}
+
 #send-moves-container form input[type="submit"]:hover{
    
     display: flex;
@@ -219,6 +232,13 @@ form#register input[type="submit"]:hover {
     background-color: #015958;
 }
 
+#send-moves-container form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+}
 
 .deck, #send-moves-container {
     border: 2px solid #405aa1;
@@ -563,6 +583,7 @@ footer a:hover {
     background-color: rgb(151, 108, 91);
 }
 header {
+    z-index: 3;
     margin: 0;
     padding-left: 2%; 
     background-color: rgb(31, 31, 31);
