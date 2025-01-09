@@ -147,6 +147,35 @@ function handleMove(socket, gameId, move, sender) {
 }
 
 /**
+ * @param {WebSocket} socket - La conexión WebSocket del jugador.
+ * @param {string} gameId - El ID del juego.
+ * @param {string} coordinates - Las coordenadas del movimiento.
+ * @param {string} response - La respuesta del jugador (hit o miss).
+ * @param {string} sender - El ID del jugador que envió el movimiento.
+ */
+function handleResponse(socket, gameId, coordinates, response, sender) {
+    console.log(`Received response ${response} for move at ${coordinates} from game ${gameId}`);
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (!playerId) {
+        sendMessage(socket, { type: 'error', message: 'Player not found' });
+        return;
+    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            console.log(`Sending response to player ${playerId}`);
+            sendMessage(playerSocket, { type: 'response', playerId, coordinates, response });
+        }
+    });
+}
+
+
+/**
  * Maneja el abandono de un juego.
  *
  * @param {WebSocket} socket - La conexión WebSocket del jugador.
@@ -214,6 +243,9 @@ function handleMessage(socket, message) {
             break;
         case 'move':
             handleMove(socket, message.gameId, message.coordinates, message.playerId);
+            break;
+        case 'response':
+            handleResponse(socket, message.gameId, message.coordinates, message.response, message.playerId);
             break;
         case 'leave-game':
             handleLeaveGame(socket, message.gameId);

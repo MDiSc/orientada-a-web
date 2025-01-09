@@ -5,82 +5,82 @@ let inGameLobby = false;
 let players = new Map();
 function createTable(userName) {
     const BOARDS = document.getElementById('tables');
-    const board = document.createElement('div');
-    board.setAttribute('data-player', userName);
-    board.className = 'battleship-board';
+    const BOARD = document.createElement('div');
+    BOARD.setAttribute('data-player', userName);
+    BOARD.className = 'battleship-board';
     for (let i = 0; i < 11; i++) {
-        const cell = document.createElement('div');
-        cell.className = "border";
-        i == 0 ? cell.textContent = '' : cell.textContent = i - 1;
-        cell.id = i - 1;
-        board.appendChild(cell);
+        const CELL = document.createElement('div');
+        CELL.className = "border";
+        i == 0 ? CELL.textContent = '' : CELL.textContent = i - 1;
+        CELL.id = i - 1;
+        BOARD.appendChild(CELL);
     }
     for (let i = 0; i < 10; i++) {
         const rowHeader = document.createElement('div');
         rowHeader.className = 'border';
         rowHeader.id = i;
         rowHeader.textContent = i;
-        board.appendChild(rowHeader);
+        BOARD.appendChild(rowHeader);
         for (let j = 0; j < 10; j++) {
-            cell = document.createElement('div');
-            cell.className = "position";
-            cell.setAttribute('data-player', userName);
-            cell.setAttribute('data-row', i);
-            cell.setAttribute('data-col', j);
-            board.appendChild(cell);
+            CELL = document.createElement('div');
+            CELL.className = "position";
+            CELL.setAttribute('data-player', userName);
+            CELL.setAttribute('data-row', i);
+            CELL.setAttribute('data-col', j);
+            BOARD.appendChild(CELL);
         }
     }
-    BOARDS.appendChild(board);
+    BOARDS.appendChild(BOARD);
     console.log('Table created for', userName);
-    console.log(board);
+    console.log(BOARD);
 }
 document.getElementById('ship-placement-form').addEventListener('submit', function (event) {
     event.preventDefault();
-    const shipType = document.getElementById('ship-type').value;
-    const startCoordinates = document.getElementById('start-coordinates').value;
+    const SHIPTYPE = document.getElementById('ship-type').value;
+    const STARTCOORDINATES = document.getElementById('start-coordinates').value;
     const direction = document.getElementById('direction').value;
-    console.log('Ship type:', shipType);
-    console.log('Start coordinates:', startCoordinates);
+    console.log('Ship type:', SHIPTYPE);
+    console.log('Start coordinates:', STARTCOORDINATES);
     console.log('Direction:', direction);
-    placeShip(shipType, startCoordinates, direction, 1);
+    placeShip(SHIPTYPE, STARTCOORDINATES, direction, 1);
 });
 
 function placeShip(shipType, startCoordinates, direction, time) {
-    const startRow = parseInt(startCoordinates[0]);
-    const startCol = parseInt(startCoordinates[1]);
-    const shipLength = parseInt(shipType);
-    const board = document.querySelector(`.battleship-board[data-player="${userName}"]`);
-    if (direction == 0 && (startCol + shipLength > 10)) {
+    const STARTROW = parseInt(startCoordinates[0]);
+    const STARTCOL = parseInt(startCoordinates[1]);
+    const SHIPLENGTH = parseInt(shipType);
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    if (direction == 0 && (STARTCOL + SHIPLENGTH > 10)) {
         alert('El barco está fuera de los límites horizontales.');
         return;
     }
-    if (direction == 1 && (startRow + shipLength > 10)) {
+    if (direction == 1 && (STARTROW + SHIPLENGTH > 10)) {
         alert('El barco está fuera de los límites verticales.');
         return;
     }
     try {
-        for (let i = 0; i < shipLength; i++) {
-            const row = direction == 0 ? startRow : startRow + i;
-            const col = direction == 0 ? startCol + i : startCol;
-            const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+        for (let i = 0; i < SHIPLENGTH; i++) {
+            const ROW = direction == 0 ? STARTROW : STARTROW + i;
+            const col = direction == 0 ? STARTCOL + i : STARTCOL;
+            const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
 
-            if (!cell) {
-                alert(`Cell not found at row ${row}, col ${col}`);
+            if (!CELL) {
+                alert(`Cell not found at row ${ROW}, col ${col}`);
                 return;
             }
-            if (cell.classList.contains('ship')) {
+            if (CELL.classList.contains('ship')) {
                 alert('El barco interfiere con otro barco existente o está fuera de los límites.');
                 return;
             }
         }
-        for (let i = 0; i < shipLength; i++) {
-            const row = direction == 0 ? startRow : startRow + i;
-            const col = direction == 0 ? startCol + i : startCol;
-            const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
-            cell.classList.add('ship');
-            cell.classList.add(`ship-${shipLength}`);
+        for (let i = 0; i < SHIPLENGTH; i++) {
+            const ROW = direction == 0 ? STARTROW : STARTROW + i;
+            const col = direction == 0 ? STARTCOL + i : STARTCOL;
+            const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
+            CELL.classList.add('ship');
+            CELL.classList.add(`ship-${SHIPLENGTH}`);
                 if (direction==0){
-                    cell.classList.add('horizontal');
+                    CELL.classList.add('horizontal');
                 }
 
         }
@@ -88,11 +88,11 @@ function placeShip(shipType, startCoordinates, direction, time) {
 
         if (time == 1) {
             checkShips();
-            const COORD = `${startRow}${startCol}`;
+            const COORD = `${STARTROW}${STARTCOL}`;
             ships.set(startCoordinates, {
                 startCoordinates: COORD,
                 direction: direction,
-                length: shipLength
+                length: SHIPLENGTH
             });
             const placedShips = document.getElementById('placed-ships');
             const listItem = document.createElement('li');
@@ -117,18 +117,18 @@ function placeShip(shipType, startCoordinates, direction, time) {
     }
 }
 function deleteShip(shipType, startCoordinates, direction) {
-    const board = document.querySelector(`.battleship-board[data-player="${userName}"]`);
-    const startRow = parseInt(startCoordinates[0]);
-    const startCol = parseInt(startCoordinates[1]);
-    const shipLength = parseInt(shipType);
-    for (let i = 0; i < shipLength; i++) {
-        const row = direction == 0 ? startRow : startRow + i;
-        const col = direction == 0 ? startCol + i : startCol;
-        const cell = board.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
-        if (cell) {
-            cell.classList.remove('ship');
-            cell.classList.remove(`ship-${shipLength}`);
-            cell.classList.remove('horizontal');
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const STARTROW = parseInt(startCoordinates[0]);
+    const STARTCOL = parseInt(startCoordinates[1]);
+    const SHIPLENGTH = parseInt(shipType);
+    for (let i = 0; i < SHIPLENGTH; i++) {
+        const ROW = direction == 0 ? STARTROW : STARTROW + i;
+        const col = direction == 0 ? STARTCOL + i : STARTCOL;
+        const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
+        if (CELL) {
+            CELL.classList.remove('ship');
+            CELL.classList.remove(`ship-${SHIPLENGTH}`);
+            CELL.classList.remove('horizontal');
         }
     }
     ships.delete(startCoordinates);
@@ -163,11 +163,11 @@ function loadTables(players) {
     players.forEach((player, playerId) => {
         if (playerId != userName) {
             createTable(playerId);
-            const board = document.querySelector(`[data-player="${playerId}"]`);
-            if (board) {
-                const cells = board.querySelectorAll('[data-position]');
-                cells.forEach(cell => {
-                    cell.classList.remove('ship');
+            const BOARD = document.querySelector(`[data-player="${playerId}"]`);
+            if (BOARD) {
+                const CELLS = BOARD.querySelectorAll('[data-position]');
+                CELLS.forEach(CELL => {
+                    CELL.classList.remove('ship');
                 });
             } else {
                 console.error('Board not found for player:', playerId);
@@ -176,15 +176,16 @@ function loadTables(players) {
     });
 }
 
-function displayMove(coordinates, playerId) {
+
+function displayMove(coordinates, playerId, response) {
     if (!coordinates || coordinates.length !== 2) {
         console.error("Error: coordinates is undefined or invalid");
         return;
     }
 
-    const row = parseInt(coordinates[0], 10);
+    const ROW = parseInt(coordinates[0], 10);
     const col = parseInt(coordinates[1], 10);
-    if (isNaN(row) || isNaN(col)) {
+    if (isNaN(ROW) || isNaN(col)) {
         console.error("Error: Invalid coordinates format");
         return;
     }
@@ -194,27 +195,51 @@ function displayMove(coordinates, playerId) {
         console.error("Error: No positions found");
         return;
     }
+    let answer = '';
     positions.forEach(position => {
         const positionRow = parseInt(position.dataset.row, 10);
         const positionCol = parseInt(position.dataset.col, 10);
-        if (positionRow === row && positionCol === col) {
+        
+        if (positionRow === ROW && positionCol === col) {
             if (position.querySelector('.hit') || position.querySelector('.miss')) {
                 return;
             }
             if(position.getAttribute('data-player') != playerId){
-                if (position.classList.contains('ship')) {
+                if (position.classList.contains('ship') && response == '') {
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
-                } else {
+                    answer = 'hit';
+                } else if(position.getAttribute('data-player' == playerId) && response == ''){
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
                     position.appendChild(missDiv);
+                    answer = 'miss';
+                } else if(response == 'hit'){
+                    const hitDiv = document.createElement('div');
+                    hitDiv.className = 'hit';
+                    position.appendChild(hitDiv);
+                    answer = 'hit';
+                } else if(response == 'miss'){
+                    const missDiv = document.createElement('div');
+                    missDiv.className = 'miss';
+                    position.appendChild(missDiv);
+                    answer = 'miss';
                 }
             }
 
         }
     });
+    if(response == '' && playerId != userName){
+        const MESSAGE = JSON.stringify({
+            type: 'response',
+            gameId: currentGameId,
+            playerId: userName,
+            coordinates: coordinates,
+            response: answer
+        })
+        ws.send(MESSAGE);
+    }
 }
 
 
@@ -292,7 +317,13 @@ ws.onmessage = function (event) {
             case 'move':
                 console.log('Move received:', data);
                 console.log('Coordinates:', data.move, "Type: ", typeof(data.move));
-                displayMove(data.move, data.sender);
+                displayMove(data.move, data.sender, '');
+                break;
+            case 'response':
+                console.log('Received from player: ', data.playerId);
+                console.log('It was a: ', data.response);
+                console.log(data);
+                displayMove(data.coordinates, data.playerId, data.response);
                 break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
