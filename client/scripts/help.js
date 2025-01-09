@@ -210,7 +210,7 @@ function displayMove(coordinates, playerId, response) {
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
-                } else if(position.getAttribute('data-player' == playerId) && response == ''){
+                } else if(position.getAttribute('data-player') == userName && response == ''){
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
                     position.appendChild(missDiv);

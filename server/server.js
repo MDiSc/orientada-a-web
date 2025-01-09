@@ -151,9 +151,8 @@ function handleMove(socket, gameId, move, sender) {
  * @param {string} gameId - El ID del juego.
  * @param {string} coordinates - Las coordenadas del movimiento.
  * @param {string} response - La respuesta del jugador (hit o miss).
- * @param {string} sender - El ID del jugador que envió el movimiento.
  */
-function handleResponse(socket, gameId, coordinates, response, sender) {
+function handleResponse(socket, gameId, coordinates, response) {
     console.log(`Received response ${response} for move at ${coordinates} from game ${gameId}`);
     const game = games.get(gameId);
     if (!game) {
