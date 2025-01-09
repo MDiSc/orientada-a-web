@@ -113,8 +113,9 @@ function parseMove(move) {
  * @param {WebSocket} socket - La conexión WebSocket del jugador.
  * @param {string} gameId - El ID del juego.
  * @param {string} move - El movimiento del jugador.
+ * @param {string} sender - El ID del jugador.
  */
-function handleMove(socket, gameId, move) {
+function handleMove(socket, gameId, move, sender) {
     console.log(`Received move ${move} for game ${gameId}`, "Type of move: ", typeof(move));
     const game = games.get(gameId);
     if (!game) {
@@ -138,10 +139,10 @@ function handleMove(socket, gameId, move) {
     game.players.forEach((playerId) => {
         const playerSocket = players.get(playerId);
         if (playerSocket && playerSocket !== socket) {
-            sendMessage(playerSocket, { type: 'move', gameId, move});
+            sendMessage(playerSocket, { type: 'move', gameId, move, sender});
         }
     });
-    sendMessage(socket, { type: 'move', gameId, move });
+    sendMessage(socket, { type: 'move', gameId, move, sender });
     game.turn = (game.turn + 1) % game.players.length;
 }
 
@@ -212,7 +213,7 @@ function handleMessage(socket, message) {
             handleStartGame(socket, message.gameId);
             break;
         case 'move':
-            handleMove(socket, message.gameId, message.coordinates);
+            handleMove(socket, message.gameId, message.coordinates, message.playerId);
             break;
         case 'leave-game':
             handleLeaveGame(socket, message.gameId);

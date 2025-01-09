@@ -4,7 +4,7 @@ let currentGameId = -777;
 let inGameLobby = false;
 let players = new Map();
 function createTable(userName) {
-    const boards = document.getElementById('tables');
+    const BOARDS = document.getElementById('tables');
     const board = document.createElement('div');
     board.setAttribute('data-player', userName);
     board.className = 'battleship-board';
@@ -30,7 +30,7 @@ function createTable(userName) {
             board.appendChild(cell);
         }
     }
-    boards.appendChild(board);
+    BOARDS.appendChild(board);
     console.log('Table created for', userName);
     console.log(board);
 }
@@ -176,7 +176,7 @@ function loadTables(players) {
     });
 }
 
-function displayMove(coordinates) {
+function displayMove(coordinates, playerId) {
     if (!coordinates || coordinates.length !== 2) {
         console.error("Error: coordinates is undefined or invalid");
         return;
@@ -201,15 +201,18 @@ function displayMove(coordinates) {
             if (position.querySelector('.hit') || position.querySelector('.miss')) {
                 return;
             }
-            if (position.classList.contains('ship')) {
-                const hitDiv = document.createElement('div');
-                hitDiv.className = 'hit';
-                position.appendChild(hitDiv);
-            } else {
-                const missDiv = document.createElement('div');
-                missDiv.className = 'miss';
-                position.appendChild(missDiv);
+            if(position.getAttribute('data-player') != playerId){
+                if (position.classList.contains('ship')) {
+                    const hitDiv = document.createElement('div');
+                    hitDiv.className = 'hit';
+                    position.appendChild(hitDiv);
+                } else {
+                    const missDiv = document.createElement('div');
+                    missDiv.className = 'miss';
+                    position.appendChild(missDiv);
+                }
             }
+
         }
     });
 }
@@ -262,7 +265,8 @@ document.getElementById('send-moves-form').addEventListener('submit', function (
     const message = JSON.stringify({
         type: 'move',
         coordinates: moveInput,
-        gameId: currentGameId
+        gameId: currentGameId,
+        playerId: userName
     });
     ws.send(message);
     moveInput.value = '';
@@ -288,7 +292,7 @@ ws.onmessage = function (event) {
             case 'move':
                 console.log('Move received:', data);
                 console.log('Coordinates:', data.move, "Type: ", typeof(data.move));
-                displayMove(data.move);
+                displayMove(data.move, data.sender);
                 break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
@@ -359,21 +363,6 @@ function sendMessage() {
         } else {
             console.log('WebSocket is not open');
             console.log(message);
-        }
-    });
-    document.getElementById('send-move').addEventListener('click', () => {
-        const message = JSON.stringify({
-            type: 'move',
-            coordinates: document.getElementById('move').value,
-            sender: playerId,
-            receiver: receiverPlayerId,
-            gameId: gameIdInput.value
-        });
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send(message);
-            console.log('Sent: ', message);
-        } else {
-            console.log('WebSocket is not open');
         }
     });
 }
