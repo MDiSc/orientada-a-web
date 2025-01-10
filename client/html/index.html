@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="..\styles\help.css">
     </head>
     <body>
-        <audio src="..\media\bo2-main-theme-v2.mp3" autoplay loop></audio>
+        
         <audio id="hover-sound" src="..\media\hover.mp3"></audio>
         <audio id="click-medium-sound" src="..\media\medium-click-selection.mp3"></audio>
         <video autoplay loop muted id="video_background">
@@ -23,6 +23,16 @@
                     <li><a href="#jugar" data-text="jugar">JUGAR</a></li>
                     <li><a href="#instrucciones" data-text="instrucciones">INSTRUCCIONES</a></li>
                     <li><a href="#salir" data-text="salir">SALIR</a></li>
+                    <li>
+                        <button class="dropdown-btn" id="navbar-dropdown-btn">
+                            <img src="../media/gear-v2.png" alt="">
+                        </button>                    
+                        <div class="dropdown-content" id="dropdown-menu" style="display: none">
+                            <p class="option">Música de fondo</p>
+                            <audio id="bg-music" src="..\media\bo2-main-theme-v2.mp3" autoplay loop controls></audio>
+                            <div class="option" id="mute-sounds">Apagar Sonidos de la interfaz</div>
+                        </div>
+                    </li>
                 </ul>
             </nav>
         </header>
@@ -59,7 +69,7 @@
             <h2 id="jugar">JUGAR</h2>
             <section id="lobby" style="display: none;">
                 <h3>LOBBY</h3>
-                <b id="match-id">ID de sala: </b>
+                <b id="match-id" style="display: none;">ID de sala: </b>
                 <div id="lobby-elements" class="container">
                   <div id="game-elements">
                     <div id="game-options">
@@ -82,7 +92,7 @@
                         
                     </ul>
                   </div>
-                  <div id="connected-players" class="box" style="display: block;">
+                  <div id="connected-players" class="box" style="display: none;">
                     <div id="connected-players-header"><b>Jugadores conectados</b></div>
                     <ul id="connected-players-ul">
                         

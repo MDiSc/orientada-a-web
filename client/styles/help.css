@@ -1,11 +1,21 @@
 html{
-    font-family: 'Bahnschrift';
+    font-family: 'Bahnschrift-WOFF';
 }
 
 @font-face {
     font-family: 'PuristaMedium';
     src: url('../media/PuristaMedium.woff');
 }
+@font-face {
+    font-family: 'Bahnschrift-WOFF';
+    src: url('../media/bahnschrift.woff');
+}
+
+@font-face {
+    font-family: 'PuristaSemiBold';
+    src: url('../media/PuristaSemibold.woff');
+}
+
 section#lobby{
     display:flex;
     flex-direction: column;
@@ -313,16 +323,17 @@ form#register input[type="submit"]:hover {
     align-items: center;
 }
 
-#placed-ships li button {
+#placed-ships li button,#confirm-button {
     padding: 5px 10px;
     background-color: #405aa1;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color ease 0.3s;
 }
 
-#placed-ships li button:hover {
+#placed-ships li button:hover, #confirm-button:hover {
     background-color: #4b6ac0;
 }
 
@@ -403,7 +414,7 @@ section#inicio form{
 }
 
 #inicio input[type="text"]{
-    font-family: 'Bahnschrift';
+    font-family: 'Bahnschrift-WOFF';
     font-weight: bold;
     border-radius:7px;
     padding: 0.7%;
@@ -414,7 +425,7 @@ section#inicio form{
 }
 
 #inicio input[type="text"]:hover{
-    font-family: 'Bahnschrift';
+    font-family: 'Bahnschrift-WOFF';
     font-weight: bold;
     background: linear-gradient(0deg, rgba(191,191,191,1) 0%, rgba(255,255,255,1) 25%, rgba(254,254,254,1) 75%, rgba(191,191,191,1) 100%);
     border-radius:7px;
@@ -426,7 +437,7 @@ section#inicio form{
 
 #inicio input[type="submit"]{
     font-size: large;
-    font-family: 'Bahnschrift';
+    font-family: 'Bahnschrift-WOFF';
     font-weight: bold;
     background: linear-gradient(0deg, rgba(139,49,0,1) 0%, rgba(255,89,0,1) 45%, rgba(255,89,0,1) 85%);
     color: white;
@@ -639,18 +650,18 @@ nav ul {
 }
 
 nav ul li a {
-    font-family: 'Bahnschrift SemiCondensed';
+    font-family: 'PuristaMedium';
     color: white;
     text-decoration: none;
     font-size: 18px;
     padding: 10px 5px;
     background-color: transparent;
-    transition: border-left 0.3s ease, border-right 0.3s ease, color 0.3s ease; 
+    transition: border-left ease 0.3s, border-right ease 0.3s, color 0.3s ease; 
     align-items: center;
     height: 100%;
 }
 
-nav ul li a:hover {
+nav ul li a:hover ,#navbar-dropdown-btn:hover{
     color: #a1c7ff;
     border-left: 1px solid #2a7af3;
     border-right: 1px solid #2a7af3;
@@ -663,12 +674,59 @@ nav ul li a:active {
 }
 
 #video_background {
-    position: fixed; /* Fijo para que se mantenga en su lugar */
+    position: fixed; 
     right: 0;
     bottom: 0;
-    min-width: 100%; /* Asegura que cubra todo el ancho */
-    min-height: 100%; /* Asegura que cubra toda la altura */
-    width: auto; /* Ajusta automáticamente */
-    height: auto; /* Ajusta automáticamente */
-    z-index: -1; /* Coloca el video detrás del contenido */
+    min-width: 100%; 
+    min-height: 100%; 
+    width: auto; 
+    height: auto; 
+    z-index: -1; 
+}
+#navbar-dropdown-btn{
+    transition: border-left 0.3s ease, border-right 0.3s ease;
+    background-color: transparent;
+    border: none;
+}
+
+#navbar-dropdown-btn:active{
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #2a7af3;
+}
+
+#navbar-dropdown-btn:hover{
+    border-left: 1px solid #2a7af3;
+    border-right: 1px solid #2a7af3;
+    img{
+        filter: contrast(200%);
+    }
+}
+
+#navbar-dropdown-btn img{
+    height: 18px;
+    filter: contrast(20%);
+    transition: contrast ease 0.3s;
+}
+
+
+.dropdown-content {
+    display: none; 
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    color: rgb(31, 31, 31);
+}
+
+.dropdown-content .option {
+    font-size: small;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content .option:hover {
+    background-color: #dbdbdb; 
 }

@@ -341,6 +341,8 @@ ws.onmessage = function (event) {
                 document.getElementById('join-game').style = 'display: none;';
                 document.getElementById('start-game').style = 'display: block;';
                 document.getElementById('game-id').style = 'display: none;';
+                document.getElementById('match-id').style = 'display: flex;';
+                document.getElementById('connected-players').style = 'display: block;';
                 break;
             case 'join-game':
                 console.log('A player with the id of', data.playerId, 'has joined the game!');
@@ -404,41 +406,76 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 //codiguito para el inicio
 
-let isCollapsed = false; // Estado del colapso
-
+let isCollapsed = false; 
 window.addEventListener('wheel', function(event) {
     const section = document.getElementById('inicio');
     
-    if (event.deltaY > 0 && !isCollapsed) { // Si se hace scroll hacia abajo
-        section.classList.add('collapsed'); // Colapsa la sección
-        isCollapsed = true; // Cambia el estado
-    } else if (event.deltaY < 0 && isCollapsed) { // Si se hace scroll hacia arriba
-        section.classList.remove('collapsed'); // Expande la sección
-        isCollapsed = false; // Cambia el estado
+    if (event.deltaY > 0 && !isCollapsed) { 
+        section.classList.add('collapsed'); 
+        isCollapsed = true; 
+    } else if (event.deltaY < 0 && isCollapsed) { 
+        section.classList.remove('collapsed'); 
+        isCollapsed = false; 
     }
 });
 
-// Obtener el elemento de audio
+// codiguito para los sonidos
 const hoverSound = document.getElementById('hover-sound');
 const clickSound = document.getElementById('click-medium-sound')
-
-// Obtener todos los enlaces dentro de la lista
 const menuItems = document.querySelectorAll('.menu-hover-fill a, button, input, footer a');
+let hoverSoundsAllowed = true;
+let clickSoundsAllowed = true;
 
-// Función para reproducir sonido
 function playSound() {
-    hoverSound.currentTime = 0; // Reiniciar el sonido para que se reproduzca desde el inicio
-    hoverSound.play(); // Reproducir el sonido
+    if(hoverSoundsAllowed){
+    hoverSound.currentTime = 0; 
+    hoverSound.play(); 
+    }
 }
 
-// Función para reproducir sonido de clic
+
 function playClickSound() {
-    clickSound.currentTime = 0; // Reiniciar el sonido para que se reproduzca desde el inicio
-    clickSound.play(); // Reproducir el sonido
+    if(clickSoundsAllowed){
+    clickSound.currentTime = 0; 
+    clickSound.play();
+    } 
 }
 
-// Añadir un evento mouseover a cada enlace
+
 menuItems.forEach(item => {
     item.addEventListener('mouseover', playSound);
     item.addEventListener('click', playClickSound);
+});
+
+const dropdownBtn = document.getElementById('navbar-dropdown-btn');
+const dropdownMenu = document.getElementById('dropdown-menu');
+
+dropdownBtn.addEventListener('click', function() {
+    dropdownMenu.style = 'display: block;';
+});
+
+
+let muteSoundsOption = document.getElementById('mute-sounds');
+
+
+function toggleSoundsText(option) {
+    if (option.innerText === 'Apagar Sonidos de la interfaz') {
+        option.innerText = 'Encender Sonidos de la interfaz';
+        clickSoundsAllowed = false;
+        hoverSoundsAllowed = false;
+    } else {
+        option.innerText = 'Apagar Sonidos de la interfaz';
+        clickSoundsAllowed = true;
+        hoverSoundsAllowed = true;
+    }
+}
+
+muteSoundsOption.addEventListener('click', function() {
+    toggleSoundsText(muteSoundsOption);
+});
+
+document.addEventListener('mouseup', function(e) {
+    if (!dropdownMenu.contains(e.target)) {
+        dropdownMenu.style.display = 'none';
+    }
 });
