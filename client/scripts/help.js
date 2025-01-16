@@ -138,14 +138,16 @@ function deleteShip(shipType, startCoordinates, direction) {
 function checkShips() {
     const addButton = document.getElementById('add-button');
     const confirmButton = document.getElementById('confirm-button');
+    const mineForm = document.getElementById('mine-placement-form');
     if (shipCount == 5) {
         confirmButton.style.display = 'block';
         addButton.style.display = 'none';
-        
+        mineForm.style.display = 'block';
         console.log("Ships: ", ships);
     } else {
         confirmButton.style.display = 'none';
         addButton.style.display = 'block';
+        mineForm.style.display = 'none';
     }
 }
 
@@ -267,6 +269,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('lobby').style.display = 'block';
     });
 });
+document.getElementById('vs-cpu').addEventListener('click', function (event) {
+    event.preventDefault();
+    document.getElementById('lobby').style.display = 'none';
+    document.getElementById('deck').style.display = 'block';
+    document.getElementById('placed-ships').style.display = 'block';
+    createTable(userName);
+    
+});
 
 document.getElementById('start-game').addEventListener('click', function (event) {
     event.preventDefault();
@@ -322,6 +332,9 @@ ws.onmessage = function (event) {
             case 'response':
                 console.log('Received from player: ', data.playerId);
                 console.log('It was a: ', data.response);
+                if(data.response == 'hit'){
+                    playerPoints += 5;
+                }
                 console.log(data);
                 displayMove(data.coordinates, data.playerId, data.response);
                 break;
@@ -479,3 +492,80 @@ document.addEventListener('mouseup', function(e) {
         dropdownMenu.style.display = 'none';
     }
 });
+
+
+//POWER-UPS
+let playerPoints = 5;
+
+document.getElementById('sonar').addEventListener('click', function() {
+    powerUps.sonar();
+});
+
+document.getElementById('attack-planes').addEventListener('click', function() {
+    powerUps.attackPlanes();
+});
+
+let mineCoordinates = '';
+document.getElementById('mine-placement-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(document.getElementById('mine-placement-form'));
+    const clickedButton = event.submitter.id;
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    if (clickedButton == 'add-mine') {
+        mineCoordinates = formData.get('mine');
+        const row = parseInt(mineCoordinates[0], 10);
+        const col = parseInt(mineCoordinates[1], 10);
+        const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+        if (CELL.classList.contains('mine')) {
+            alert('Ya hay una mina en esta casilla.');
+            return;
+        }
+        if (CELL.classList.contains('ship')) {
+            alert('No puedes poner una mina en una casilla con un barco.');
+            return;
+        }
+        if (mineCoordinates.length != 2 || row > 9 || col > 9) {
+            alert('Coordenadas inválidas.');
+            return;
+        }
+        seaMine(mineCoordinates, BOARD);
+        document.getElementById('add-mine').style.display = 'none';
+        document.getElementById('remove-mine').style.display = 'block';
+    } else if (clickedButton == 'remove-mine') {
+        removeSeaMine(mineCoordinates, BOARD);
+        document.getElementById('add-mine').style.display = 'block';
+        document.getElementById('remove-mine').style.display = 'none';
+    }
+});
+
+document.getElementById('defensive-shield').addEventListener('click', function() {
+    defensiveShield();
+});
+
+document.getElementById('cruise-missile').addEventListener('click', function() {
+    cruiseMissile();
+});
+
+document.getElementById('quick-repair').addEventListener('click', function() {
+    quickRepair();
+});
+
+document.getElementById('emp-attack').addEventListener('click', function() {
+    empAttack();
+});
+
+function seaMine(coordinates, BOARD){
+    const ROW = parseInt(coordinates[0]);
+    const col = parseInt(coordinates[1]);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
+    CELL.classList.add('mine');
+    playerPoints -= 5;
+}
+
+function removeSeaMine(coordinates, BOARD){
+    const ROW = parseInt(coordinates[0]);
+    const col = parseInt(coordinates[1]);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
+    CELL.classList.remove('mine');
+    playerPoints += 5;
+}

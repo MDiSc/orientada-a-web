@@ -52,20 +52,7 @@
                     <input type="submit" value="JUGAR">
                 </form>
             </section>
-            
-            <form id="register" style="display: none;">  
-                <label for="player">Cantidad de jugadores:</label>
-                <label for="player1">CPU</label>
-                <input type="radio" id="player1" name="player" value="1" required/>
-                <label for="player2">2</label>
-                <input type="radio" id="player2" name="player" value="2" required/>
-                <label for="player3">3</label>
-                <input type="radio" id="player3" name="player" value="3" required/>
-                <label for="player4">4</label>
-                <input type="radio" id="player4" name="player" value="4" required/>
-                <input type="submit" value="Jugar" />           
-            </form>
-          
+
             <h2 id="jugar">JUGAR</h2>
             <section id="lobby" style="display: none;">
                 <h3>LOBBY</h3>
@@ -73,12 +60,13 @@
                 <div id="lobby-elements" class="container">
                   <div id="game-elements">
                     <div id="game-options">
-                      <button id="create-game" class="server-operation">Crear un nuevo juego</button>
-                      <button id="join-game" class="server-operation">Unirse a un juego existente</button>
-                      <button id="start-game" class="server-operation" style="display: none">¡Iniciar la partida!</button>
-                      <button id="send-move" class="server-operation" style="display: none">Enviar el movimiento</button>
-                      <button id="leave-game" class="server-operation" style="display: none">¡Abandonar la partida!</button>
-                      <button id="close-connection" class="client-operation">Cerrar la conexión con el servidor</button>
+                        <button id="vs-cpu" class="server-operation">Jugar contra la CPU</button>
+                        <button id="create-game" class="server-operation">Crear un nuevo juego</button>
+                        <button id="join-game" class="server-operation">Unirse a un juego existente</button>
+                        <button id="start-game" class="server-operation" style="display: none">¡Iniciar la partida!</button>
+                        <button id="send-move" class="server-operation" style="display: none">Enviar el movimiento</button>
+                        <button id="leave-game" class="server-operation" style="display: none">¡Abandonar la partida!</button>
+                        <button id="close-connection" class="client-operation">Cerrar la conexión con el servidor</button>
                     </div>
                     <div id="game-operations">
                       <input type="text" id="game-id" class="server-operation" placeholder="ID del juego" />
@@ -120,6 +108,12 @@
                             <option value="1">Vertical</option>
                         </select>
                         <input type="submit" id="add-button" value="Colocar" />
+                    </form>
+                    <form id="mine-placement-form" style="display: none;">
+                        <label for="mine">Mina Marina (costo 5 puntos)</label>
+                        <input type="text" id="mine-coordinates" name="mine" placeholder="Ej: 01" />
+                        <input type="submit" id="add-mine" value="Agregar Mina" />
+                        <input type="submit" id="remove-mine" value="Quitar Mina" style="display: none;"/>
                         <button id="confirm-button" style="display: none;">Confirmar</button>
                     </form>
                 </div>
@@ -133,9 +127,20 @@
                 <div id="send-moves-container" style="display: none;">
                     <form id="send-moves-form">
                         <input type="text" placeholder="Introduzca un movimiento, p.e.: 01" required />
-                        <input type="submit" value="Enviar"/>
+                        <input type="submit" value="Enviar"/>                
+                        <div id="power-ups" style="display: none;">
+                        <h3>POWER-UPS</h3>
+                            <button id="sonar">Sonar</button>
+                            <button id="attack-planes">Aviones de Ataque</button>
+                            <button id="sea-mine">Mina Marina</button>
+                            <button id="defensive-shield">Escudo Defensivo</button>
+                            <button id="cruise-missile">Misil Crucero</button>
+                            <button id="quick-repair">Reparación Rápida</button>
+                            <button id="emp-attack">Ataque EMP</button>
+                        </div>
                     </form>
                 </div>
+
             </div>
         </main>
         <aside id="instrucciones">
