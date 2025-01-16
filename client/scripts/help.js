@@ -45,6 +45,22 @@ document.getElementById('ship-placement-form').addEventListener('submit', functi
     placeShip(SHIPTYPE, STARTCOORDINATES, direction, 1);
 });
 
+
+let submarine = {
+    length: 3,
+    direction: null,
+    startCoordinates: null,
+    hits: 0,
+    status: 'alive'
+};
+let carrier = {
+    length: 5,
+    direction: null,
+    startCoordinates: null,
+    hits: 0,
+    status: 'alive'
+};
+
 function placeShip(shipType, startCoordinates, direction, time) {
     const STARTROW = parseInt(startCoordinates[0]);
     const STARTCOL = parseInt(startCoordinates[1]);
@@ -94,6 +110,13 @@ function placeShip(shipType, startCoordinates, direction, time) {
                 direction: direction,
                 length: SHIPLENGTH
             });
+            if(SHIPLENGTH == 3 && submarine.direction == null){
+                submarine.direction = direction;
+                submarine.startCoordinates = startCoordinates;
+            } else if (SHIPLENGTH == 5){
+                carrier.direction = direction;
+                carrier.startCoordinates = startCoordinates;
+            }
             const placedShips = document.getElementById('placed-ships');
             const listItem = document.createElement('li');
             listItem.textContent = `${shipType} casillas en ${startCoordinates} ${direction == 0 ? 'horizontal' : 'vertical'}`;
@@ -110,6 +133,8 @@ function placeShip(shipType, startCoordinates, direction, time) {
 
             const shipTypeSelect = document.getElementById('ship-type');
             shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
+            console.log('Submarino: ', submarine);
+            console.log('Carrier: ', carrier);
         }
     } catch (error) {
         console.error('Error placing ship:', error);
@@ -212,6 +237,7 @@ function displayMove(coordinates, playerId, response) {
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
+                    checkSunk(ROW, col);
                 } else if(position.getAttribute('data-player') == userName && response == ''){
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
@@ -222,11 +248,17 @@ function displayMove(coordinates, playerId, response) {
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
+                    checkSunk(ROW, col);
                 } else if(response == 'miss'){
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
                     position.appendChild(missDiv);
                     answer = 'miss';
+                } else if(response == 'mine'){
+                    const mineDiv = document.createElement('div');
+                    mineDiv.className = 'explosion';
+                    position.appendChild(mineDiv);
+                    answer = 'mine';
                 }
             }
 
@@ -244,6 +276,34 @@ function displayMove(coordinates, playerId, response) {
     }
 }
 
+function checkSunk(row, col){
+    checkShipSunk(submarine);
+    checkShipSunk(carrier);
+}
+
+function checkShipSunk(ship){
+    const startRow = parseInt(ship.startCoordinates[0], 10);
+    const startCol = parseInt(ship.startCoordinates[1], 10);
+    let hits = 0;
+    for (let i = 0; i < ship.length; i++) {
+        let currentRow = startRow;
+        let currentCol = startCol;
+        if (ship.direction == 1) {
+            currentRow += i;
+        } else {
+            currentCol += i;
+        }
+        const CELL = document.querySelector(`.position[data-player="${userName}"][data-row="${currentRow}"][data-col="${currentCol}"]`);
+        if (CELL && CELL.querySelector('.hit')) {
+            hits ++;
+        }
+    }
+    ship.hits = hits;
+    if(hits == ship.length){
+        ship.status = 'sunk';
+        console.log(`${ship.length === 3 ? 'Submarine' : 'Carrier'} is sunk!`);
+    }
+}
 
 function generatePlayerId() {
     return Math.floor(Math.random() * 1000);
@@ -334,6 +394,9 @@ ws.onmessage = function (event) {
                 console.log('It was a: ', data.response);
                 if(data.response == 'hit'){
                     playerPoints += 5;
+                }
+                if(data.response == 'mine'){
+                    randomHit();
                 }
                 console.log(data);
                 displayMove(data.coordinates, data.playerId, data.response);
@@ -498,11 +561,11 @@ document.addEventListener('mouseup', function(e) {
 let playerPoints = 5;
 
 document.getElementById('sonar').addEventListener('click', function() {
-    powerUps.sonar();
+    sonar();
 });
 
 document.getElementById('attack-planes').addEventListener('click', function() {
-    powerUps.attackPlanes();
+    attackPlanes();
 });
 
 let mineCoordinates = '';
@@ -568,4 +631,20 @@ function removeSeaMine(coordinates, BOARD){
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
     CELL.classList.remove('mine');
     playerPoints += 5;
+}
+
+function randomHit(){
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const ROW = Math.floor(Math.random() * 10);
+    const COL = Math.floor(Math.random() * 10);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}][data-col="${COL}"]`);
+    if (CELL.classList.contains('ship')) {
+        const hitDiv = document.createElement('div');
+        hitDiv.className = 'hit';
+        CELL.appendChild(hitDiv);
+    } else {
+        const missDiv = document.createElement('div');
+        missDiv.className = 'miss';
+        CELL.appendChild(missDiv);
+    }
 }
