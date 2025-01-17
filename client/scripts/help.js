@@ -257,7 +257,7 @@ function displayMove(coordinates, playerId, response) {
                     missDiv.className = 'miss';
                     position.appendChild(missDiv);
                     answer = 'miss';
-                } else if(response == 'mine'){
+                } else if(position.classList.contains('mine') && response == ''){
                     const mineDiv = document.createElement('div');
                     mineDiv.className = 'explosion';
                     position.appendChild(mineDiv);
@@ -644,7 +644,9 @@ function seaMine(coordinates, BOARD){
     const ROW = parseInt(coordinates[0]);
     const col = parseInt(coordinates[1]);
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
-    CELL.classList.add('mine');
+    const mineDiv = document.createElement('div');
+    mineDiv.className = 'mine';
+    CELL.appendChild(mineDiv);
     updatePlayerPoints(-5);
 }
 
