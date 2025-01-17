@@ -115,7 +115,7 @@ function parseMove(move) {
  * @param {string} move - El movimiento del jugador.
  * @param {string} sender - El ID del jugador.
  */
-function handleMove(socket, gameId, move, sender) {
+function handleMove(socket, gameId, move, sender, type) {
     console.log(`Received move ${move} for game ${gameId}`, "Type of move: ", typeof(move));
     const game = games.get(gameId);
     if (!game) {
@@ -142,7 +142,7 @@ function handleMove(socket, gameId, move, sender) {
             sendMessage(playerSocket, { type: 'move', gameId, move, sender});
         }
     });
-    sendMessage(socket, { type: 'move', gameId, move, sender });
+    sendMessage(socket, { type: type, gameId, move, sender });
     game.turn = (game.turn + 1) % game.players.length;
 }
 
@@ -313,7 +313,10 @@ function handleMessage(socket, message) {
             handleStartGame(socket, message.gameId);
             break;
         case 'move':
-            handleMove(socket, message.gameId, message.coordinates, message.playerId);
+            handleMove(socket, message.gameId, message.coordinates, message.playerId, message.type);
+            break;
+        case 'cruise':
+            handleMove(socket, message.gameId, message.coordinates, message.playerId, message.type);
             break;
         case 'response':
             handleResponse(socket, message.gameId, message.coordinates, message.response, message.playerId);
