@@ -220,6 +220,70 @@ function handleDisconnect(socket) {
     }
 }
 
+function handleSonar(socket, gameId, playerId) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+
+    const opponentId = game.players.find(id => id !== playerId);
+    const opponentSocket = players.get(opponentId);
+
+    if (opponentSocket) {
+        const coordinates = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+        sendMessage(opponentSocket, {
+            type: 'sonar',
+            gameId: gameId,
+            playerId: opponentId,
+            coordinates: coordinates,
+            senderId: playerId
+        });
+    }
+}
+function handleSonarResponse(socket, gameId, coordinates, response, senderId) {
+    const senderSocket = players.get(senderId);
+    if (senderSocket) {
+        sendMessage(senderSocket, {
+            type: 'sonar-response',
+            gameId: gameId,
+            coordinates: coordinates,
+            response: response
+        });
+    }
+}
+
+function handleAttackPlanes(socket, gameId, playerId, moves) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+
+    const opponentId = game.players.find(id => id !== playerId);
+    const opponentSocket = players.get(opponentId);
+
+    if (opponentSocket) {
+        sendMessage(opponentSocket, {
+            type: 'attack-planes',
+            gameId: gameId,
+            playerId: opponentId,
+            moves: moves,
+            senderId: playerId
+        });
+    }
+}
+function handleAttackPlanesResponse(socket, gameId, playerId, moves) {
+    const senderSocket = players.get(playerId);
+    if (senderSocket) {
+        sendMessage(senderSocket, {
+            type: 'attack-planes-response',
+            gameId: gameId,
+            playerId: playerId,
+            moves: moves
+        });
+    }
+}
 /**
  * Maneja los mensajes recibidos a través de la conexión WebSocket.
  *
@@ -248,6 +312,18 @@ function handleMessage(socket, message) {
             break;
         case 'leave-game':
             handleLeaveGame(socket, message.gameId);
+            break;
+        case 'sonar':
+            handleSonar(socket, message.gameId, message.playerId, message.coordinates);
+            break;
+        case 'sonar-response':
+            handleSonarResponse(socket, message.gameId, message.coordinates, message.response, message.senderId);
+            break;
+        case 'attack-planes':
+            handleAttackPlanes(socket, message.gameId, message.playerId, message.moves);
+            break;
+        case 'attack-planes-response':
+            handleAttackPlanesResponse(socket, message.gameId, message.playerId, message.moves);
             break;
         default:
             sendMessage(socket, { type: 'error', message: 'Unknown message type' });

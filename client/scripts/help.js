@@ -201,6 +201,9 @@ function loadTables(players) {
             }
         }
     });
+    const powerUps = document.getElementById('power-ups');
+    powerUps.style.display = 'block';
+    updatePlayerPoints(0);
 }
 
 
@@ -393,7 +396,7 @@ ws.onmessage = function (event) {
                 console.log('Received from player: ', data.playerId);
                 console.log('It was a: ', data.response);
                 if(data.response == 'hit'){
-                    playerPoints += 5;
+                    updatePlayerPoints(5);
                 }
                 if(data.response == 'mine'){
                     randomHit();
@@ -436,6 +439,24 @@ ws.onmessage = function (event) {
                 document.getElementById('deck').style.display = 'block';
                 document.getElementById('placed-ships').style.display = 'block';
                 break;
+            case 'sonar':
+                console.log('Sonar received:', data);
+                scanTable(data.coordinates, data.playerId);
+                break;
+            case 'sonar-response':
+                console.log('Sonar response received:', data);
+                alert(`Se ha encontrado un barco en las coordenadas ${data.coordinates}`);
+                break;
+            case 'attack-planes':
+                console.log('Attack planes: ', data);
+                handleAttackPlanes(data.moves);
+                break;
+            case 'attack-planes-response':
+                console.log('Attack planes response received:', data);
+                data.moves.forEach(move => {
+                    displayMove(move.coordinates, data.playerId, move.response);
+                });
+                break;  
             default:
                 console.log('Unknown message type:', data);
         }
@@ -562,10 +583,12 @@ let playerPoints = 5;
 
 document.getElementById('sonar').addEventListener('click', function() {
     sonar();
+    updatePlayerPoints(-5);
 });
 
 document.getElementById('attack-planes').addEventListener('click', function() {
     attackPlanes();
+    updatePlayerPoints(-10);
 });
 
 let mineCoordinates = '';
@@ -622,7 +645,7 @@ function seaMine(coordinates, BOARD){
     const col = parseInt(coordinates[1]);
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
     CELL.classList.add('mine');
-    playerPoints -= 5;
+    updatePlayerPoints(-5);
 }
 
 function removeSeaMine(coordinates, BOARD){
@@ -630,14 +653,14 @@ function removeSeaMine(coordinates, BOARD){
     const col = parseInt(coordinates[1]);
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
     CELL.classList.remove('mine');
-    playerPoints += 5;
+    updatePlayerPoints(5);
 }
 
 function randomHit(){
     const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const ROW = Math.floor(Math.random() * 10);
     const COL = Math.floor(Math.random() * 10);
-    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}][data-col="${COL}"]`);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${COL}"]`);
     if (CELL.classList.contains('ship')) {
         const hitDiv = document.createElement('div');
         hitDiv.className = 'hit';
@@ -647,4 +670,129 @@ function randomHit(){
         missDiv.className = 'miss';
         CELL.appendChild(missDiv);
     }
+}
+
+function updatePlayerPoints(points){
+    playerPoints += points;
+    document.getElementById('player-points').textContent = `Puntos: ${playerPoints}`;
+    displayPowerUps(playerPoints);
+}
+
+function displayPowerUps(points){
+    const sonar = document.getElementById('sonar');
+    const attackPlanes = document.getElementById('attack-planes');
+    const defensiveShield = document.getElementById('defensive-shield');
+    const cruiseMissile = document.getElementById('cruise-missile');
+    const quickRepair = document.getElementById('quick-repair');
+    const empAttack = document.getElementById('emp-attack');
+    if(points>= 5){
+        sonar.style.display = 'block';
+    }else{
+        sonar.style.display = 'none';
+    } 
+    if(points >=10){
+        attackPlanes.style.display = 'block';
+        quickRepair.style.display = 'block';
+    }else{
+        attackPlanes.style.display = 'none';
+        quickRepair.style.display = 'none';
+    }
+    if(points >= 15){
+        defensiveShield.style.display = 'block';
+        cruiseMissile.style.display = 'block';
+    }else{
+        defensiveShield.style.display = 'none';
+        cruiseMissile.style.display = 'none';
+    }
+    if(points >= 20){
+        empAttack.style.display = 'block';
+    }else{
+        empAttack.style.display = 'none';
+    }
+    if(carrier.status == 'sunk'){
+        attackPlanes.style.display = 'none';
+    }
+    if(submarine.status == 'sunk'){
+        sonar.style.display = 'none';
+    }
+}
+
+function scanTable(coordinates, playerId){
+    let response = '';
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const ROW = parseInt(coordinates[0]);
+    const COL = parseInt(coordinates[1]);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}][data-col="${COL}"]`);
+    if(CELL.classList.contains('ship')){
+        response = 'hit';
+    }else{
+        response = 'miss';
+    }
+    const message = JSON.stringify({
+        type: 'sonar-response',
+        gameId: currentGameId,
+        playerId: userName,
+        coordinates: coordinates,
+        response: response,
+        senderId: playerId
+    });
+    ws.send(message);
+}
+
+function sonar(){
+    const ROW = Math.floor(Math.random() * 10);
+    const COL = Math.floor(Math.random() * 10);
+    const message = JSON.stringify({
+        type: 'sonar',
+        gameId: currentGameId,
+        playerId: userName,
+        coordinates: [ROW, COL]
+    });
+    ws.send(message);
+}
+
+function attackPlanes(){
+    const moves = [];
+    for(let i = 0; i<5; i++){
+        const row = Math.floor(Math.random() *10);
+        const col = Math.floor(Math.random() *10);
+        moves.push({row, col});
+    }
+    const message = JSON.stringify({
+        type: 'attack-planes',
+        gameId: currentGameId,
+        playerId: userName,
+        moves: moves
+    });
+    ws.send(message);
+}
+
+function handleAttackPlanes(moves) {
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const responses = moves.map(move => {
+        const { row, col } = move;
+        const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+        let response;
+        if (CELL.classList.contains('ship')) {
+            const hitDiv = document.createElement('div');
+            hitDiv.className = 'hit';
+            CELL.appendChild(hitDiv);
+            response = 'hit';
+        } else {
+            const missDiv = document.createElement('div');
+            missDiv.className = 'miss';
+            CELL.appendChild(missDiv);
+            response = 'miss';
+        }
+        return { coordinates: `${row}${col}`, response };
+    });
+
+    const message = JSON.stringify({
+        type: 'attack-planes-response',
+        gameId: currentGameId,
+        playerId: userName,
+        moves: responses
+    });
+
+    ws.send(message);
 }
