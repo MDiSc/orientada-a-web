@@ -241,12 +241,7 @@ function displayMove(coordinates, playerId, response) {
                     position.appendChild(hitDiv);
                     answer = 'hit';
                     checkSunk(ROW, col);
-                } else if(position.getAttribute('data-player') == userName && response == ''){
-                    const missDiv = document.createElement('div');
-                    missDiv.className = 'miss';
-                    position.appendChild(missDiv);
-                    answer = 'miss';
-                } else if(response == 'hit'){
+                }else if(response == 'hit'){
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
@@ -257,12 +252,26 @@ function displayMove(coordinates, playerId, response) {
                     missDiv.className = 'miss';
                     position.appendChild(missDiv);
                     answer = 'miss';
-                } else if(position.classList.contains('mine') && response == ''){
-                    const mineDiv = document.createElement('div');
-                    mineDiv.className = 'explosion';
-                    position.appendChild(mineDiv);
+                } else if(response == 'mine'){
+                    const explosionDiv = document.createElement('div');
+                    explosionDiv.className = 'explosion';
+                    position.appendChild(explosionDiv);
                     answer = 'mine';
-                }
+                }else if(position.getAttribute('data-player') == userName && response == ''){
+                    if (position.querySelector('.mine')) {
+                        const mineDiv = document.createElement('div');
+                        mineDiv.className = 'explosion';
+                        position.appendChild(mineDiv);
+                        answer = 'mine';
+                        console.log('Mina encontrada en las coordenadas:', coordinates);
+                    } else {
+                        const missDiv = document.createElement('div');
+                        missDiv.className = 'miss';
+                        position.appendChild(missDiv);
+                        answer = 'miss';
+                        console.log('No se encontró mina en las coordenadas:', coordinates);
+                    }
+                } 
             }
 
         }
@@ -445,7 +454,8 @@ ws.onmessage = function (event) {
                 break;
             case 'sonar-response':
                 console.log('Sonar response received:', data);
-                alert(`Se ha encontrado un barco en las coordenadas ${data.coordinates}`);
+                const answ = data.response == 'hit' ? 'Se' : 'No se';
+                alert(`${answ} ha encontrado un barco en las coordenadas ${data.coordinates}`);
                 break;
             case 'attack-planes':
                 console.log('Attack planes: ', data);
@@ -739,18 +749,21 @@ function scanTable(coordinates, playerId){
         senderId: playerId
     });
     ws.send(message);
+    console.log("Sonar-response: ", message);
 }
 
 function sonar(){
     const ROW = Math.floor(Math.random() * 10);
     const COL = Math.floor(Math.random() * 10);
+    const coordinates = `${ROW}${COL}`;
     const message = JSON.stringify({
         type: 'sonar',
         gameId: currentGameId,
         playerId: userName,
-        coordinates: [ROW, COL]
+        coordinates: coordinates
     });
     ws.send(message);
+    console.log("Sonar: ", message)
 }
 
 function attackPlanes(){

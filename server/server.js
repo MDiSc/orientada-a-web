@@ -220,7 +220,7 @@ function handleDisconnect(socket) {
     }
 }
 
-function handleSonar(socket, gameId, playerId) {
+function handleSonar(socket, gameId, playerId, coordinates) {
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
@@ -231,7 +231,6 @@ function handleSonar(socket, gameId, playerId) {
     const opponentSocket = players.get(opponentId);
 
     if (opponentSocket) {
-        const coordinates = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
         sendMessage(opponentSocket, {
             type: 'sonar',
             gameId: gameId,
@@ -241,16 +240,25 @@ function handleSonar(socket, gameId, playerId) {
         });
     }
 }
-function handleSonarResponse(socket, gameId, coordinates, response, senderId) {
-    const senderSocket = players.get(senderId);
-    if (senderSocket) {
-        sendMessage(senderSocket, {
-            type: 'sonar-response',
-            gameId: gameId,
-            coordinates: coordinates,
-            response: response
-        });
+function handleSonarResponse(socket, gameId, coordinates, response) {
+    console.log(`Received response ${response} for move at ${coordinates} from game ${gameId}`);
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
     }
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (!playerId) {
+        sendMessage(socket, { type: 'error', message: 'Player not found' });
+        return;
+    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            console.log(`Sending response to player ${playerId}`);
+            sendMessage(playerSocket, { type: 'sonar-response', playerId, coordinates, response });
+        }
+    });
 }
 
 function handleAttackPlanes(socket, gameId, playerId, moves) {
