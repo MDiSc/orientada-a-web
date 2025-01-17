@@ -50,7 +50,7 @@ function handleCreateGame(socket, playerId) {
  * @param {string} gameId - El ID del juego al que unirse.
  * @param {string} playerId - El ID del jugador que se une al juego.
  */
-function handleJoinGame(socket, gameId, playerId) {
+function handleJoinGame(socket, gameId, joiner) {
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
@@ -60,14 +60,24 @@ function handleJoinGame(socket, gameId, playerId) {
         sendMessage(socket, { type: 'error', message: 'Game is full' });
         return;
     }
-    game.players.push(playerId);
-    players.set(playerId, socket);
+
+    game.players.push(joiner);
+    players.set(joiner, socket);
+
     game.players.forEach((player) => {
         const playerSocket = players.get(player);
         if (playerSocket) {
-            sendMessage(playerSocket, { type: 'join-game', gameId, playerId, playerCount: game.players.length });
+            sendMessage(playerSocket, {
+                type: 'join-game',
+                gameId,
+                playerId: joiner,
+                playerCount: game.players.length,
+                players: game.players
+            });
         }
     });
+
+    console.log(`Player ${joiner} joined game ${gameId}`);
 }
 function handleStartGame(socket, gameId) {
     const game = games.get(gameId);
@@ -114,9 +124,10 @@ function parseMove(move) {
  * @param {string} gameId - El ID del juego.
  * @param {string} move - El movimiento del jugador.
  * @param {string} sender - El ID del jugador.
+ * @param {string} type -Tipo, si move o cruise.
  */
 function handleMove(socket, gameId, move, sender, type) {
-    console.log(`Received move ${move} for game ${gameId}`, "Type of move: ", typeof(move));
+    console.log(`Received move ${move} for game ${gameId}`, "Type of move: ", typeof (move));
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
@@ -139,11 +150,32 @@ function handleMove(socket, gameId, move, sender, type) {
     game.players.forEach((playerId) => {
         const playerSocket = players.get(playerId);
         if (playerSocket && playerSocket !== socket) {
-            sendMessage(playerSocket, { type: 'move', gameId, move, sender});
+            sendMessage(playerSocket, { type: type, gameId, move, sender });
         }
     });
     sendMessage(socket, { type: type, gameId, move, sender });
     game.turn = (game.turn + 1) % game.players.length;
+}
+
+function handleEmp(socket, gameId, sender) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (!playerId) {
+        sendMessage(socket, { type: 'error', message: 'Player not found' });
+        return;
+    }
+    console.log('Received EMP: ', gameId, playerId, socket);
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            sendMessage(playerSocket, { type: 'emp-attack', gameId, sender });
+        }
+    });
+    //sendMessage(socket, { type: 'emp-attack', gameId, sender });
 }
 
 /**
@@ -261,36 +293,77 @@ function handleSonarResponse(socket, gameId, coordinates, response) {
     });
 }
 
-function handleAttackPlanes(socket, gameId, playerId, moves) {
+function handleAttackPlanes(socket, gameId, sender, moves) {
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
         return;
     }
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (!playerId) {
+        sendMessage(socket, { type: 'error', message: 'Player not found' });
+        return;
+    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            console.log(`Sending response to player ${playerId}`);
+            sendMessage(playerSocket, {
+                type: 'attack-planes',
+                gameId: gameId,
+                playerId: playerId,
+                moves: moves,
+                senderId: sender
+            });
+        }
+    });
 
-    const opponentId = game.players.find(id => id !== playerId);
-    const opponentSocket = players.get(opponentId);
+}
 
-    if (opponentSocket) {
-        sendMessage(opponentSocket, {
-            type: 'attack-planes',
-            gameId: gameId,
-            playerId: opponentId,
-            moves: moves,
-            senderId: playerId
+function handlePlayerReady(socket, gameId, playerId) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+    game.playersReady = game.playersReady || new Set();
+    game.playersReady.add(playerId);
+
+    if (game.playersReady.size === game.players.length) {
+        game.players.forEach((playerId) => {
+            const playerSocket = players.get(playerId);
+            if (playerSocket) {
+                sendMessage(playerSocket, { type: 'all-players-ready', gameId });
+            }
         });
+        console.log(`All players are ready for game ${gameId}`);
     }
 }
-function handleAttackPlanesResponse(socket, gameId, playerId, moves) {
-    const senderSocket = players.get(playerId);
-    if (senderSocket) {
-        sendMessage(senderSocket, {
-            type: 'attack-planes-response',
-            gameId: gameId,
-            playerId: playerId,
-            moves: moves
-        });
+
+function handleAttackPlanesResponse(socket, gameId, sender, moves) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
     }
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
+    if (!playerId) {
+        sendMessage(socket, { type: 'error', message: 'Player not found' });
+        return;
+    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== socket) {
+            console.log(`Sending attack plane response to player ${playerId}`);
+            sendMessage(playerSocket, {
+                type: 'attack-planes-response',
+                gameId: gameId,
+                playerId: playerId,
+                moves: moves,
+                sender: sender
+            });
+        }
+    });
 }
 /**
  * Maneja los mensajes recibidos a través de la conexión WebSocket.
@@ -312,11 +385,14 @@ function handleMessage(socket, message) {
         case 'start-game':
             handleStartGame(socket, message.gameId);
             break;
+        case 'player-ready':
+            handlePlayerReady(socket, message.gameId, message.playerId);
+            break;
         case 'move':
             handleMove(socket, message.gameId, message.coordinates, message.playerId, message.type);
             break;
         case 'cruise':
-            handleMove(socket, message.gameId, message.coordinates, message.playerId, message.type);
+            handleMove(socket, message.gameId, message.coordinates, message.playerId, 'cruise');
             break;
         case 'response':
             handleResponse(socket, message.gameId, message.coordinates, message.response, message.playerId);
@@ -335,6 +411,9 @@ function handleMessage(socket, message) {
             break;
         case 'attack-planes-response':
             handleAttackPlanesResponse(socket, message.gameId, message.playerId, message.moves);
+            break;
+        case 'emp-attack':
+            handleEmp(socket, message.gameId, message.playerId);
             break;
         default:
             sendMessage(socket, { type: 'error', message: 'Unknown message type' });

@@ -323,7 +323,7 @@ form#register input[type="submit"]:hover {
     align-items: center;
 }
 
-#placed-ships li button,#confirm-button {
+#placed-ships li button,#confirm-button,#add-mine,#remove-mine{
     padding: 5px 10px;
     background-color: #405aa1;
     color: white;
@@ -333,7 +333,7 @@ form#register input[type="submit"]:hover {
     transition: background-color ease 0.3s;
 }
 
-#placed-ships li button:hover, #confirm-button:hover {
+#placed-ships li button:hover, #confirm-button:hover,#add-mine:hover,#remove-mine:hover {
     background-color: #4b6ac0;
 }
 
@@ -559,7 +559,54 @@ body {
     top: 0;
     left: 0;
 }
+#player-points{
+    color:white;
+    text-shadow: 0px 0px 4px rgb(0, 243, 101);
+}
+#power-ups-h3{
+    display: flex;
+    justify-content: center;
+    color: white;
+    text-shadow: 0px 0px 4px rgb(84, 197, 250);
+}
 
+label[for="mine"] {
+    /* propiedades CSS */
+}
+
+.power-up-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    border: 2px solid black;
+    width:fit-content;
+    border-radius: 5px;
+    background-color: black;
+}
+.power-up-container img{
+    height:42px;
+    border-radius: 5px;
+}
+
+.power-up-btn{
+    /*font-family: 'PuristaMedium';*/
+    color: white;
+    border-radius: 5px;
+    padding: 12px;
+    border:none;
+    background-color: #686868;
+    transition: background-color ease 0.2s, border-right ease 0.3s,border-left ease 0.3s;
+
+}
+
+.power-up-btn:hover{
+    color: #a1c7ff;
+    border-left: 1px solid #2a7af3;
+    border-right: 1px solid #2a7af3;
+    background-color: #474747;
+}
 
 footer {
     padding: 20px;
@@ -649,7 +696,7 @@ nav ul {
     height: 100%;
 }
 
-nav ul li a {
+nav ul li a{
     font-family: 'PuristaMedium';
     color: white;
     text-decoration: none;

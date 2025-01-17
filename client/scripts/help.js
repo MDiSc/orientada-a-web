@@ -5,6 +5,10 @@ let inGameLobby = false;
 let players = new Map();
 function createTable(userName) {
     const BOARDS = document.getElementById('tables');
+    if (BOARDS.querySelector(`[data-player="${userName}"]`)) {
+        console.log(`Table for ${userName} already exists`);
+        return;
+    }
     const BOARD = document.createElement('div');
     BOARD.setAttribute('data-player', userName);
     BOARD.className = 'battleship-board';
@@ -184,10 +188,16 @@ document.getElementById('confirm-button').addEventListener('click', function () 
     console.log(players);
     console.log("Ships map: ", ships);
     loadTables(players);
+    const message = JSON.stringify({
+        type: 'player-ready',
+        gameId: currentGameId,
+        playerId: userName
+    });
+    ws.send(message);
 });
 
 function loadTables(players) {
-    players.forEach((player, playerId) => {
+    players.forEach((playerId) => {
         if (playerId != userName) {
             createTable(playerId);
             const BOARD = document.querySelector(`[data-player="${playerId}"]`);
@@ -208,6 +218,7 @@ function loadTables(players) {
 
 
 function displayMove(coordinates, playerId, response) {
+    console.log('Displaying move:', coordinates, playerId, response);
     if (!coordinates || coordinates.length !== 2) {
         console.error("Error: coordinates is undefined or invalid");
         return;
@@ -271,11 +282,34 @@ function displayMove(coordinates, playerId, response) {
                         answer = 'miss';
                         console.log('No se encontró mina en las coordenadas:', coordinates);
                     }
-                } 
+                }
             }
 
         }
     });
+    if (response == 'cruise') {
+        for(let i = 0; i<3; i++){
+            for(let j = 0; j<3; j++){
+                let ROW = parseInt(coordinates[0], 10) + i;
+                let COL = parseInt(coordinates[1], 10) + j;
+                let CELL = document.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${COL}"]`);
+                if(CELL){
+                    if(CELL.classList.contains('ship')){
+                        const hitDiv = document.createElement('div');
+                        hitDiv.className = 'hit';
+                        CELL.appendChild(hitDiv);
+                        answer = 'hit';
+                        checkSunk(ROW, COL);
+                    }else{
+                        const missDiv = document.createElement('div');
+                        missDiv.className = 'miss';
+                        CELL.appendChild(missDiv);
+                        answer = 'miss';
+                    }
+                }
+            }
+        }
+    }
     if(response == '' && playerId != userName){
         const MESSAGE = JSON.stringify({
             type: 'response',
@@ -365,24 +399,58 @@ document.getElementById('start-game').addEventListener('click', function (event)
     createTable(userName);
 });
 
+function validateCruiseMissileMove(move) {
+    if (move.length !== 2) return false;
+    const row = parseInt(move[0], 10);
+    const col = parseInt(move[1], 10);
+    if (isNaN(row) || isNaN(col)) return false;
+    if (row < 1 || row > 8 || col < 1 || col > 8) return false;
+    return true;
+}
+
 document.getElementById('send-moves-form').addEventListener('submit', function (event) {
     event.preventDefault();
+    let type = 'move';
     const moveInput = event.target.querySelector('input[type="text"]').value;
     console.log('Move input:', moveInput);
+    if (cruiseMissileMode) {
+        if (validateCruiseMissileMove(move)) {
+            type = 'cruise'
+            updatePlayerPoints(-15);
+        } else {
+            alert('Invalid move for cruise missile. Please enter a valid coordinate.');
+        }
+    }
+    moveInput.value = '';
     const message = JSON.stringify({
-        type: 'move',
+        type: type,
         coordinates: moveInput,
         gameId: currentGameId,
         playerId: userName
     });
     ws.send(message);
-    moveInput.value = '';
+    if(emp != 0){
+        emp --;
+    }
+    empAttack();
+    console.log("Turnos EMP restantes: ", emp);
 });
+
 
 const onlineGames = document.getElementById('online-games');
 const connectedPlayers = document.getElementById('connected-players');
 const connectedPlayersUl = document.getElementById('connected-players-ul');
 const matchId = document.getElementById('match-id');
+
+function updatePlayerList(players){
+    const connectedPlayersUl = document.getElementById('connected-players-ul');
+    connectedPlayersUl.innerHTML = '';
+    players.forEach((playerId) => {
+        const li = document.createElement('li');
+        li.textContent = playerId;
+        connectedPlayersUl.appendChild(li);
+    });
+}
 
 function addPlayerToList(playerId) {
     const li = document.createElement('li');
@@ -413,6 +481,10 @@ ws.onmessage = function (event) {
                 console.log(data);
                 displayMove(data.coordinates, data.playerId, data.response);
                 break;
+            case 'cruise':
+                console.log('Mensaje cruise: ', data);
+                displayMove(data.move, data.sender, data.type, 'cruise');
+                break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
                 console.log('Creator:', data.creatorId);
@@ -437,6 +509,7 @@ ws.onmessage = function (event) {
                 console.log('la data dice: ', data);
                 addPlayerToList(data.playerId);
                 players.set(data.playerId, { playerId: data.playerId });
+                updatePlayerList(players);
                 document.getElementById('create-game').style = 'display: none;';
                 document.getElementById('join-game').style = 'display: none;';
                 document.getElementById('start-game').style = 'display: block;';
@@ -447,6 +520,7 @@ ws.onmessage = function (event) {
                 document.getElementById('lobby').style.display = 'none';
                 document.getElementById('deck').style.display = 'block';
                 document.getElementById('placed-ships').style.display = 'block';
+                createTable(userName);
                 break;
             case 'sonar':
                 console.log('Sonar received:', data);
@@ -467,6 +541,12 @@ ws.onmessage = function (event) {
                     displayMove(move.coordinates, data.playerId, move.response);
                 });
                 break;  
+            case 'emp-attack':
+                console.log('EMP received');
+                alert("Has recibido un ataque EMP");
+                emp = 3;
+                empAttack();
+                break;
             default:
                 console.log('Unknown message type:', data);
         }
@@ -589,14 +669,18 @@ document.addEventListener('mouseup', function(e) {
 
 
 //POWER-UPS
-let playerPoints = 5;
+let playerPoints = 100;
 
-document.getElementById('sonar').addEventListener('click', function() {
+document.getElementById('sonar').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
     sonar();
     updatePlayerPoints(-5);
 });
 
-document.getElementById('attack-planes').addEventListener('click', function() {
+document.getElementById('attack-planes').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
     attackPlanes();
     updatePlayerPoints(-10);
 });
@@ -634,20 +718,46 @@ document.getElementById('mine-placement-form').addEventListener('submit', functi
     }
 });
 
-document.getElementById('defensive-shield').addEventListener('click', function() {
+document.getElementById('defensive-shield').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
     defensiveShield();
 });
-
-document.getElementById('cruise-missile').addEventListener('click', function() {
-    cruiseMissile();
+let cruiseMissileMode = false;
+document.getElementById('cruise-missile').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    cruiseMissileMode = !cruiseMissileMode;
+    this.classList.toggle('active', cruiseMissileMode);
+    console.log('Cruise missile mode:', cruiseMissileMode);
 });
 
-document.getElementById('quick-repair').addEventListener('click', function() {
+document.getElementById('quick-repair').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
     quickRepair();
 });
 
-document.getElementById('emp-attack').addEventListener('click', function() {
-    empAttack();
+let emp = 0;
+function empAttack(){
+    const powerUps = document.getElementById('power-ups');
+    if(emp != 0){
+        powerUps.style.display = 'none';
+    }else{
+        powerUps.style.display = 'block';
+    }
+}
+
+document.getElementById('emp-attack').addEventListener('click', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    updatePlayerPoints(-25);
+    const message = JSON.stringify({
+        type: 'emp-attack',
+        gameId: currentGameId,
+        playerId: userName
+    });
+    ws.send(message);
 });
 
 function seaMine(coordinates, BOARD){
@@ -691,41 +801,63 @@ function updatePlayerPoints(points){
 }
 
 function displayPowerUps(points){
+    console.log(points);
     const sonar = document.getElementById('sonar');
+    const sonarContainer = document.getElementById('sonar-container')
     const attackPlanes = document.getElementById('attack-planes');
+    const attackPlanesContainer = document.getElementById('air-strike-container');
     const defensiveShield = document.getElementById('defensive-shield');
+    const defensiveShieldContainer = document.getElementById('force-field-container');
     const cruiseMissile = document.getElementById('cruise-missile');
+    const cruiseMissileContainer = document.getElementById('cruiser-missile-container');
     const quickRepair = document.getElementById('quick-repair');
+    const quickRepairContainer = document.getElementById('quick-fix-container');
     const empAttack = document.getElementById('emp-attack');
+    const empAttackContainer = document.getElementById('emp-container');
     if(points>= 5){
+        console.log('mostrando sonar');
         sonar.style.display = 'block';
+        sonarContainer.style.display = 'flex';
     }else{
         sonar.style.display = 'none';
+        sonarContainer.style.display = 'none';
     } 
     if(points >=10){
         attackPlanes.style.display = 'block';
+        attackPlanesContainer.style.display = 'flex';
         quickRepair.style.display = 'block';
+        quickRepairContainer.style.display = 'flex';
     }else{
         attackPlanes.style.display = 'none';
+        attackPlanesContainer.style.display = 'none';
         quickRepair.style.display = 'none';
+        quickRepairContainer.style.display = 'none';
     }
     if(points >= 15){
         defensiveShield.style.display = 'block';
+        defensiveShieldContainer.style.display = 'flex';
         cruiseMissile.style.display = 'block';
+        cruiseMissileContainer.style.display = 'flex';
     }else{
         defensiveShield.style.display = 'none';
+        defensiveShieldContainer.style.display = 'none';
         cruiseMissile.style.display = 'none';
+        cruiseMissileContainer.style.display = 'none';
     }
     if(points >= 20){
         empAttack.style.display = 'block';
+        empAttackContainer.style.display = 'flex';
     }else{
         empAttack.style.display = 'none';
+        empAttackContainer.style.display = 'none';
     }
     if(carrier.status == 'sunk'){
         attackPlanes.style.display = 'none';
+        attackPlanesContainer.style.display = 'none';
     }
     if(submarine.status == 'sunk'){
         sonar.style.display = 'none';
+        sonarContainer.style.display = 'none';
     }
 }
 
