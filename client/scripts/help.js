@@ -206,14 +206,6 @@ function loadTables(players) {
     document.getElementById('send-moves-container').style.display = 'block';
 }
 
-function handleCruiseMissile(coordinates) {
-
-
-}
-
-function handleCruiseResponse(moves){
-
-}
 
 function displayMove(coordinates, playerId, response) {
     console.log('Displaying move:', coordinates, playerId, response);
@@ -249,13 +241,17 @@ function displayMove(coordinates, playerId, response) {
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
-                    checkSunk(ROW, col);
+                    checkSunk();
+                }else if(position.classList.contains('shield') && response == ''){
+                    position.classList.remove('shield');
+                    alert('Alerta, tu escudo ha sido golpeado');
+                    answer = 'shield';
                 }else if(response == 'hit'){
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
-                    checkSunk(ROW, col);
+                    checkSunk();
                 } else if(response == 'miss'){
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
@@ -297,7 +293,7 @@ function displayMove(coordinates, playerId, response) {
     }
 }
 
-function checkSunk(row, col){
+function checkSunk(){
     checkShipSunk(submarine);
     checkShipSunk(carrier);
 }
@@ -414,11 +410,14 @@ document.getElementById('start-game').addEventListener('click', function (event)
 });
 
 function validateCruiseMissileMove(move) {
-    if (move.length !== 2) return false;
-    const row = parseInt(move[0], 10);
-    const col = parseInt(move[1], 10);
-    if (isNaN(row) || isNaN(col)) return false;
-    if (row < 1 || row > 8 || col < 1 || col > 8) return false;
+    const { row, col } = move;
+    const boardSize = 10;
+    if (row < 0 || row >= boardSize || col < 0 || col >= boardSize) {
+        return false;
+    }
+    if (row + 2 >= boardSize || col + 2 >= boardSize) {
+        return false;
+    }
     return true;
 }
 let turn = true;
@@ -475,6 +474,33 @@ function handleCPUMove() {
 }
 let cpuMode = false;
 let playerMoves = new Set();
+
+function loadMoves(moveInput) {
+    console.log('moveinput ',moveInput);
+    const moves = [];
+    const row = parseInt(moveInput[0], 10);
+    const col = parseInt(moveInput[1], 10);
+
+    if (row === null || col === null) {
+        console.error('Invalid move input:', moveInput);
+        return;
+    }
+
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            moves.push({ row: row + i, col: col + j });
+        }
+    }
+
+    const message = JSON.stringify({
+        type: 'cruise',
+        gameId: currentGameId,
+        playerId: userName,
+        moves: moves
+    });
+    console.log('movimientos antes de enviar: ', moves);
+    ws.send(message);
+}
 document.getElementById('send-moves-form').addEventListener('submit', function (event) {
     event.preventDefault();
     let type = 'move';
@@ -499,20 +525,24 @@ document.getElementById('send-moves-form').addEventListener('submit', function (
     }
     if (cruiseMissileMode) {
         if (validateCruiseMissileMove(moveInput)) {
-            type = 'cruise'
+            loadMoves(moveInput);
             updatePlayerPoints(-15);
+            playerMoves.add(moveInput);
         } else {
-            alert('Invalid move for cruise missile. Please enter a valid coordinate.');
+            alert('Invalid move for cruise missile. Please enter a valid coordinate.', moveInput);
         }
     }
     moveInput.value = '';
-    const message = JSON.stringify({
-        type: type,
-        coordinates: moveInput,
-        gameId: currentGameId,
-        playerId: userName
-    });
-    ws.send(message);
+    if(!cruiseMissileMode){
+            const message = JSON.stringify({
+            type: type,
+            coordinates: moveInput,
+            gameId: currentGameId,
+            playerId: userName,
+        });
+        ws.send(message);
+    }
+
     if(emp != 0){
         emp --;
     }
@@ -579,6 +609,10 @@ ws.onmessage = function (event) {
                 }
                 if(data.response == 'mine'){
                     randomHit();
+                }
+                if(data.response == 'shield'){
+                    playerMoves.delete(data.coordinates);
+                    alert('Tu movimiento fue bloqueado');
                 }
                 console.log(data);
                 displayMove(data.coordinates, data.playerId, data.response);
@@ -847,6 +881,49 @@ document.getElementById('mine-placement-form').addEventListener('submit', functi
     }
 });
 
+function defensiveShield() {
+    // Create the form
+    const form = document.createElement('form');
+    form.id = 'defensive-shield-form';
+    form.innerHTML = `
+        <label for="shield-coordinates">Ingrese las coordenadas iniciales del escudo (ej. 00):</label>
+        <input type="text" id="shield-coordinates" name="shield-coordinates" maxlength="2" required>
+        <button type="submit">Add Shield</button>
+    `;
+
+    document.body.appendChild(form);
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const coordinates = document.getElementById('shield-coordinates').value;
+        const row = parseInt(coordinates[0], 10);
+        const col = parseInt(coordinates[1], 10);
+
+        if (isNaN(row) || isNaN(col) || row > 7 || col > 7) {
+            alert('Coordenadas invalidas');
+            return;
+        }
+        addShield(row, col);
+        form.remove();
+    });
+}
+
+function addShield(row, col) {
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            const targetRow = row + i;
+            const targetCol = col + j;
+            const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${targetRow}"][data-col="${targetCol}"]`);
+            if (CELL) {
+                const shieldDiv = document.createElement('div');
+                shieldDiv.className = 'shield';
+                CELL.appendChild(shieldDiv);
+            }
+        }
+    }
+}
+
 document.getElementById('defensive-shield').addEventListener('click', function(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -996,7 +1073,7 @@ function scanTable(coordinates, playerId){
     const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const ROW = parseInt(coordinates[0]);
     const COL = parseInt(coordinates[1]);
-    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}][data-col="${COL}"]`);
+    const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${COL}"]`);
     if(CELL.classList.contains('ship')){
         response = 'hit';
     }else{
@@ -1048,6 +1125,9 @@ function handleMultipleAttacks(moves, type) {
     const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const responses = moves.map(move => {
         const { row, col } = move;
+        if (row === null || col === null) {
+            return { coordinates: `${row}${col}`, response: 'invalid' };
+        }
         const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
         let response;
         if (CELL.classList.contains('ship')) {
@@ -1058,10 +1138,13 @@ function handleMultipleAttacks(moves, type) {
                 response = 'hit';
             }
         } else {
-            const missDiv = document.createElement('div');
-            missDiv.className = 'miss';
-            CELL.appendChild(missDiv);
-            response = 'miss';
+            if(!CELL.classList.contains('miss')){
+                const missDiv = document.createElement('div');
+                missDiv.className = 'miss';
+                CELL.appendChild(missDiv);
+                response = 'miss'; 
+            }
+            
         }
         return { coordinates: `${row}${col}`, response };
     });
