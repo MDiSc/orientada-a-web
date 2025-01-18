@@ -236,16 +236,16 @@ function displayMove(coordinates, playerId, response) {
                 return;
             }
             if(position.getAttribute('data-player') != playerId){
-                if (position.classList.contains('ship') && response == '') {
+                if(position.querySelector('.shield') && response == ''){
+                    position.querySelector('.shield').remove();
+                    alert('Alerta, tu escudo ha sido golpeado');
+                    answer = 'shield';
+                }else if (position.classList.contains('ship') && response == '') {
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
                     checkSunk();
-                }else if(position.classList.contains('shield') && response == ''){
-                    position.classList.remove('shield');
-                    alert('Alerta, tu escudo ha sido golpeado');
-                    answer = 'shield';
                 }else if(response == 'hit'){
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
@@ -890,8 +890,8 @@ function defensiveShield() {
         <input type="text" id="shield-coordinates" name="shield-coordinates" maxlength="2" required>
         <button type="submit">Add Shield</button>
     `;
-
-    document.body.appendChild(form);
+    const send = document.getElementById('send-moves-container');
+    send.appendChild(form);
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
