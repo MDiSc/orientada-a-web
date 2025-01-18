@@ -184,15 +184,16 @@ document.getElementById('confirm-button').addEventListener('click', function () 
     console.log('Confirm button clicked');
     document.getElementById('deck').style.display = 'none';
     document.getElementById('placed-ships').style.display = 'none';
-    document.getElementById('send-moves-container').style.display = 'block';
     console.log(players);
     console.log("Ships map: ", ships);
-    const message = JSON.stringify({
-        type: 'player-ready',
-        gameId: currentGameId,
-        playerId: userName
-    });
-    ws.send(message);
+    if(!cpuMode){
+        const message = JSON.stringify({
+            type: 'player-ready',
+            gameId: currentGameId,
+            playerId: userName
+        });
+        ws.send(message);        
+    }
 });
 
 function loadTables(players) {
@@ -216,8 +217,52 @@ function loadTables(players) {
     const powerUps = document.getElementById('power-ups');
     powerUps.style.display = 'block';
     updatePlayerPoints(0);
+    document.getElementById('send-moves-container').style.display = 'block';
 }
 
+function handleCruiseMissile(coordinates) {
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const responses = [];
+
+    const row = parseInt(coordinates[0]);
+    const col = parseInt(coordinates[1]);
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            const targetRow = row + i;
+            const targetCol = col + j;
+            const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${targetRow}"][data-col="${targetCol}"]`);
+            if (CELL) {
+                let response;
+                if (CELL.classList.contains('ship')) {
+                    if (!CELL.classList.contains('hit')) {
+                        const hitDiv = document.createElement('div');
+                        hitDiv.className = 'hit';
+                        CELL.appendChild(hitDiv);
+                        response = 'hit';
+                    }
+                } else {
+                    const missDiv = document.createElement('div');
+                    missDiv.className = 'miss';
+                    CELL.appendChild(missDiv);
+                    response = 'miss';
+                }
+                responses.push({ coordinates: `${targetRow}${targetCol}`, response });
+            }
+        }
+    }
+
+    const message = JSON.stringify({
+        type: 'cruise-response',
+        gameId: currentGameId,
+        playerId: userName,
+        moves: responses
+    });
+    ws.send(message);
+}
+
+function handleCruiseResponse(moves){
+
+}
 
 function displayMove(coordinates, playerId, response) {
     console.log('Displaying move:', coordinates, playerId, response);
@@ -289,29 +334,6 @@ function displayMove(coordinates, playerId, response) {
 
         }
     });
-    if (response == 'cruise') {
-        for(let i = 0; i<3; i++){
-            for(let j = 0; j<3; j++){
-                let ROW = parseInt(coordinates[0], 10) + i;
-                let COL = parseInt(coordinates[1], 10) + j;
-                let CELL = document.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${COL}"]`);
-                if(CELL){
-                    if(CELL.classList.contains('ship')){
-                        const hitDiv = document.createElement('div');
-                        hitDiv.className = 'hit';
-                        CELL.appendChild(hitDiv);
-                        answer = 'hit';
-                        checkSunk(ROW, COL);
-                    }else{
-                        const missDiv = document.createElement('div');
-                        missDiv.className = 'miss';
-                        CELL.appendChild(missDiv);
-                        answer = 'miss';
-                    }
-                }
-            }
-        }
-    }
     if(response == '' && playerId != userName){
         const MESSAGE = JSON.stringify({
             type: 'response',
@@ -379,12 +401,51 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 document.getElementById('vs-cpu').addEventListener('click', function (event) {
     event.preventDefault();
+    cpuMode = true;
     document.getElementById('lobby').style.display = 'none';
     document.getElementById('deck').style.display = 'block';
     document.getElementById('placed-ships').style.display = 'block';
     createTable(userName);
-    
+    createTable('CPU');
+    placeCPUShips();
 });
+
+function placeCPUShips(){
+    const ships = [5, 4, 3, 3, 2];
+    ships.forEach(shipLength => {
+        let placed = false;
+        while (!placed) {
+            const startRow = Math.floor(Math.random() * 10);
+            const startCol = Math.floor(Math.random() * 10);
+            const direction = Math.floor(Math.random() * 2);
+
+            let canPlace = true;
+            for (let i = 0; i < shipLength; i++) {
+                const row = direction === 0 ? startRow : startRow + i;
+                const col = direction === 0 ? startCol + i : startCol;
+                const cell = document.querySelector(`.position[data-player="CPU"][data-row="${row}"][data-col="${col}"]`);
+                if (!cell || cell.classList.contains('ship')) {
+                    canPlace = false;
+                    break;
+                }
+            }
+            if (canPlace) {
+                for (let i = 0; i < shipLength; i++) {
+                    const row = direction === 0 ? startRow : startRow + i;
+                    const col = direction === 0 ? startCol + i : startCol;
+                    const cell = document.querySelector(`.position[data-player="CPU"][data-row="${row}"][data-col="${col}"]`);
+                    const shipDiv = document.createElement('div');
+                    shipDiv.className = 'ship';
+                    cell.appendChild(shipDiv);
+                    if (direction == 0) {
+                        cell.classList.add('horizontal');
+                    }
+                }
+                placed = true;
+            }
+        }
+    });
+}
 
 document.getElementById('start-game').addEventListener('click', function (event) {
     event.preventDefault();
@@ -409,14 +470,84 @@ function validateCruiseMissileMove(move) {
     if (row < 1 || row > 8 || col < 1 || col > 8) return false;
     return true;
 }
+let turn = true;
 
+function handlePlayerMove(coordinates) {
+    console.log("HandlePlayerMove called");
+    const [row, col] = coordinates.split('').map(Number);
+    const cell = document.querySelector(`.position[data-player="CPU"][data-row="${row}"][data-col="${col}"]`);
+    if (cell) {
+        if (cell.querySelector('.ship')) {
+            const hitDiv = document.createElement('div');
+            hitDiv.className = 'hit';
+            cell.appendChild(hitDiv);
+            console.log('Hit on CPU ship!');
+        } else {
+            const missDiv = document.createElement('div');
+            missDiv.className = 'miss';
+            cell.appendChild(missDiv);
+            console.log('Missed on CPU board.');
+        }
+        if(checkGameOver('CPU')){
+            endGame('Player');
+        }
+    }
+}
+let cpuMoves = new Set();
+function handleCPUMove() {
+    let move;
+    let row, col;
+    do {
+        row = Math.floor(Math.random() * 10);
+        col = Math.floor(Math.random() * 10);
+        move = `${row}${col}`;
+    } while (cpuMoves.has(move));
+    cpuMoves.add(move);
+    const cell = document.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+    console.log("HandleCPUMove called");
+    if (cell) {
+        if (cell.classList.contains('ship')) {
+            const hitDiv = document.createElement('div');
+            hitDiv.className = 'hit';
+            cell.appendChild(hitDiv);
+            console.log('CPU hit your ship!');
+        } else {
+            const missDiv = document.createElement('div');
+            missDiv.className = 'miss';
+            cell.appendChild(missDiv);
+            console.log('CPU missed.');
+        }
+        if(checkGameOver(userName)){
+            endGame('CPU');
+        }
+    }
+}
+let cpuMode = false;
+let playerMoves = new Set();
 document.getElementById('send-moves-form').addEventListener('submit', function (event) {
     event.preventDefault();
     let type = 'move';
     const moveInput = event.target.querySelector('input[type="text"]').value;
+    if(playerMoves.has(moveInput)){
+        alert('Ya has atacado a esta casilla. Por favor, selecciona otra.');
+        return;
+    }
     console.log('Move input:', moveInput);
+    if (cpuMode) {
+        if (turn) {
+            // Player's turn
+            handlePlayerMove(moveInput);
+            turn = false;
+            setTimeout(() => {
+                handleCPUMove();
+                turn = true;
+            }, 1000); // Delay for CPU move
+        }
+        event.target.querySelector('input[type="text"]').value = '';
+        return;
+    }
     if (cruiseMissileMode) {
-        if (validateCruiseMissileMove(move)) {
+        if (validateCruiseMissileMove(moveInput)) {
             type = 'cruise'
             updatePlayerPoints(-15);
         } else {
@@ -482,6 +613,12 @@ ws.onmessage = function (event) {
                 console.log('Move received:', data);
                 console.log('Coordinates:', data.move, "Type: ", typeof(data.move));
                 displayMove(data.move, data.sender, '');
+                updatePlayerPoints(0);
+                checkGameOver(userName);
+                break;
+            case 'not-turn':
+                alert('No es tu turno todavia');
+                playerMoves.delete(data.move);
                 break;
             case 'response':
                 console.log('Received from player: ', data.playerId);
@@ -497,7 +634,11 @@ ws.onmessage = function (event) {
                 break;
             case 'cruise':
                 console.log('Mensaje cruise: ', data);
-                displayMove(data.move, data.sender, data.type, 'cruise');
+                handleCruiseMissile(data.coordinates);
+                break;
+            case 'cruise-response':
+                console.log('Mensjae cruise-response: ', data);
+                handleCruiseResponse(data.responses);
                 break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
@@ -563,11 +704,18 @@ ws.onmessage = function (event) {
                 emp = 3;
                 empAttack();
                 break;
+<<<<<<< HEAD
             case 'game-created':
                 console.log('A game with the id of _ was created by the player _');
                 alert("New Game created, nigga");
                 
                 break;    
+=======
+            case 'player-out':
+                console.log('Player out: ', data);
+                handlePlayerOut(data);
+                break;
+>>>>>>> 7c33035129b56de9e2f58a639963746ce70df978
             default:
                 console.log('Unknown message type:', data);
         }
@@ -575,6 +723,16 @@ ws.onmessage = function (event) {
         console.error('Error parsing JSON:', e, 'Data received:', event.data);
     }
 };
+
+function handlePlayerOut(data) {
+    alert('Jugador ', data.playerId, ' ha sido hundido');
+    const { playerId } = data;
+    const playerTable = document.querySelector(`.table[data-player="${playerId}"]`);
+    if (playerTable) {
+        playerTable.style.display = 'none';
+    }
+}
+
 function sendMessage() {
     const gameIdInput = document.getElementById('game-id');
 
@@ -924,6 +1082,7 @@ function attackPlanes(){
         const row = Math.floor(Math.random() *10);
         const col = Math.floor(Math.random() *10);
         moves.push({row, col});
+        playerMoves.add(`${row}${col}`);
     }
     const message = JSON.stringify({
         type: 'attack-planes',
@@ -941,10 +1100,12 @@ function handleAttackPlanes(moves) {
         const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
         let response;
         if (CELL.classList.contains('ship')) {
-            const hitDiv = document.createElement('div');
-            hitDiv.className = 'hit';
-            CELL.appendChild(hitDiv);
-            response = 'hit';
+            if(!CELL.classList.contains('hit')){
+                const hitDiv = document.createElement('div');
+                hitDiv.className = 'hit';
+                CELL.appendChild(hitDiv);
+                response = 'hit';
+            }
         } else {
             const missDiv = document.createElement('div');
             missDiv.className = 'miss';
@@ -962,4 +1123,29 @@ function handleAttackPlanes(moves) {
     });
 
     ws.send(message);
+}
+
+
+function checkGameOver(player) {
+    const cells = document.querySelectorAll(`.position[data-player="${player}"] .ship`);
+    let hitCount = 0;
+    for (let cell of cells) {
+        if (cell.classList.contains('hit')) {
+            hitCount++;
+        }
+    }
+    if (hitCount === 17) {
+        const message = JSON.stringify({
+            type: 'player-out',
+            gameId: currentGameId,
+            playerId: player
+        });
+        ws.send(message);
+        return true;
+    }
+    return false;
+}
+
+function endGame(winner) {
+    alert(`${winner} wins the game!`);
 }
