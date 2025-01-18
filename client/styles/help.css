@@ -275,7 +275,7 @@ form#register input[type="submit"]:hover {
 }
 
 #ship-placement-form input[type="text"],
-#ship-placement-form select {
+#ship-placement-form select,#mine-coordinates{
     padding: 5px;
     margin-top: 5px;
     border: 1px solid #405aa1;
@@ -570,10 +570,28 @@ body {
     text-shadow: 0px 0px 4px rgb(84, 197, 250);
 }
 
-label[for="mine"] {
-    /* propiedades CSS */
+label[for="mine"]{
+    color:white;
+    text-shadow: 0px 0px 4px rgb(84, 197, 250);
 }
 
+#mine-placement-form{
+    margin-top: 20px;
+}
+
+#mine-placement-form input{
+    margin-top: 15px;
+}
+
+#mine-placement-form button{
+    margin-top: 15px;
+}
+#power-ups{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+}
 .power-up-container{
     display: flex;
     flex-direction: row;
@@ -581,9 +599,10 @@ label[for="mine"] {
     align-content: center;
     justify-content: center;
     border: 2px solid black;
-    width:fit-content;
+    width:100%;
     border-radius: 5px;
     background-color: black;
+    border: 1px solid #405aa1;
 }
 .power-up-container img{
     height:42px;
@@ -598,7 +617,7 @@ label[for="mine"] {
     border:none;
     background-color: #686868;
     transition: background-color ease 0.2s, border-right ease 0.3s,border-left ease 0.3s;
-
+    width:100%;
 }
 
 .power-up-btn:hover{

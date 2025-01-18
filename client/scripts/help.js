@@ -187,7 +187,6 @@ document.getElementById('confirm-button').addEventListener('click', function () 
     document.getElementById('send-moves-container').style.display = 'block';
     console.log(players);
     console.log("Ships map: ", ships);
-    loadTables(players);
     const message = JSON.stringify({
         type: 'player-ready',
         gameId: currentGameId,
@@ -197,7 +196,7 @@ document.getElementById('confirm-button').addEventListener('click', function () 
 });
 
 function loadTables(players) {
-    players.forEach((playerId) => {
+    /*players.forEach((playerId) => {
         if (playerId != userName) {
             createTable(playerId);
             const BOARD = document.querySelector(`[data-player="${playerId}"]`);
@@ -210,6 +209,9 @@ function loadTables(players) {
                 console.error('Board not found for player:', playerId);
             }
         }
+    });*/
+    players.forEach((playerId) => {
+        createTable(playerId);
     });
     const powerUps = document.getElementById('power-ups');
     powerUps.style.display = 'block';
@@ -450,6 +452,7 @@ function updatePlayerList(players){
         li.textContent = playerId;
         connectedPlayersUl.appendChild(li);
     });
+    connectedPlayers.style.display = "block";
 }
 
 function addPlayerToList(playerId) {
@@ -506,10 +509,8 @@ ws.onmessage = function (event) {
                 break;
             case 'join-game':
                 console.log('A player with the id of', data.playerId, 'has joined the game!');
-                console.log('la data dice: ', data);
-                addPlayerToList(data.playerId);
-                players.set(data.playerId, { playerId: data.playerId });
-                updatePlayerList(players);
+                currentGameId = data.gameId;
+                updatePlayerList(data.players);
                 document.getElementById('create-game').style = 'display: none;';
                 document.getElementById('join-game').style = 'display: none;';
                 document.getElementById('start-game').style = 'display: block;';
@@ -521,6 +522,10 @@ ws.onmessage = function (event) {
                 document.getElementById('deck').style.display = 'block';
                 document.getElementById('placed-ships').style.display = 'block';
                 createTable(userName);
+                break;
+            case 'all-players-ready':
+                console.log('All ready, starting game');
+                loadTables(data.players);
                 break;
             case 'sonar':
                 console.log('Sonar received:', data);
@@ -875,10 +880,9 @@ function scanTable(coordinates, playerId){
     const message = JSON.stringify({
         type: 'sonar-response',
         gameId: currentGameId,
-        playerId: userName,
+        playerId: playerId,
         coordinates: coordinates,
-        response: response,
-        senderId: playerId
+        response: response
     });
     ws.send(message);
     console.log("Sonar-response: ", message);

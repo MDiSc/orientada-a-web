@@ -76,7 +76,6 @@ function handleJoinGame(socket, gameId, joiner) {
             });
         }
     });
-
     console.log(`Player ${joiner} joined game ${gameId}`);
 }
 function handleStartGame(socket, gameId) {
@@ -252,25 +251,24 @@ function handleDisconnect(socket) {
     }
 }
 
-function handleSonar(socket, gameId, playerId, coordinates) {
+function handleSonar(socket, gameId, sender, coordinates) {
     const game = games.get(gameId);
     if (!game) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
         return;
     }
-
-    const opponentId = game.players.find(id => id !== playerId);
-    const opponentSocket = players.get(opponentId);
-
-    if (opponentSocket) {
-        sendMessage(opponentSocket, {
-            type: 'sonar',
-            gameId: gameId,
-            playerId: opponentId,
-            coordinates: coordinates,
-            senderId: playerId
-        });
-    }
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerId !== sender) {
+            console.log(`Sending sonar to player ${playerId}`);
+            sendMessage(playerSocket, {
+                type: 'sonar',
+                gameId: gameId,
+                playerId: sender,
+                coordinates: coordinates
+            });
+        }
+    });
 }
 function handleSonarResponse(socket, gameId, coordinates, response) {
     console.log(`Received response ${response} for move at ${coordinates} from game ${gameId}`);
@@ -279,16 +277,16 @@ function handleSonarResponse(socket, gameId, coordinates, response) {
         sendMessage(socket, { type: 'error', message: 'Game not found' });
         return;
     }
-    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
-    if (!playerId) {
-        sendMessage(socket, { type: 'error', message: 'Player not found' });
-        return;
-    }
-    game.players.forEach((playerId) => {
-        const playerSocket = players.get(playerId);
-        if (playerSocket && playerSocket !== socket) {
-            console.log(`Sending response to player ${playerId}`);
-            sendMessage(playerSocket, { type: 'sonar-response', playerId, coordinates, response });
+    game.players.forEach((player) => {
+        const playerSocket = players.get(player);
+        if (playerSocket) {
+            sendMessage(playerSocket, {
+                type: 'sonar-response',
+                gameId: gameId,
+                playerId: playerId,
+                coordinates: coordinates,
+                response: response
+            });
         }
     });
 }
@@ -329,11 +327,11 @@ function handlePlayerReady(socket, gameId, playerId) {
     game.playersReady = game.playersReady || new Set();
     game.playersReady.add(playerId);
 
-    if (game.playersReady.size === game.players.length) {
+    if (game.playersReady.size == game.players.length) {
         game.players.forEach((playerId) => {
             const playerSocket = players.get(playerId);
             if (playerSocket) {
-                sendMessage(playerSocket, { type: 'all-players-ready', gameId });
+                sendMessage(playerSocket, { type: 'all-players-ready', gameId, players: game.players});
             }
         });
         console.log(`All players are ready for game ${gameId}`);
@@ -401,10 +399,12 @@ function handleMessage(socket, message) {
             handleLeaveGame(socket, message.gameId);
             break;
         case 'sonar':
+            console.log('Sonar received on server', message);
             handleSonar(socket, message.gameId, message.playerId, message.coordinates);
             break;
         case 'sonar-response':
-            handleSonarResponse(socket, message.gameId, message.coordinates, message.response, message.senderId);
+            console.log('Sonar response received on server', message);
+            handleSonarResponse(socket, message.gameId, message.playerId, message.coordinates, message.response);
             break;
         case 'attack-planes':
             handleAttackPlanes(socket, message.gameId, message.playerId, message.moves);
