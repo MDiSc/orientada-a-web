@@ -591,6 +591,7 @@ label[for="mine"]{
     flex-direction: column;
     justify-content: center;
     align-items:center;
+    width: 100%;
 }
 .power-up-container{
     display: flex;
@@ -599,7 +600,7 @@ label[for="mine"]{
     align-content: center;
     justify-content: center;
     border: 2px solid black;
-    width:100%;
+    width: 95%;
     border-radius: 5px;
     background-color: black;
     border: 1px solid #405aa1;

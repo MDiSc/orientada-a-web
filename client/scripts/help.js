@@ -455,6 +455,17 @@ function updatePlayerList(players){
     connectedPlayers.style.display = "block";
 }
 
+function updateOnlineGamesList(games){
+    const onlineGamesUl = document.getElementById('online-games-ul');
+    onlineGamesUl.innerHTML = '';
+    games.forEach((gameId) => {
+        const li = document.createElement('li');
+        li.textContent = gameId;
+        connectedPlayersUl.appendChild(li);
+    });
+    onlineGames.style.display = "block";
+}
+
 function addPlayerToList(playerId) {
     const li = document.createElement('li');
     li.textContent = playerId;
@@ -552,6 +563,11 @@ ws.onmessage = function (event) {
                 emp = 3;
                 empAttack();
                 break;
+            case 'game-created':
+                console.log('A game with the id of _ was created by the player _');
+                alert("New Game created, nigga");
+                
+                break;    
             default:
                 console.log('Unknown message type:', data);
         }

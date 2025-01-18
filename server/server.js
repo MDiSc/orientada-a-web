@@ -39,8 +39,25 @@ function handleCreateGame(socket, playerId) {
     const game = { id: gameId, players: [playerId], started: false, turn: 0 };
     games.set(gameId, game);
     players.set(playerId, socket);
-    sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId });
+    players.forEach((socket, playerId) => {
+        // Enviar el mensaje a cada jugador
+        sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId });
+        console.log('Se aviso del juego ',gameId,' a ', playerId);
+    });
     console.log(`Game created with ID: ${gameId} by player: ${playerId}`);
+}
+
+
+function notifyPlayerOfAllGames(socket) {
+    const allGames = Array.from(games.values());
+
+    const message = {
+        type: 'all-games',
+        games: allGames.map(game => ({ id: game.gameId, players: game.players.length, started: game.started }))
+    };
+    console.log('se aviso de los juegos ',message);
+    sendMessage(socket, message);
+    
 }
 
 /**
@@ -373,6 +390,7 @@ function handleMessage(socket, message) {
     switch (message.type) {
         case 'connection':
             sendMessage(socket, { type: 'connection', message: 'Connected to server' });
+            notifyPlayerOfAllGames(socket);
             break;
         case 'create-game':
             handleCreateGame(socket, message.playerId);
