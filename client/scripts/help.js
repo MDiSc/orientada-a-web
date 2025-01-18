@@ -197,20 +197,6 @@ document.getElementById('confirm-button').addEventListener('click', function () 
 });
 
 function loadTables(players) {
-    /*players.forEach((playerId) => {
-        if (playerId != userName) {
-            createTable(playerId);
-            const BOARD = document.querySelector(`[data-player="${playerId}"]`);
-            if (BOARD) {
-                const CELLS = BOARD.querySelectorAll('[data-position]');
-                CELLS.forEach(CELL => {
-                    CELL.classList.remove('ship');
-                });
-            } else {
-                console.error('Board not found for player:', playerId);
-            }
-        }
-    });*/
     players.forEach((playerId) => {
         createTable(playerId);
     });
@@ -221,43 +207,8 @@ function loadTables(players) {
 }
 
 function handleCruiseMissile(coordinates) {
-    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
-    const responses = [];
 
-    const row = parseInt(coordinates[0]);
-    const col = parseInt(coordinates[1]);
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            const targetRow = row + i;
-            const targetCol = col + j;
-            const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${targetRow}"][data-col="${targetCol}"]`);
-            if (CELL) {
-                let response;
-                if (CELL.classList.contains('ship')) {
-                    if (!CELL.classList.contains('hit')) {
-                        const hitDiv = document.createElement('div');
-                        hitDiv.className = 'hit';
-                        CELL.appendChild(hitDiv);
-                        response = 'hit';
-                    }
-                } else {
-                    const missDiv = document.createElement('div');
-                    missDiv.className = 'miss';
-                    CELL.appendChild(missDiv);
-                    response = 'miss';
-                }
-                responses.push({ coordinates: `${targetRow}${targetCol}`, response });
-            }
-        }
-    }
 
-    const message = JSON.stringify({
-        type: 'cruise-response',
-        gameId: currentGameId,
-        playerId: userName,
-        moves: responses
-    });
-    ws.send(message);
 }
 
 function handleCruiseResponse(moves){
@@ -634,11 +585,13 @@ ws.onmessage = function (event) {
                 break;
             case 'cruise':
                 console.log('Mensaje cruise: ', data);
-                handleCruiseMissile(data.coordinates);
+                handleMultipleAttacks(data.moves, 'cruise-response');
                 break;
             case 'cruise-response':
                 console.log('Mensjae cruise-response: ', data);
-                handleCruiseResponse(data.responses);
+                data.moves.forEach(move => {
+                    displayMove(move.coordinates, data.playerId, move.response);
+                });
                 break;
             case 'create-game':
                 console.log('Game created with the id of', data.gameId);
@@ -690,7 +643,7 @@ ws.onmessage = function (event) {
                 break;
             case 'attack-planes':
                 console.log('Attack planes: ', data);
-                handleAttackPlanes(data.moves);
+                handleMultipleAttacks(data.moves, 'attack-planes-response');
                 break;
             case 'attack-planes-response':
                 console.log('Attack planes response received:', data);
@@ -704,18 +657,15 @@ ws.onmessage = function (event) {
                 emp = 3;
                 empAttack();
                 break;
-<<<<<<< HEAD
             case 'game-created':
                 console.log('A game with the id of _ was created by the player _');
                 alert("New Game created, nigga");
                 
                 break;    
-=======
             case 'player-out':
                 console.log('Player out: ', data);
                 handlePlayerOut(data);
                 break;
->>>>>>> 7c33035129b56de9e2f58a639963746ce70df978
             default:
                 console.log('Unknown message type:', data);
         }
@@ -909,6 +859,7 @@ document.getElementById('cruise-missile').addEventListener('click', function(eve
     cruiseMissileMode = !cruiseMissileMode;
     this.classList.toggle('active', cruiseMissileMode);
     console.log('Cruise missile mode:', cruiseMissileMode);
+    cruiseMissileMode ? alert('Modo de misil de crucero activado') : alert('Modo de misil de crucero desactivado');
 });
 
 document.getElementById('quick-repair').addEventListener('click', function(event) {
@@ -1093,7 +1044,7 @@ function attackPlanes(){
     ws.send(message);
 }
 
-function handleAttackPlanes(moves) {
+function handleMultipleAttacks(moves, type) {
     const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const responses = moves.map(move => {
         const { row, col } = move;
@@ -1116,7 +1067,7 @@ function handleAttackPlanes(moves) {
     });
 
     const message = JSON.stringify({
-        type: 'attack-planes-response',
+        type: type,
         gameId: currentGameId,
         playerId: userName,
         moves: responses
