@@ -138,7 +138,7 @@ function handleMove(socket, gameId, move, sender, type) {
     }
     const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
     if (game.players[game.turn] !== playerId) {
-        sendMessage(socket, { type: 'error', message: 'Not your turn' });
+        sendMessage(socket, { type: 'not-turn', message: 'Not your turn', move: move });
         return;
     }
     const coordinates = parseMove(move);
@@ -363,6 +363,38 @@ function handleAttackPlanesResponse(socket, gameId, sender, moves) {
         }
     });
 }
+
+function handlePlayerOut(gameId, sender) {
+    const game = games.get(gameId);
+    if (!game) {
+        console.error(`Game with ID ${gameId} not found.`);
+        return;
+    }
+
+    const playerId = [...players.entries()].find(([id, s]) => s === sender)?.[0];
+    if (!playerId) {
+        console.error(`Player not found for sender.`);
+        return;
+    }
+
+    game.players.forEach((playerId) => {
+        const playerSocket = players.get(playerId);
+        if (playerSocket && playerSocket !== sender) {
+            console.log(`Sending player-out message to player ${playerId}`);
+            sendMessage(playerSocket, {
+                type: 'player-out',
+                gameId: gameId,
+                playerId: playerId
+            });
+        }
+    });
+    game.players = game.players.filter(id => id !== playerId);
+    players.delete(playerId);
+    if (game.players.length === 0) {
+        games.delete(gameId);
+    }
+}
+
 /**
  * Maneja los mensajes recibidos a través de la conexión WebSocket.
  *
@@ -414,6 +446,9 @@ function handleMessage(socket, message) {
             break;
         case 'emp-attack':
             handleEmp(socket, message.gameId, message.playerId);
+            break;
+        case 'player-out':
+            handlePlayerOut(message.gameId, socket);
             break;
         default:
             sendMessage(socket, { type: 'error', message: 'Unknown message type' });
