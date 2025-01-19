@@ -338,6 +338,7 @@ function displayMove(coordinates, playerId, response) {
                     answer = 'mine';
                 } else if (position.getAttribute('data-player') == userName && response == '') {
                     if (position.querySelector('.mine')) {
+                        position.querySelector('.mine').remove();
                         const mineDiv = document.createElement('div');
                         mineDiv.className = 'explosion';
                         position.appendChild(mineDiv);
