@@ -806,6 +806,7 @@ function sendMessage() {
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(message);
             console.log('Sent:', message);
+            areShieldsAvailable = true;
         } else {
             console.log('WebSocket is not open');
         }
@@ -820,6 +821,7 @@ function sendMessage() {
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(message);
             console.log('Sent:', message);
+            areShieldsAvailable = true;
         } else {
             console.log('WebSocket is not open');
             console.log(message);
@@ -958,13 +960,19 @@ document.getElementById('mine-placement-form').addEventListener('submit', functi
     }
 });
 let shieldTurns = -2;
+
+let areShieldsAvailable=true;
+
 function removeShields(){
     const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
     const shields = BOARD.querySelectorAll('.shield');
     shields.forEach(shield => {
         shield.remove();
     });
+    if(areShieldsAvailable){
     alert('Los escudos han expirado');
+    areShieldsAvailable = false;
+    }
 }
 function defensiveShield() {
     // Create the form
@@ -1081,15 +1089,26 @@ function randomHit(){
     const ROW = Math.floor(Math.random() * 10);
     const COL = Math.floor(Math.random() * 10);
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${COL}"]`);
+    
     if (CELL.classList.contains('ship')) {
-        const hitDiv = document.createElement('div');
-        hitDiv.className = 'hit';
-        CELL.appendChild(hitDiv);
-    } else {
-        const missDiv = document.createElement('div');
-        missDiv.className = 'miss';
-        CELL.appendChild(missDiv);
+        if(CELL.querySelector('.shield')){
+            alert('Explosion bloqueada por escudo');
+            CELL.querySelector('.shield').remove();
+            response = 'shield';
+        }else{
+            if (CELL.classList.contains('ship')) {
+                const hitDiv = document.createElement('div');
+                hitDiv.className = 'hit';
+                CELL.appendChild(hitDiv);
+            } else {
+                const missDiv = document.createElement('div');
+                missDiv.className = 'miss';
+                CELL.appendChild(missDiv);
+            }
+        }
     }
+    
+    
 }
 
 function updatePlayerPoints(points){
