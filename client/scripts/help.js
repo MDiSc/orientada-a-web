@@ -543,9 +543,11 @@ function updateOnlineGamesList(games){
     games.forEach((gameId) => {
         const li = document.createElement('li');
         li.textContent = gameId;
-        connectedPlayersUl.appendChild(li);
+        onlineGamesUl.appendChild(li);
+        console.log(gameId);
     });
     onlineGames.style.display = "block";
+    console.log('online games list updated');
 }
 
 function addPlayerToList(playerId) {
@@ -558,7 +560,8 @@ ws.onmessage = function (event) {
         const data = JSON.parse(event.data);
         switch (data.type) {
             case 'connection':
-                console.log('Connected to server:', data.message);
+                console.log('Connected to server:', data.message,'current game ids: ',data.gameIds);
+                updateOnlineGamesList(data.gameIds);
                 break;
             case 'move':
                 console.log('Move received:', data);
@@ -602,7 +605,7 @@ ws.onmessage = function (event) {
                 onlineGames.style = 'display: none;';
                 connectedPlayers.style = 'display: block;';
                 connectedPlayersUl.innerHTML = `<li>${data.creatorId}</li>`;
-                matchId.innerHTML += data.gameId;
+                matchId.innerHTML = `ID de la sala: ${data.gameId}`;
                 players.set(data.creatorId, { playerId: data.creatorId });
                 console.log("Players map on create-game: ", players);
                 document.getElementById('create-game').style = 'display: none;';
@@ -611,6 +614,7 @@ ws.onmessage = function (event) {
                 document.getElementById('game-id').style = 'display: none;';
                 document.getElementById('match-id').style = 'display: flex;';
                 document.getElementById('connected-players').style = 'display: block;';
+                updateOnlineGamesList(data.gameIds);
                 break;
             case 'join-game':
                 console.log('A player with the id of', data.playerId, 'has joined the game!');
@@ -658,10 +662,16 @@ ws.onmessage = function (event) {
                 empAttack();
                 break;
             case 'game-created':
+                const onlineGamesUl = document.getElementById('online-games-ul');
+                onlineGamesUl.appendChild 
                 console.log('A game with the id of _ was created by the player _');
                 alert("New Game created, nigga");
                 
-                break;    
+                break;
+            case 'all-games':
+                console.log(data);
+                console.log(data.gameIds);
+                break;
             case 'player-out':
                 console.log('Player out: ', data);
                 handlePlayerOut(data);
