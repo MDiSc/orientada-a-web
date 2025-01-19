@@ -1015,7 +1015,7 @@ function defensiveShield() {
     form.innerHTML = `
         <label for="shield-coordinates">Ingrese las coordenadas iniciales del escudo (ej. 00):</label>
         <input type="text" id="shield-coordinates" name="shield-coordinates" maxlength="2" required>
-        <button type="submit">Add Shield</button>
+        <button type="submit">Poner escudo</button>
     `;
     const send = document.getElementById('send-moves-container');
     send.appendChild(form);
@@ -1342,8 +1342,7 @@ function checkGameOver(player) {
         return true;
     }
     return false;
-}
-    else{
+}else{
         const cells = document.querySelectorAll(`.position[data-player="${player}"] .ship`);
     let hitCount = 0;
     for (let cell of cells) {

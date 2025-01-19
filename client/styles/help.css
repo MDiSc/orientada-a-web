@@ -323,8 +323,8 @@ form#register input[type="submit"]:hover {
     align-items: center;
 }
 
-#placed-ships li button,#confirm-button,#add-mine,#remove-mine,#defensive-shield-form, #quick-repair-form button{
-    padding: 5px 10px;
+#placed-ships li button,#confirm-button,#add-mine,#remove-mine,#defensive-shield-form button,#quick-repair-form button{
+    padding: 5px 5px;
     background-color: #405aa1;
     color: white;
     border: none;
@@ -333,11 +333,12 @@ form#register input[type="submit"]:hover {
     transition: background-color ease 0.3s;
 }
 
-#placed-ships li button:hover, #confirm-button:hover,#add-mine:hover,#remove-mine:hover,#defensive-shield-form, #quick-repair-form button:hover {
+#placed-ships li button:hover, #confirm-button:hover,#add-mine:hover,#remove-mine:hover,#defensive-shield-form button:hover, #quick-repair-form button:hover {
     background-color: #4b6ac0;
 }
 
 .container {
+    align-items: baseline;
     margin: 0 auto;
     display: flex;
     flex-wrap: nowrap;
@@ -364,7 +365,9 @@ main {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    height: fit-content;
 }
+
 
 #container-for-instructions {
     display: flex;
@@ -697,6 +700,12 @@ label[for="mine"],label[for="shield-coordinates"], label[for="repair-coordinates
 
 #mine-placement-form{
     margin-top: 20px;
+    width:100%;
+}
+
+#defensive-shield-form{
+    margin-top: 20px;
+    width:100%;
 }
 
 #mine-placement-form input{
@@ -711,7 +720,7 @@ label[for="mine"],label[for="shield-coordinates"], label[for="repair-coordinates
     flex-direction: column;
     justify-content: center;
     align-items:center;
-    width: 100%;
+    width: 98%;
 }
 .power-up-container{
     display: flex;
