@@ -52,47 +52,58 @@ document.getElementById('ship-placement-form').addEventListener('submit', functi
     console.log('Ship type:', SHIPTYPE);
     console.log('Start coordinates:', STARTCOORDINATES);
     console.log('Direction:', direction);
+    console.log('SHIPNAME: en shipplacementform: ', SHIPNAME);
     placeShip(SHIPNAME, SHIPTYPE, STARTCOORDINATES, direction, 1);
 });
 
 let destroyer = {
+    name: 'destroyer',
     length: 2,
     direction: null,
     startCoordinates: null,
     hits: 0,
-    status: 'alive'
+    status: 'alive',
+    sunkAlerted: false
 };
 
 let cruiser = {
+    name: 'cruiser',
     length: 3,
     direction: null,
     startCoordinates: null,
     hits: 0,
-    status: 'alive'
+    status: 'alive',
+    sunkAlerted: false
 };
 
 let warship = {
+    name: 'warship',
     length: 4,
     direction: null,
     startCoordinates: null,
     hits: 0,
-    status: 'alive'
+    status: 'alive',
+    sunkAlerted: false
 };
 
 let submarine = {
+    name: 'submarine',
     length: 3,
     direction: null,
     startCoordinates: null,
     hits: 0,
-    status: 'alive'
+    status: 'alive',
+    sunkAlerted: false
 };
 
 let carrier = {
+    name: 'carrier',
     length: 5,
     direction: null,
     startCoordinates: null,
     hits: 0,
-    status: 'alive'
+    status: 'alive',
+    sunkAlerted: false
 };
 
 function placeShip(shipName, shipType, startCoordinates, direction, time) {
@@ -139,12 +150,12 @@ function placeShip(shipName, shipType, startCoordinates, direction, time) {
         if (time == 1) {
             checkShips();
             const COORD = `${STARTROW}${STARTCOL}`;
-            ships.set(startCoordinates, {
+            /*ships.set(startCoordinates, {
                 startCoordinates: COORD,
                 direction: direction,
                 length: SHIPLENGTH
             });
-
+*/
             switch (shipName) {
                 case 'carrier':
                     carrier.direction = direction;
@@ -251,6 +262,9 @@ document.getElementById('confirm-button').addEventListener('click', function () 
         });
         ws.send(message);
     }
+    if(cpuMode){
+        document.getElementById('send-moves-container').style.display = 'block';
+    }
 });
 
 function loadTables(players) {
@@ -302,13 +316,11 @@ function displayMove(coordinates, playerId, response) {
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
-                    checkSunk();
                 } else if (response == 'hit') {
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     position.appendChild(hitDiv);
                     answer = 'hit';
-                    checkSunk();
                 } else if (response == 'miss') {
                     const missDiv = document.createElement('div');
                     missDiv.className = 'miss';
@@ -353,9 +365,14 @@ function displayMove(coordinates, playerId, response) {
 function checkSunk() {
     checkShipSunk(submarine);
     checkShipSunk(carrier);
+    checkShipSunk(warship);
+    checkShipSunk(destroyer);
+    checkShipSunk(cruiser);
 }
-
 function checkShipSunk(ship) {
+    if (!ship || !ship.startCoordinates) {
+        return;
+    }    
     const startRow = parseInt(ship.startCoordinates[0], 10);
     const startCol = parseInt(ship.startCoordinates[1], 10);
     let hits = 0;
@@ -375,7 +392,12 @@ function checkShipSunk(ship) {
     ship.hits = hits;
     if (hits == ship.length) {
         ship.status = 'sunk';
-        console.log(`${ship.length === 3 ? 'Submarine' : 'Carrier'} is sunk!`);
+        if(!ship.sunkAlerted){
+            console.log(`${ship.name} fue hundido`);
+            alert(`${ship.name} fue hundido!`);
+            ship.sunkAlerted = true;
+        }
+        updatePlayerPoints(0);
     }
 }
 
@@ -661,6 +683,7 @@ ws.onmessage = function (event) {
                 console.log('Move received:', data);
                 console.log('Coordinates:', data.move, "Type: ", typeof (data.move));
                 displayMove(data.move, data.sender, '');
+                checkSunk();
                 updatePlayerPoints(0);
                 checkGameOver(userName);
                 break;
@@ -687,6 +710,7 @@ ws.onmessage = function (event) {
             case 'cruise':
                 console.log('Mensaje cruise: ', data);
                 handleMultipleAttacks(data.moves, 'cruise-response');
+                checkSunk();
                 break;
             case 'cruise-response':
                 console.log('Mensjae cruise-response: ', data);
@@ -748,6 +772,7 @@ ws.onmessage = function (event) {
             case 'attack-planes':
                 console.log('Attack planes: ', data);
                 handleMultipleAttacks(data.moves, 'attack-planes-response');
+                checkSunk();
                 break;
             case 'attack-planes-response':
                 console.log('Attack planes response received:', data);
@@ -1259,6 +1284,7 @@ function handleMultipleAttacks(moves, type) {
                     const hitDiv = document.createElement('div');
                     hitDiv.className = 'hit';
                     CELL.appendChild(hitDiv);
+                    checkShipSunk();
                     response = 'hit';
                 }
         } else {
