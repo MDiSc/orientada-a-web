@@ -63,7 +63,8 @@ let destroyer = {
     startCoordinates: null,
     hits: 0,
     status: 'alive',
-    sunkAlerted: false
+    sunkAlerted: false,
+    repairs: 0
 };
 
 let cruiser = {
@@ -73,7 +74,8 @@ let cruiser = {
     startCoordinates: null,
     hits: 0,
     status: 'alive',
-    sunkAlerted: false
+    sunkAlerted: false,
+    repairs: 0
 };
 
 let warship = {
@@ -83,7 +85,8 @@ let warship = {
     startCoordinates: null,
     hits: 0,
     status: 'alive',
-    sunkAlerted: false
+    sunkAlerted: false,
+    repairs: 0
 };
 
 let submarine = {
@@ -93,7 +96,8 @@ let submarine = {
     startCoordinates: null,
     hits: 0,
     status: 'alive',
-    sunkAlerted: false
+    sunkAlerted: false,
+    repairs: 0
 };
 
 let carrier = {
@@ -103,7 +107,8 @@ let carrier = {
     startCoordinates: null,
     hits: 0,
     status: 'alive',
-    sunkAlerted: false
+    sunkAlerted: false,
+    repairs: 0
 };
 
 function placeShip(shipName, shipType, startCoordinates, direction, time) {
@@ -796,11 +801,13 @@ ws.onmessage = function (event) {
                 console.log(data);
                 console.log(data.gameIds);
                 updateOnlineGamesList(data.gameIds)
-
                 break;
             case 'player-out':
                 console.log('Player out: ', data);
                 handlePlayerOut(data);
+                break;
+            case 'repair':
+                handleRepair(data);
                 break;
             default:
                 console.log('Unknown message type:', data);
@@ -1000,7 +1007,9 @@ function removeShields() {
     }
 }
 function defensiveShield() {
-    // Create the form
+    if(document.getElementById('defensive-shield-form')){
+        return;
+    }
     const form = document.createElement('form');
     form.id = 'defensive-shield-form';
     form.innerHTML = `
@@ -1332,4 +1341,102 @@ function checkGameOver(player) {
 
 function endGame(winner) {
     alert(`${winner} wins the game!`);
+}
+
+function quickRepair() {
+    if(document.getElementById('quick-repair-form')){
+        return;
+    }
+    const form = document.createElement('form');
+    form.id = 'quick-repair-form';
+    form.innerHTML = `
+        <label for="repair-coordinates">Ingrese coordenadas para reparar (ej. 00):</label>
+        <input type="text" id="repair-coordinates" name="repair-coordinates" maxlength="2" required>
+        <button type="submit">Reparar</button>
+    `;
+    document.getElementById('send-moves-form').appendChild(form);
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const coordinates = document.getElementById('repair-coordinates').value;
+        const row = parseInt(coordinates[0], 10);
+        const col = parseInt(coordinates[1], 10);
+
+        if (isNaN(row) || isNaN(col) || row > 9 || col > 9) {
+            alert('Coordenadas invalidas.');
+            return;
+        }
+        const cell = document.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
+        if (!cell) {
+            alert('Coordenadas invalidas.');
+            return;
+        }
+        const hitDiv = cell.querySelector('.hit');
+        if (!hitDiv) {
+            alert('No hit found at the specified coordinates.');
+            return;
+        }
+        const ship = getShipAtCoordinates(row, col);
+        if (ship && ship.status == 'sunk') {
+            alert('No se puede reparar, barco hundido.');
+            return;
+        }
+        if (ship && ship.repairs == 2){
+            alert(`Limite de reparaciones para ${ship.name} alcanzado`);
+            return;
+        }
+
+        hitDiv.remove();
+        form.remove();
+        alert('Barco Reparado!');
+        ship.repairs ++;
+        message = JSON.stringify({
+            type: 'repair',
+            gameId: currentGameId,
+            playerId: userName,
+            coordinates: coordinates
+        });
+        ws.send(message);
+        updatePlayerPoints(-10);
+    });
+}
+function getShipAtCoordinates(row, col) {
+    const ships = [submarine, carrier, warship, destroyer, cruiser];
+    for (const ship of ships) {
+        if (!ship.startCoordinates) continue;
+        const startRow = parseInt(ship.startCoordinates[0], 10);
+        const startCol = parseInt(ship.startCoordinates[1], 10);
+        for (let i = 0; i < ship.length; i++) {
+            let currentRow = startRow;
+            let currentCol = startCol;
+            if (ship.direction == 1) {
+                currentRow += i;
+            } else {
+                currentCol += i;
+            }
+            if (currentRow === row && currentCol === col) {
+                return ship;
+            }
+        }
+    }
+    return null;
+}
+
+document.getElementById('quick-repair').addEventListener('click', function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    quickRepair();
+});
+
+function handleRepair(data){
+    const { playerId, coordinates } = data;
+    const row = parseInt(coordinates[0], 10);
+    const col = parseInt(coordinates[1], 10);
+    const cell = document.querySelector(`.position[data-player="${playerId}"][data-row="${row}"][data-col="${col}"]`);
+    if (cell) {
+        const hitDiv = cell.querySelector('.hit');
+        if (hitDiv) {
+            hitDiv.remove();
+        }
+    }
 }

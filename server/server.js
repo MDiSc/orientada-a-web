@@ -507,6 +507,26 @@ function handlePlayerOut(gameId, sender) {
     }
 }
 
+function handleRepair(socket, gameId, playerId, coordinates) {
+    const game = games.get(gameId);
+    if (!game) {
+        sendMessage(socket, { type: 'error', message: 'Game not found' });
+        return;
+    }
+
+    game.players.forEach((player) => {
+        const playerSocket = players.get(player);
+        if (playerSocket && playerSocket !== socket) {
+            sendMessage(playerSocket, {
+                type: 'repair',
+                gameId: gameId,
+                playerId: playerId,
+                coordinates: coordinates
+            });
+        }
+    });
+}
+
 /**
  * Maneja los mensajes recibidos a través de la conexión WebSocket.
  *
@@ -566,6 +586,9 @@ function handleMessage(socket, message) {
             break;
         case 'player-out':
             handlePlayerOut(message.gameId, socket);
+            break;
+        case 'repair':
+            handleRepair(socket, message.gameId, message.playerId, message.coordinates);
             break;
         default:
             sendMessage(socket, { type: 'error', message: 'Unknown message type' });

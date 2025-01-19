@@ -323,7 +323,7 @@ form#register input[type="submit"]:hover {
     align-items: center;
 }
 
-#placed-ships li button,#confirm-button,#add-mine,#remove-mine,#defensive-shield-form button{
+#placed-ships li button,#confirm-button,#add-mine,#remove-mine,#defensive-shield-form, #quick-repair-form button{
     padding: 5px 10px;
     background-color: #405aa1;
     color: white;
@@ -333,7 +333,7 @@ form#register input[type="submit"]:hover {
     transition: background-color ease 0.3s;
 }
 
-#placed-ships li button:hover, #confirm-button:hover,#add-mine:hover,#remove-mine:hover,#defensive-shield-form button:hover {
+#placed-ships li button:hover, #confirm-button:hover,#add-mine:hover,#remove-mine:hover,#defensive-shield-form, #quick-repair-form button:hover {
     background-color: #4b6ac0;
 }
 
@@ -684,11 +684,12 @@ body {
     text-shadow: 0px 0px 4px rgb(84, 197, 250);
 }
 
-label[for="mine"],label[for="shield-coordinates"]{
+label[for="mine"],label[for="shield-coordinates"], label[for="repair-coordinates"]{
     color:white;
     text-shadow: 0px 0px 4px rgb(84, 197, 250);
+    text-align: center;
 }
-#defensive-shield-form{
+#defensive-shield-form, #quick-repair-form{
     margin-top: 25px;
     margin-bottom: 25px;
 }
