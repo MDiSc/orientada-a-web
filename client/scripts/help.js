@@ -1231,7 +1231,13 @@ function handleMultipleAttacks(moves, type) {
         let response;
         
         if (CELL.classList.contains('ship')) {
-            if(!CELL.classList.contains('hit') && !CELL.classList.contains('shield')){
+           if(CELL.querySelector('.shield')){
+           alert('Please agrega mensaje tuxd');
+          CELL.querySelector('.shield').remove();
+        response = 'shield';
+}else
+
+            if(!CELL.classList.contains('hit')){
                 const hitDiv = document.createElement('div');
                 hitDiv.className = 'hit';
                 CELL.appendChild(hitDiv);
