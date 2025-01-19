@@ -94,11 +94,11 @@
                     <form id="ship-placement-form">
                         <label for="ship-type">Tipo de Barco:</label>
                         <select id="ship-type" name="ship-type" required>
-                            <option value="5">5 casillas</option>
-                            <option value="4">4 casillas</option>
-                            <option value="3">3 casillas</option>
-                            <option value="3">3 casillas</option>
-                            <option value="2">2 casillas</option>
+                            <option value="5" data-model="carrier">5 casillas</option>
+                            <option value="4" data-model="warship">4 casillas</option>
+                            <option value="3" data-model="submarine">3 casillas (submarino)</option>
+                            <option value="3" data-model="cruiser">3 casillas</option>
+                            <option value="2" data-model="destroyer">2 casillas</option>
                         </select>
                         <label for="start-coordinates">Coordenadas Iniciales:</label>
                         <input type="text" id="start-coordinates" name="start-coordinates" placeholder="Ej: 01 (v/>)" required />

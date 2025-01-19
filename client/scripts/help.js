@@ -41,14 +41,43 @@ function createTable(userName) {
 document.getElementById('ship-placement-form').addEventListener('submit', function (event) {
     event.preventDefault();
     const SHIPTYPE = document.getElementById('ship-type').value;
+    const shipSelect = document.getElementById('ship-type');
+    const selectedOption = shipSelect.options[shipSelect.selectedIndex]; 
+    const SHIPNAME = selectedOption.dataset.model;
+    
+    console.log('SHIPNAME ES ',SHIPNAME);
+
     const STARTCOORDINATES = document.getElementById('start-coordinates').value;
     const direction = document.getElementById('direction').value;
     console.log('Ship type:', SHIPTYPE);
     console.log('Start coordinates:', STARTCOORDINATES);
     console.log('Direction:', direction);
-    placeShip(SHIPTYPE, STARTCOORDINATES, direction, 1);
+    placeShip(SHIPNAME,SHIPTYPE, STARTCOORDINATES, direction, 1);
 });
 
+let destroyer = {
+    length: 2,
+    direction: null,
+    startCoordinates: null,
+    hits: 0,
+    status: 'alive'
+};
+
+let cruiser = {
+    length: 3,
+    direction: null,
+    startCoordinates: null,
+    hits: 0,
+    status: 'alive'
+};
+
+let warship = {
+    length: 4,
+    direction: null,
+    startCoordinates: null,
+    hits: 0,
+    status: 'alive'
+};
 
 let submarine = {
     length: 3,
@@ -57,6 +86,7 @@ let submarine = {
     hits: 0,
     status: 'alive'
 };
+
 let carrier = {
     length: 5,
     direction: null,
@@ -65,7 +95,7 @@ let carrier = {
     status: 'alive'
 };
 
-function placeShip(shipType, startCoordinates, direction, time) {
+function placeShip(shipName,shipType, startCoordinates, direction, time) {
     const STARTROW = parseInt(startCoordinates[0]);
     const STARTCOL = parseInt(startCoordinates[1]);
     const SHIPLENGTH = parseInt(shipType);
@@ -114,13 +144,37 @@ function placeShip(shipType, startCoordinates, direction, time) {
                 direction: direction,
                 length: SHIPLENGTH
             });
-            if(SHIPLENGTH == 3 && submarine.direction == null){
+
+            switch(shipName) {
+                case 'carrier':
+                    carrier.direction = direction;
+                    carrier.startCoordinates = startCoordinates;
+                  break;
+                case 'warship':
+                    warship.direction = direction;
+                    warship.startCoordinates = startCoordinates;
+                  break;
+                case 'submarine':
+                    submarine.direction = direction;
+                    submarine.startCoordinates = startCoordinates;
+                break;
+                case 'cruiser':
+                    cruiser.direction = direction;
+                    cruiser.startCoordinates = startCoordinates;
+                  break;
+                case 'destroyer':
+                    destroyer.direction = direction;
+                    destroyer.startCoordinates = startCoordinates;
+                break;
+              }
+
+            /*if(shipName == 'submarine'){
                 submarine.direction = direction;
                 submarine.startCoordinates = startCoordinates;
-            } else if (SHIPLENGTH == 5){
+            } else if (shipName==){
                 carrier.direction = direction;
                 carrier.startCoordinates = startCoordinates;
-            }
+            }*/
             const placedShips = document.getElementById('placed-ships');
             const listItem = document.createElement('li');
             listItem.textContent = `${shipType} casillas en ${startCoordinates} ${direction == 0 ? 'horizontal' : 'vertical'}`;
@@ -139,6 +193,9 @@ function placeShip(shipType, startCoordinates, direction, time) {
             shipTypeSelect.options[shipTypeSelect.selectedIndex].remove();
             console.log('Submarino: ', submarine);
             console.log('Carrier: ', carrier);
+            console.log('Acorazado: ', warship);
+            console.log('Crucero: ', cruiser);
+            console.log('Destructor: ', destroyer);
         }
     } catch (error) {
         console.error('Error placing ship:', error);
@@ -1172,8 +1229,9 @@ function handleMultipleAttacks(moves, type) {
         }
         const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${row}"][data-col="${col}"]`);
         let response;
+        
         if (CELL.classList.contains('ship')) {
-            if(!CELL.classList.contains('hit')){
+            if(!CELL.classList.contains('hit') && !CELL.classList.contains('shield')){
                 const hitDiv = document.createElement('div');
                 hitDiv.className = 'hit';
                 CELL.appendChild(hitDiv);
@@ -1188,8 +1246,8 @@ function handleMultipleAttacks(moves, type) {
             }
             
         }
-        return { coordinates: `${row}${col}`, response };
-    });
+        return { coordinates: `${row}${col}`, response };
+    });
 
     const message = JSON.stringify({
         type: type,
