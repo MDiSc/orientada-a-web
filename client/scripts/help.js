@@ -1311,11 +1311,15 @@ function handleMultipleAttacks(moves, type) {
 
 
 function checkGameOver(player) {
-    const cells = document.querySelectorAll(`.position[data-player="${player}"] .ship`);
+    if(player!=='CPU'){
+        const cellsP = document.querySelectorAll(`.position.ship[data-player="${player}"] `);
     let hitCount = 0;
-    for (let cell of cells) {
-        if (cell.classList.contains('hit')) {
+    //console.log(cellsP);
+    console.log('Analyzing ',player)
+    for (let cell of cellsP) {
+        if (cell.querySelector('div.hit')) {
             hitCount++;
+            console.log(player,' took a hit!')
         }
     }
     if (hitCount === 17) {
@@ -1325,10 +1329,37 @@ function checkGameOver(player) {
             playerId: player
         });
         ws.send(message);
+        console.log('ha sido bananeado')
         return true;
     }
     return false;
 }
+    else{
+        const cells = document.querySelectorAll(`.position[data-player="${player}"] .ship`);
+    let hitCount = 0;
+    for (let cell of cells) {
+        // Verificamos que cell contenga tanto un div con clase "hit" como un div con clase "ship"
+        const hasHit = cell.querySelector('div.hit') !== null;
+        const hasShip = cell.querySelector('div.ship') !== null;
+
+        if (hasHit && hasShip) {
+            hitCount++;
+            console.log(player, ' took a hit!');
+        }
+    }
+    if (hitCount === 17) {
+        const message = JSON.stringify({
+            type: 'player-out',
+            gameId: currentGameId,
+            playerId: player
+        });
+        ws.send(message);
+        console.log('ha sido bananeado');
+        return true;
+    }
+    return false;
+    }
+} 
 
 function endGame(winner) {
     alert(`${winner} wins the game!`);
