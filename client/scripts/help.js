@@ -542,9 +542,16 @@ document.getElementById('send-moves-form').addEventListener('submit', function (
         });
         ws.send(message);
     }
-
     if(emp != 0){
         emp --;
+    }
+    if (shieldTurns == 0) {
+        removeShields();
+    } else {
+        shieldTurns--;
+    }
+    if(empCooldown != 0){
+        empCooldown --;
     }
     empAttack();
     console.log("Turnos EMP restantes: ", emp);
@@ -880,7 +887,15 @@ document.getElementById('mine-placement-form').addEventListener('submit', functi
         document.getElementById('remove-mine').style.display = 'none';
     }
 });
-
+let shieldTurns = -2;
+function removeShields(){
+    const BOARD = document.querySelector(`.battleship-board[data-player="${userName}"]`);
+    const shields = BOARD.querySelectorAll('.shield');
+    shields.forEach(shield => {
+        shield.remove();
+    });
+    alert('Los escudos han expirado');
+}
 function defensiveShield() {
     // Create the form
     const form = document.createElement('form');
@@ -905,6 +920,9 @@ function defensiveShield() {
         }
         addShield(row, col);
         form.remove();
+        shieldTurns = 2;
+        document.getElementById('defensive-shield').remove();
+        document.getElementById('force-field-container').remove();
     });
 }
 
@@ -954,7 +972,7 @@ function empAttack(){
         powerUps.style.display = 'block';
     }
 }
-
+let empCooldown = 0;
 document.getElementById('emp-attack').addEventListener('click', function(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -965,6 +983,9 @@ document.getElementById('emp-attack').addEventListener('click', function(event) 
         playerId: userName
     });
     ws.send(message);
+    empCooldown = 10;
+    document.getElementById('emp-attack').style.display = 'none';
+    document.getElementById('emp-container').style.display = 'none';
 });
 
 function seaMine(coordinates, BOARD){
@@ -981,7 +1002,7 @@ function removeSeaMine(coordinates, BOARD){
     const ROW = parseInt(coordinates[0]);
     const col = parseInt(coordinates[1]);
     const CELL = BOARD.querySelector(`.position[data-player="${userName}"][data-row="${ROW}"][data-col="${col}"]`);
-    CELL.classList.remove('mine');
+    CELL.querySelector('.mine').remove();
     updatePlayerPoints(5);
 }
 
@@ -1041,19 +1062,27 @@ function displayPowerUps(points){
         quickRepairContainer.style.display = 'none';
     }
     if(points >= 15){
-        defensiveShield.style.display = 'block';
-        defensiveShieldContainer.style.display = 'flex';
+        
+        if(defensiveShield){
+            defensiveShield.style.display = 'block';
+            defensiveShieldContainer.style.display = 'flex';
+        }
         cruiseMissile.style.display = 'block';
         cruiseMissileContainer.style.display = 'flex';
     }else{
-        defensiveShield.style.display = 'none';
-        defensiveShieldContainer.style.display = 'none';
+        if(defensiveShield){
+            defensiveShield.style.display = 'none';
+            defensiveShieldContainer.style.display = 'none';
+        }
         cruiseMissile.style.display = 'none';
         cruiseMissileContainer.style.display = 'none';
     }
     if(points >= 20){
-        empAttack.style.display = 'block';
-        empAttackContainer.style.display = 'flex';
+        if(empCooldown == 0){
+            empAttack.style.display = 'block';
+            empAttackContainer.style.display = 'flex';
+        }
+        
     }else{
         empAttack.style.display = 'none';
         empAttackContainer.style.display = 'none';
