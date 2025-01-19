@@ -553,7 +553,7 @@ body {
     height:20px;
     position: relative;
     pointer-events: none;
-    animation: sprite-animation-2 2.2s steps(1)infinite; 
+    animation: sprite-animation-2 1s steps(1)infinite; 
 }
 
 .mine{
@@ -567,7 +567,7 @@ body {
     height:20px;
     position: relative;
     pointer-events: none;
-    animation: sprite-animation-3 2.2s steps(1)infinite; 
+    animation: sprite-animation-3 1s steps(1)infinite; 
 }
 .shield{
     background-image: url("/client/media/shield.png");

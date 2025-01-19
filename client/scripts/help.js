@@ -264,6 +264,8 @@ function displayMove(coordinates, playerId, response) {
                     answer = 'mine';
                 }else if(position.getAttribute('data-player') == userName && response == ''){
                     if (position.querySelector('.mine')) {
+                        //Eso que agregue es para eliminar el div mine y que solo quede el explosion
+                        position.querySelector('.mine').remove();
                         const mineDiv = document.createElement('div');
                         mineDiv.className = 'explosion';
                         position.appendChild(mineDiv);
