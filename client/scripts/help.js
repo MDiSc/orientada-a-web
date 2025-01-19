@@ -508,6 +508,10 @@ let turn = true;
 
 function handlePlayerMove(coordinates) {
     console.log("HandlePlayerMove called");
+    if(playerMoves.has(coordinates)){
+        alert('Ya has atacado a esta casilla. Por favor, selecciona otra.');
+        return;
+    }
     const [row, col] = coordinates.split('').map(Number);
     const cell = document.querySelector(`.position[data-player="CPU"][data-row="${row}"][data-col="${col}"]`);
     if (cell) {
@@ -522,8 +526,9 @@ function handlePlayerMove(coordinates) {
             cell.appendChild(missDiv);
             console.log('Missed on CPU board.');
         }
-        if (checkGameOver('CPU')) {
-            endGame('Player');
+        playerMoves.add(coordinates);
+        if (checkGameOver()) {
+            return;
         }
     }
 }
@@ -551,8 +556,8 @@ function handleCPUMove() {
             cell.appendChild(missDiv);
             console.log('CPU missed.');
         }
-        if (checkGameOver(userName)) {
-            endGame('CPU');
+        if (checkGameOver()) {
+            return;
         }
     }
 }
@@ -1316,59 +1321,65 @@ function handleMultipleAttacks(moves, type) {
     });
 
     ws.send(message);
+    if(checkGameOver()){
+        return;
+    }
 }
 
 
-function checkGameOver(player) {
-    if(player!=='CPU'){
-        const cellsP = document.querySelectorAll(`.position.ship[data-player="${player}"] `);
-    let hitCount = 0;
-    //console.log(cellsP);
-    console.log('Analyzing ',player)
-    for (let cell of cellsP) {
-        if (cell.querySelector('div.hit')) {
-            hitCount++;
-            console.log(player,' took a hit!')
-        }
-    }
-    if (hitCount === 17) {
-        const message = JSON.stringify({
-            type: 'player-out',
-            gameId: currentGameId,
-            playerId: player
+function checkGameOver() {
+    let playerHitCount = 0;
+    let cpuHitCount = 0;
+
+    if (cpuMode) {
+        const playerCells = document.querySelectorAll(`.position[data-player="${userName}"]`);
+        playerCells.forEach(cell => {
+            if (cell.querySelector('.hit')) {
+                playerHitCount++;
+                console.log('Player hit count:', playerHitCount);
+            }
         });
-        ws.send(message);
-        console.log('ha sido bananeado')
-        return true;
+        const cpuCells = document.querySelectorAll(`.position[data-player="CPU"]`);
+        cpuCells.forEach(cell => {
+            if (cell.querySelector('.hit')) {
+                cpuHitCount++;
+                console.log('CPU hit count:', cpuHitCount);
+            }
+        });
+
+        if (playerHitCount == 17) {
+            console.log('Player has been defeated');
+            endGame('CPU');
+            return true;
+        }
+
+        if (cpuHitCount == 17) {
+            console.log('CPU has been defeated');
+            endGame(userName);
+            return true;
+        }
+    } else {
+        const userCells = document.querySelectorAll(`.position[data-player="${userName}"] .ship`);
+        userCells.forEach(cell => {
+            if (cell.querySelector('.hit')) {
+                playerHitCount++;
+            }
+        });
+
+        if (playerHitCount == 17) {
+            const message = JSON.stringify({
+                type: 'player-out',
+                gameId: currentGameId,
+                playerId: userName
+            });
+            ws.send(message);
+            console.log('Player has been defeated');
+            endGame('Opponent');
+            return true;
+        }
     }
     return false;
 }
-    else{
-        const cells = document.querySelectorAll(`.position[data-player="${player}"] .ship`);
-    let hitCount = 0;
-    for (let cell of cells) {
-        // Verificamos que cell contenga tanto un div con clase "hit" como un div con clase "ship"
-        const hasHit = cell.querySelector('div.hit') !== null;
-        const hasShip = cell.querySelector('div.ship') !== null;
-
-        if (hasHit && hasShip) {
-            hitCount++;
-            console.log(player, ' took a hit!');
-        }
-    }
-    if (hitCount === 17) {
-        const message = JSON.stringify({
-            type: 'player-out',
-            gameId: currentGameId,
-            playerId: player
-        });
-        ws.send(message);
-        console.log('ha sido bananeado');
-        return true;
-    }
-    return false;
-    }
-} 
 
 function endGame(winner) {
     alert(`${winner} wins the game!`);
