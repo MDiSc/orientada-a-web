@@ -1,5 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 
+
 const players = new Map();
 const games = new Map();
 
@@ -476,23 +477,27 @@ function handleCruiseResponse(socket, gameId, sender, moves) {
     });
 }
 
-function handlePlayerOut(gameId, sender) {
+function handlePlayerOut(socket, gameId, sender) {
     const game = games.get(gameId);
     if (!game) {
         console.error(`Game with ID ${gameId} not found.`);
         return;
     }
-
-    const playerId = [...players.entries()].find(([id, s]) => s === sender)?.[0];
+    const playerId = [...players.entries()].find(([id, s]) => s === socket)?.[0];
     if (!playerId) {
         console.error(`Player not found for sender.`);
         return;
     }
-
+    game.players = game.players.filter(id => id !== playerId);
+    players.delete(playerId);
+    if (game.players.length === 0) {
+        games.delete(gameId);
+    }
+    console.log('Player id of the playerout: ', sender);
     game.players.forEach((playerId) => {
         const playerSocket = players.get(playerId);
-        if (playerSocket && playerSocket !== sender) {
-            console.log(`Sending player-out message to player ${playerId}`);
+        if (playerSocket && playerId !== sender) {
+            console.log(`Sending sonar to player ${playerId}`);
             sendMessage(playerSocket, {
                 type: 'player-out',
                 gameId: gameId,
@@ -500,11 +505,6 @@ function handlePlayerOut(gameId, sender) {
             });
         }
     });
-    game.players = game.players.filter(id => id !== playerId);
-    players.delete(playerId);
-    if (game.players.length === 0) {
-        games.delete(gameId);
-    }
 }
 
 function handleRepair(socket, gameId, playerId, coordinates) {
@@ -585,7 +585,7 @@ function handleMessage(socket, message) {
             handleEmp(socket, message.gameId, message.playerId);
             break;
         case 'player-out':
-            handlePlayerOut(message.gameId, socket);
+            handlePlayerOut(socket, message.gameId, message.playerId);
             break;
         case 'repair':
             handleRepair(socket, message.gameId, message.playerId, message.coordinates);
