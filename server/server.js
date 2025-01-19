@@ -30,6 +30,21 @@ function sendMessage(socket, message) {
  * @param {WebSocket} socket - La conexión WebSocket del jugador.
  * @param {string} playerId - El ID del jugador que crea el juego.
  */
+
+function addPlayer(playerId, socket) {
+    // Verificar si el socket ya está asociado a algún jugador
+    for (let [id, existingSocket] of players.entries()) {
+        if (existingSocket === socket) {
+            console.log(`El socket ya está asociado al jugador: ${id}`);
+            return; // Salir si el socket ya existe
+        }
+    }
+
+    // Agregar el nuevo jugador al mapa
+    players.set(playerId, socket);
+    console.log(`Jugador ${playerId} agregado con éxito.`);
+}
+
 function handleCreateGame(socket, playerId) {
     let gameId;
     
@@ -40,22 +55,20 @@ function handleCreateGame(socket, playerId) {
     
     const game = { id: gameId, players: [playerId], started: false, turn: 0 };
     games.set(gameId, game);
-    players.set(playerId, socket);
+    addPlayer(playerId,socket);
     const allGames = Array.from(games.values()).map(game => game.id);
     //players.forEach((socket, playerId) => {
         // Enviar el mensaje a cada jugador
-        sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId });
-        console.log('Se aviso del juego ',gameId,' a ', playerId);
+        sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId ,gameIds: allGames});
+        console.log('Se aviso del juegoo ',gameId,' a ', playerId);
     //});
     const message2 = {
         type: 'all-games',
         gameIds: allGames
     };
-
-    players.forEach((socket, playerId) => {
-        // Enviar el mensaje a cada jugador
-        sendMessage(socket, message2);
-        //console.log('Se aviso del juego ',gameId,' a ', playerId);
+    players.forEach((playerSocket, id) => {
+        sendMessage(playerSocket, message2);
+        console.log('Se avisó del juego', gameId, 'a', id);
     });
     
     console.log(`Game created with ID: ${gameId} by player: ${playerId}`);
@@ -504,7 +517,8 @@ function handleMessage(socket, message) {
     switch (message.type) {
         case 'connection':
             const gameIds = Array.from(games.values()).map(game => game.id);
-            sendMessage(socket, { type: 'connection', message: 'Connected to server', gameIds: gameIds });
+            addPlayer(message.playerUsername,socket);
+            sendMessage(socket, { type: 'connection', message: 'Connected to server', gameIds: gameIds, playerId: message.playerUsername });
             break;
         case 'create-game':
             handleCreateGame(socket, message.playerId);

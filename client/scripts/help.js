@@ -597,7 +597,7 @@ ws.onmessage = function (event) {
         const data = JSON.parse(event.data);
         switch (data.type) {
             case 'connection':
-                console.log('Connected to server:', data.message,'current game ids: ',data.gameIds);
+                console.log(data.playerUsername,' has connected to server:', data.message,'current game ids: ',data.gameIds);
                 updateOnlineGamesList(data.gameIds);
                 break;
             case 'move':
@@ -655,6 +655,7 @@ ws.onmessage = function (event) {
                 document.getElementById('game-id').style = 'display: none;';
                 document.getElementById('match-id').style = 'display: flex;';
                 document.getElementById('connected-players').style = 'display: block;';
+                document.getElementById('online-games').style = 'display: none;';  
                 updateOnlineGamesList(data.gameIds);
                 break;
             case 'join-game':
@@ -664,7 +665,8 @@ ws.onmessage = function (event) {
                 document.getElementById('create-game').style = 'display: none;';
                 document.getElementById('join-game').style = 'display: none;';
                 document.getElementById('start-game').style = 'display: block;';
-                document.getElementById('game-id').style = 'display: none;';                
+                document.getElementById('game-id').style = 'display: none;';  
+                document.getElementById('online-games').style = 'display: none;';              
                 break;
             case 'start-game':
                 console.log('The game has started!');
@@ -703,15 +705,16 @@ ws.onmessage = function (event) {
                 empAttack();
                 break;
             case 'game-created':
-                const onlineGamesUl = document.getElementById('online-games-ul');
+               /* const onlineGamesUl = document.getElementById('online-games-ul');
                 onlineGamesUl.appendChild 
                 console.log('A game with the id of _ was created by the player _');
-                alert("New Game created, nigga");
-                
+                */
                 break;
             case 'all-games':
                 console.log(data);
                 console.log(data.gameIds);
+                updateOnlineGamesList(data.gameIds)
+                
                 break;
             case 'player-out':
                 console.log('Player out: ', data);
