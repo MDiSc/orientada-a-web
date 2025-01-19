@@ -1232,7 +1232,7 @@ function handleMultipleAttacks(moves, type) {
         
         if (CELL.classList.contains('ship')) {
            if(CELL.querySelector('.shield')){
-           alert('Please agrega mensaje tuxd');
+           alert('Ataque bloqueado por escudo');
           CELL.querySelector('.shield').remove();
         response = 'shield';
 }else
