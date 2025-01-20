@@ -981,7 +981,7 @@ document.addEventListener('mouseup', function (e) {
 
 
 //POWER-UPS
-let playerPoints = 100;
+let playerPoints = 5;
 
 document.getElementById('sonar').addEventListener('click', function (event) {
     event.stopPropagation();
