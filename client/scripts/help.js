@@ -270,6 +270,7 @@ document.getElementById('confirm-button').addEventListener('click', function () 
     if(cpuMode){
         document.getElementById('send-moves-container').style.display = 'block';
     }
+    playMatchSound('start');
 });
 
 function loadTables(players) {
@@ -706,6 +707,13 @@ ws.onmessage = function (event) {
                 alert('No es tu turno todavia');
                 playerMoves.delete(data.move);
                 break;
+            case 'turn-over':
+                document.getElementById('send-move').style.display = 'none';
+                console.log('Turn over: ', data);
+                break;
+            case 'turn-active':
+                document.getElementById('send-move').style.display = 'block';
+                break;
             case 'response':
                 console.log('Received from player: ', data.playerId);
                 console.log('It was a: ', data.response);
@@ -964,7 +972,7 @@ document.addEventListener('mouseup', function (e) {
 
 
 //POWER-UPS
-let playerPoints = 0;
+let playerPoints = 100;
 
 document.getElementById('sonar').addEventListener('click', function (event) {
     event.stopPropagation();
@@ -1546,6 +1554,7 @@ function handleRepair(data){
             hitDiv.remove();
         }
     }
+    playerMoves.delete(coordinates);
 }
 function showWinWindow(winner) {
     const container = document.querySelector('div.tables');
