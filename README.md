@@ -1,12 +1,12 @@
 ## Conexión al Servidor
 
-Al ingresar el nombre de usuario, se realiza la conexión al servidor y se puede crear un juego o unirse a uno. Si está realizando pruebas desde Postman, sugerimos crear el juego desde la página, ya que si lo inicia desde Postman, los jugadores conectados no se actualizarán (ya que no hemos podido actualizar el código a tiempo).
+Antes de todo, se necesita iniciar el servidor para que el modo multijugador funcione. Para iniciar el servidor, en la consola de Visual Studio Code, se debe ingresar el comando `cd server`. Una vez hecho esto (es decir, moviéndonos al directorio `server`), se debe introducir el siguiente comando `node server.js` y ya estaría inicializado el servidor. (Para finalizarlo se debe presionar `Ctrl + C`). Es importante tener en cuenta que no se debe cerrar la terminal si se quieren ver los comandos que se están ejecutando en el servidor. Además, una vez que se cierra, para matar el servidor hay que finalizar su proceso desde el administrador de tareas.
 
-Una vez creada la partida, la página mostrará el ID con el cual se creó el juego (con este podrá usar `join-game` desde Postman). Una vez unidos los jugadores, puede presionar "Iniciar partida" para llenar el tablero y empezar a "jugar" (está entre comillas ya que por los momentos solo se pueden enviar movimientos y mostrarlos en todos los tableros).
+Al ingresar el nombre de usuario, se realiza la conexión al servidor y se puede crear un juego o unirse a uno. Lo ideal es probarlo abriendo dos pestañas desde el navegador. 
 
 ## Estructura de los Comandos
 
-Aquí dejamos la estructura de los comandos para facilitar su uso:
+Algunos de los comandos son los siguientes:
 
 **Dirección:** `ws://localhost:8080`
 
