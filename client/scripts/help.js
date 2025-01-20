@@ -843,6 +843,7 @@ function handlePlayerOut(data) {
     }
     if(document.getElementById('tables').querySelectorAll('.table[data-player]').length == 1){
         alert('Has ganado la partida!');
+        showWinWindow(userName);
     }
 }
 
@@ -1387,13 +1388,13 @@ function checkGameOver() {
 
         if (playerHitCount == 17) {
             console.log('Player has been defeated');
-            endGame('CPU');
+            showLoseWindow(userName);
             return true;
         }
 
         if (cpuHitCount == 17) {
             console.log('CPU has been defeated');
-            endGame(userName);
+            showWinWindow(userName);
             return true;
         }
     } else {
@@ -1412,7 +1413,7 @@ function checkGameOver() {
             });
             ws.send(message);
             console.log('Player has been defeated');
-            endGame('El oponente');
+            showLoseWindow(userName);
             return true;
         }
     }
@@ -1521,3 +1522,61 @@ function handleRepair(data){
         }
     }
 }
+function showWinWindow(winner) {
+    const container = document.querySelector('div.tables');
+    const deck = document.getElementById('deck');
+    const placedShipsDiv = document.getElementById('placed-ships');
+    const sendMovesDivContainer = document.getElementById('send-moves-container');
+    
+    deck.style.display='none';
+    placedShipsDiv.style.display='none';
+    sendMovesDivContainer.style.display='none';
+    
+    container.innerHTML = `
+        <section id="win-window">
+            <h2><b>«</b>MISIÓN CUMPLIDA<b>»</b></h2>
+            <p>Felicidades, ${winner}. La tormenta ha pasado, y tu flota emerge victoriosa.</p>
+            <p> Has demostrado que en el caos, solo los fuertes sobreviven.</p>
+            <button onclick="goBackToLobbyWin()">Volver al lobby</button>
+        </section>
+    `;
+    
+}
+
+function showLoseWindow(loser) {
+    const container = document.querySelector('div.tables');
+    const deck = document.getElementById('deck');
+    const placedShipsDiv = document.getElementById('placed-ships');
+    const sendMovesDivContainer = document.getElementById('send-moves-container');
+    
+    deck.style.display='none';
+    placedShipsDiv.style.display='none';
+    sendMovesDivContainer.style.display='none';
+
+    container.innerHTML = `
+        <section id="lose-window">
+            <h2><b>«</b>MISIÓN FALLIDA<b>»</b></h2>
+            <p>El mar ha hablado. Hoy no es tu día, comandante ${loser}.</p>
+            <p>Regresa a la mesa de estrategia y prepárate para la próxima batalla.</p>
+            <button onclick="goBackToLobbyLose()">Volver al lobby</button>
+        </section>
+    `;
+}
+
+function goBackToLobbyWin(){
+    const winWindow = document.getElementById('win-window');
+    const lobby = document.getElementById('lobby');
+
+    winWindow.remove()
+    lobby.style.display='block';    
+}
+
+function goBackToLobbyLose(){
+    const loseWindow = document.getElementById('lose-window');
+    const lobby = document.getElementById('lobby');
+    
+    loseWindow.remove()
+    lobby.style.display='block';
+}
+
+

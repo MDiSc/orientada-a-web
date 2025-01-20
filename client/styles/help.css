@@ -926,3 +926,75 @@ nav ul li a:active {
 .dropdown-content .option:hover {
     background-color: #dbdbdb; 
 }
+
+#win-window{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    text-shadow: 0px 0px 5px rgb(190, 190, 190);
+    background-color: #1f2a49a3;
+    border-radius: 5px;
+    border: 2px solid #41a9ff;
+    padding: 0 18px 16px;
+    z-index: 10;
+}
+
+#win-window h2 b{
+    color:#86b4d9;
+}
+
+#win-window button{
+    color: white;
+    padding: 7px;
+    background-color: #142532eb;
+    border-radius: 6px;
+    border: none;
+    transition: border-left ease 0.3s, border-right ease 0.3s, color 0.3s ease;
+}
+
+#win-window button:hover{
+    border-left: 2px solid #2a7af3;
+    border-right: 2px solid #2a7af3;
+}
+
+#win-window b{
+    text-shadow: 0px 0px 5px #41a9ff;
+}
+
+#lose-window{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    text-shadow: 0px 0px 5px rgb(190, 190, 190);
+    background-color: #1f2a49a3;
+    border-radius: 5px;
+    border: 2px solid #e28250;
+    padding: 0 18px 16px;
+    z-index: 10;
+}
+
+#lose-window h2 b{
+    color:#e26150;
+}
+
+#lose-window button{
+    color: white;
+    padding: 7px;
+    background-color: #321d14eb;
+    border-radius: 6px;
+    border: none;
+    transition: border-left ease 0.3s, border-right ease 0.3s, color 0.3s ease;
+}
+
+#lose-window button:hover{
+    border-left:  2px solid #e28250;
+    border-right: 2px solid #e28250;
+}
+
+#lose-window b{
+    text-shadow: 0px 0px 5px #e28250;
+}
