@@ -107,13 +107,7 @@ function handleJoinGame(socket, gameId, joiner) {
         }
     });
     console.log(`Player ${joiner} joined game ${gameId}`);
-    if (game.players.length === 2) { 
-        game.started = true;
-        const firstPlayerSocket = players.get(game.players[0]);
-        if (firstPlayerSocket) {
-            sendMessage(firstPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
-        }
-    }
+    sendMessage(socket, { type: 'turn-over', message: 'Your turn is inactive' });
 }
 function handleStartGame(socket, gameId) {
     const game = games.get(gameId);
@@ -138,10 +132,6 @@ function handleStartGame(socket, gameId) {
     });
     console.log(`Game with ID: ${gameId} has started`);
     console.log(games);
-    const firstPlayerSocket = players.get(game.players[0]);
-    if (firstPlayerSocket) {
-        sendMessage(firstPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
-    }
 }
 
 function parseMove(move) {
@@ -198,8 +188,7 @@ function handleMove(socket, gameId, move, sender, type) {
     sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
 
     game.turn = (game.turn + 1) % game.players.length;
-    const nextPlayerId = game.players[game.turn];
-    const nextPlayerSocket = players.get(nextPlayerId);
+    const nextPlayerSocket = players.get(game.players[game.turn]);
     if (nextPlayerSocket) {
         sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
     }
@@ -376,10 +365,7 @@ function handleAttackPlanes(socket, gameId, sender, moves) {
     });
     game.turn = (game.turn + 1) % game.players.length;
     sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
-
-    game.turn = (game.turn + 1) % game.players.length;
-    const nextPlayerId = game.players[game.turn];
-    const nextPlayerSocket = players.get(nextPlayerId);
+    const nextPlayerSocket = players.get(game.players[game.turn]);
     if (nextPlayerSocket) {
         sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
     }
@@ -462,9 +448,7 @@ function handleCruise(socket, gameId, sender, moves) {
     game.turn = (game.turn + 1) % game.players.length;
     sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
 
-    game.turn = (game.turn + 1) % game.players.length;
-    const nextPlayerId = game.players[game.turn];
-    const nextPlayerSocket = players.get(nextPlayerId);
+    const nextPlayerSocket = players.get(game.players[game.turn]);
     if (nextPlayerSocket) {
         sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
     }
@@ -509,8 +493,18 @@ function handlePlayerOut(socket, gameId, sender) {
     }
     game.players = game.players.filter(id => id !== playerId);
     players.delete(playerId);
-    if (game.players.length === 0) {
+    if (game.players.length === 1) {
         games.delete(gameId);
+        const allGames = Array.from(games.values()).map(game => game.id);
+        const message = {
+            type: 'all-games',
+            gameIds: allGames
+        };
+        players.forEach((playerSocket, id) => {
+            sendMessage(playerSocket, message);
+            console.log('Updated game list sent to player', id);
+        });
+        sendMessage(socket, message);
     }
     console.log('Player id of the playerout: ', sender);
     game.players.forEach((playerId) => {
@@ -524,6 +518,7 @@ function handlePlayerOut(socket, gameId, sender) {
             });
         }
     });
+    addPlayer(sender, socket);
 }
 
 function handleRepair(socket, gameId, playerId, coordinates) {

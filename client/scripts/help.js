@@ -708,11 +708,20 @@ ws.onmessage = function (event) {
                 playerMoves.delete(data.move);
                 break;
             case 'turn-over':
-                document.getElementById('send-move').style.display = 'none';
+                document.getElementById('enviar').style.display = 'none';
+                document.getElementById('air-strike-container').style.display = 'none';
+                document.getElementById('cruiser-missile-container').style.display = 'none';
+                turn = false;
                 console.log('Turn over: ', data);
                 break;
             case 'turn-active':
-                document.getElementById('send-move').style.display = 'block';
+                document.getElementById('enviar').style.display = 'block';
+                document.getElementById('air-strike-container').style.display = 'flex';
+                document.getElementById('attack-planes').style.display = 'block';
+                document.getElementById('cruiser-missile-container').style.display = 'flex';
+                document.getElementById('cruise-missile').style.display = 'block';
+                console.log('Turn active: ', data);
+                turn = true;
                 break;
             case 'response':
                 console.log('Received from player: ', data.playerId);
@@ -850,7 +859,7 @@ function handlePlayerOut(data) {
     if (playerTable) {
         playerTable.remove();
     }
-    if(document.getElementById('tables').querySelectorAll('.table[data-player]').length == 1){
+    if(document.querySelectorAll('.battleship-board').length == 1){
         alert('Has ganado la partida!');
         showWinWindow(userName);
     }
@@ -1222,8 +1231,10 @@ function displayPowerUps(points) {
         sonarContainer.style.display = 'none';
     }
     if (points >= 10) {
-        attackPlanes.style.display = 'block';
-        attackPlanesContainer.style.display = 'flex';
+        if(turn){
+            attackPlanes.style.display = 'block';
+            attackPlanesContainer.style.display = 'flex';  
+        }
         quickRepair.style.display = 'block';
         quickRepairContainer.style.display = 'flex';
         
@@ -1246,8 +1257,10 @@ function displayPowerUps(points) {
             defensiveShieldContainer.style.display = 'flex';
             if(points==15){playMatchSound('shieldReady');}
         }
-        cruiseMissile.style.display = 'block';
-        cruiseMissileContainer.style.display = 'flex';
+        if(turn){
+            cruiseMissile.style.display = 'block';
+            cruiseMissileContainer.style.display = 'flex';
+        }
         if(points==5){
             setTimeout(function() {
                 playMatchSound('missileReady');
@@ -1603,6 +1616,27 @@ function goBackToLobbyWin(){
 
     winWindow.remove()
     lobby.style.display='block';    
+    document.getElementById('start-game').style.display = 'none';
+    document.getElementById('create-game').style.display = 'block';
+    document.getElementById('join-game').style.display = 'block';
+    document.getElementById('online-games').style.display = 'block';
+    
+    const connectedPlayer = document.getElementById('connected-players');
+    const gameIdInput = document.getElementById('game-id');
+
+    if (connectedPlayer) {
+        connectedPlayer.style.display = 'none';
+        console.log('Connected player element hid');
+    } else {
+        console.error('Element with ID "connected-player" not found.');
+    }
+
+    if (gameIdInput) {
+        gameIdInput.style.display = 'block';
+        console.log('Game ID input element shown');
+    } else {
+        console.error('Element with ID "game-id" not found.');
+    }
 }
 
 function goBackToLobbyLose(){
@@ -1611,6 +1645,27 @@ function goBackToLobbyLose(){
     
     loseWindow.remove()
     lobby.style.display='block';
+    document.getElementById('start-game').style.display = 'none';
+    document.getElementById('create-game').style.display = 'block';
+    document.getElementById('join-game').style.display = 'block';
+    document.getElementById('online-games').style.display = 'block';
+    
+    const connectedPlayer = document.getElementById('connected-players');
+    const gameIdInput = document.getElementById('game-id');
+
+    if (connectedPlayer) {
+        connectedPlayer.style.display = 'none';
+        console.log('Connected player element hid');
+    } else {
+        console.error('Element with ID "connected-player" not found.');
+    }
+
+    if (gameIdInput) {
+        gameIdInput.style.display = 'block';
+        console.log('Game ID input element shown');
+    } else {
+        console.error('Element with ID "game-id" not found.');
+    }
 }
 
 
