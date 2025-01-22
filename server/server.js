@@ -58,11 +58,8 @@ function handleCreateGame(socket, playerId) {
     games.set(gameId, game);
     addPlayer(playerId,socket);
     const allGames = Array.from(games.values()).map(game => game.id);
-    //players.forEach((socket, playerId) => {
-        // Enviar el mensaje a cada jugador
-        sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId ,gameIds: allGames});
-        console.log('Se aviso del juegoo ',gameId,' a ', playerId);
-    //});
+    sendMessage(socket, { type: 'create-game', gameId, creatorId: playerId ,gameIds: allGames});
+    console.log('Se aviso del juegoo ',gameId,' a ', playerId);
     const message2 = {
         type: 'all-games',
         gameIds: allGames
@@ -73,19 +70,7 @@ function handleCreateGame(socket, playerId) {
     });
     
     console.log(`Game created with ID: ${gameId} by player: ${playerId}`);
-}
-
-
-function notifyPlayerOfAllGames(socket) {
-    const allGames = Array.from(games.values());
-
-    const message = {
-        type: 'all-games',
-        games: allGames.map(game => ({ id: game.gameId, players: game.players.length, started: game.started }))
-    };
-    console.log('se aviso de los juegos ',message);
-    sendMessage(socket, message);
-    
+    sendMessage(socket, { type: 'turn-active', message: 'Your turn is active' });
 }
 
 /**
@@ -122,6 +107,7 @@ function handleJoinGame(socket, gameId, joiner) {
         }
     });
     console.log(`Player ${joiner} joined game ${gameId}`);
+    sendMessage(socket, { type: 'turn-over', message: 'Your turn is inactive' });
 }
 function handleStartGame(socket, gameId) {
     const game = games.get(gameId);
@@ -199,7 +185,13 @@ function handleMove(socket, gameId, move, sender, type) {
         }
     });
     sendMessage(socket, { type: type, gameId, move, sender });
+    sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
+
     game.turn = (game.turn + 1) % game.players.length;
+    const nextPlayerSocket = players.get(game.players[game.turn]);
+    if (nextPlayerSocket) {
+        sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
+    }
 }
 
 function handleEmp(socket, gameId, sender) {
@@ -372,6 +364,11 @@ function handleAttackPlanes(socket, gameId, sender, moves) {
         }
     });
     game.turn = (game.turn + 1) % game.players.length;
+    sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
+    const nextPlayerSocket = players.get(game.players[game.turn]);
+    if (nextPlayerSocket) {
+        sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
+    }
 }
 
 function handlePlayerReady(socket, gameId, playerId) {
@@ -449,6 +446,12 @@ function handleCruise(socket, gameId, sender, moves) {
         }
     });
     game.turn = (game.turn + 1) % game.players.length;
+    sendMessage(socket, { type: 'turn-over', message: 'Your turn is over' });
+
+    const nextPlayerSocket = players.get(game.players[game.turn]);
+    if (nextPlayerSocket) {
+        sendMessage(nextPlayerSocket, { type: 'turn-active', message: 'Your turn is active' });
+    }
 }
 
 function handleCruiseResponse(socket, gameId, sender, moves) {
@@ -490,8 +493,18 @@ function handlePlayerOut(socket, gameId, sender) {
     }
     game.players = game.players.filter(id => id !== playerId);
     players.delete(playerId);
-    if (game.players.length === 0) {
+    if (game.players.length === 1) {
         games.delete(gameId);
+        const allGames = Array.from(games.values()).map(game => game.id);
+        const message = {
+            type: 'all-games',
+            gameIds: allGames
+        };
+        players.forEach((playerSocket, id) => {
+            sendMessage(playerSocket, message);
+            console.log('Updated game list sent to player', id);
+        });
+        sendMessage(socket, message);
     }
     console.log('Player id of the playerout: ', sender);
     game.players.forEach((playerId) => {
@@ -505,6 +518,7 @@ function handlePlayerOut(socket, gameId, sender) {
             });
         }
     });
+    addPlayer(sender, socket);
 }
 
 function handleRepair(socket, gameId, playerId, coordinates) {
