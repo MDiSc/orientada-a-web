@@ -616,6 +616,7 @@ document.getElementById('send-moves-form').addEventListener('submit', function (
     }
     if (cruiseMissileMode) {
         if (validateCruiseMissileMove(moveInput)) {
+            playMatchSound('missileLaunched');
             loadMoves(moveInput);
             updatePlayerPoints(-15);
             playerMoves.add(moveInput);
@@ -718,6 +719,7 @@ ws.onmessage = function (event) {
                 if (data.response == 'shield') {
                     playerMoves.delete(data.coordinates);
                     alert('Tu movimiento fue bloqueado');
+                    playMatchSound('hitBlocked');
                 }
                 console.log(data);
                 displayMove(data.coordinates, data.playerId, data.response);
@@ -773,6 +775,9 @@ ws.onmessage = function (event) {
                 document.getElementById('deck').style.display = 'block';
                 document.getElementById('placed-ships').style.display = 'block';
                 createTable(userName);
+                setTimeout(function() {
+                    playMatchSound('start');
+                }, 2000);
                 break;
             case 'all-players-ready':
                 console.log('All ready, starting game');
@@ -850,6 +855,7 @@ function handlePlayerOut(data) {
 
 function sendMessage() {
     const gameIdInput = document.getElementById('game-id');
+    const onlineGamesDiv = document.getElementById('online-games');
 
     document.getElementById('create-game').addEventListener('click', () => {
         console.log('click');
@@ -861,6 +867,7 @@ function sendMessage() {
             ws.send(message);
             console.log('Sent:', message);
             areShieldsAvailable = true;
+            onlineGamesDiv.style.display = 'none';
         } else {
             console.log('WebSocket is not open');
         }
@@ -938,7 +945,7 @@ dropdownBtn.addEventListener('click', function () {
 
 
 let muteSoundsOption = document.getElementById('mute-sounds');
-
+let muteMatchSoundsOption = document.getElementById('mute-match-sounds');
 
 function toggleSoundsText(option) {
     if (option.innerText === 'Apagar Sonidos de la interfaz') {
@@ -952,9 +959,24 @@ function toggleSoundsText(option) {
     }
 }
 
+function toggleMatchSoundsText(option) {
+    if (option.innerText === 'Apagar Sonidos de la Partida') {
+        option.innerText = 'Encender Sonidos de la Partida';
+        matchSoundsAllowed = false;
+    } else {
+        option.innerText = 'Apagar Sonidos de la Partida';
+        matchSoundsAllowed = true;
+    }
+}
+
 muteSoundsOption.addEventListener('click', function () {
     toggleSoundsText(muteSoundsOption);
 });
+
+muteMatchSoundsOption.addEventListener('click', function () {
+    toggleMatchSoundsText(muteMatchSoundsOption);
+});
+
 
 document.addEventListener('mouseup', function (e) {
     if (!dropdownMenu.contains(e.target)) {
@@ -1188,8 +1210,13 @@ function updatePlayerPoints(points) {
     document.getElementById('player-points').textContent = `Puntos: ${playerPoints}`;
     displayPowerUps(playerPoints);
 }
-let airStrikeNotice 
-let sonarNotice
+let airStrikeNotice = true;
+let quickFixNotice = true;
+let sonarNotice = true;
+let empNotice =true;
+let shieldNotice = true;
+let missileNotice = true;
+
 function displayPowerUps(points) {
     console.log(points);
     const sonar = document.getElementById('sonar');
@@ -1206,12 +1233,13 @@ function displayPowerUps(points) {
     const empAttackContainer = document.getElementById('emp-container');
     if (points >= 5) {
         //console.log('mostrando sonar');
-        if(points==5){playMatchSound('sonarReady');}
+        if(sonarNotice){playMatchSound('sonarReady'); sonarNotice=false;}
         sonar.style.display = 'block';
         sonarContainer.style.display = 'flex';
     } else {
         sonar.style.display = 'none';
         sonarContainer.style.display = 'none';
+        sonarNotice = true;
     }
     if (points >= 10) {
         attackPlanes.style.display = 'block';
@@ -1219,51 +1247,68 @@ function displayPowerUps(points) {
         quickRepair.style.display = 'block';
         quickRepairContainer.style.display = 'flex';
         
-        if(points==10){
+        if(airStrikeNotice){
             playMatchSound('airStrikeReady');
+            airStrikeNotice = false;
+        }
+
+        if(quickFixNotice){
             setTimeout(function() {
                 playMatchSound('quickFixReady');
             }, 2000);
+            quickFixNotice = false;
         }
     } else {
         attackPlanes.style.display = 'none';
         attackPlanesContainer.style.display = 'none';
         quickRepair.style.display = 'none';
         quickRepairContainer.style.display = 'none';
+        airStrikeNotice = true;
+        quickFixNotice = true;
     }
     if (points >= 15) {
 
         if (defensiveShield) {
             defensiveShield.style.display = 'block';
             defensiveShieldContainer.style.display = 'flex';
-            if(points==15){playMatchSound('shieldReady');}
+            if(shieldNotice){
+                playMatchSound('shieldReady');
+                shieldNotice = false;
+            }
         }
         cruiseMissile.style.display = 'block';
         cruiseMissileContainer.style.display = 'flex';
-        if(points==5){
+        if(missileNotice){
             setTimeout(function() {
                 playMatchSound('missileReady');
             }, 2000);
+            missileNotice = false;
         }
         
     } else {
         if (defensiveShield) {
             defensiveShield.style.display = 'none';
             defensiveShieldContainer.style.display = 'none';
+            shieldNotice=true;
         }
         cruiseMissile.style.display = 'none';
         cruiseMissileContainer.style.display = 'none';
+        missileNotice = true;
     }
     if (points >= 20) {
         if (empCooldown == 0) {
             empAttack.style.display = 'block';
             empAttackContainer.style.display = 'flex';
-            if(points==20){playMatchSound('empReady');}
+            if(empNotice){
+                playMatchSound('empReady');
+                empNotice = false;
+            }
         }
 
     } else {
         empAttack.style.display = 'none';
         empAttackContainer.style.display = 'none';
+        empNotice = true;
     }
     if (carrier.status == 'sunk') {
         attackPlanes.style.display = 'none';
@@ -1374,7 +1419,7 @@ function handleMultipleAttacks(moves, type) {
     });
     if(block){
         alert('Ataque bloqueado por escudo');
-        playMatchSound('hitBlocked');
+        //playMatchSound('hitBlocked');
     }
     const message = JSON.stringify({
         type: type,
@@ -1553,6 +1598,8 @@ function showWinWindow(winner) {
     const placedShipsDiv = document.getElementById('placed-ships');
     const sendMovesDivContainer = document.getElementById('send-moves-container');
     
+    playMatchSound('gameWin');
+    
     deck.style.display='none';
     placedShipsDiv.style.display='none';
     sendMovesDivContainer.style.display='none';
@@ -1572,7 +1619,10 @@ function showLoseWindow(loser) {
     const container = document.querySelector('div.tables');
     const deck = document.getElementById('deck');
     const placedShipsDiv = document.getElementById('placed-ships');
+    
     const sendMovesDivContainer = document.getElementById('send-moves-container');
+    
+    playMatchSound('gameLoss');
     
     deck.style.display='none';
     placedShipsDiv.style.display='none';
@@ -1702,16 +1752,18 @@ const sounds = {
 
 
 function playMatchSound(type) {
-    if (sounds[type]) {
-        // Selecciona un índice aleatorio del array correspondiente
-        const randomIndex = Math.floor(Math.random() * sounds[type].length);
-        
-        // Reinicia el sonido si ya ha sido reproducido
-        sounds[type][randomIndex].currentTime = 0;
-        
-        // Reproduce el sonido seleccionado
-        sounds[type][randomIndex].play();
-    } else {
-        console.warn(`Tipo de sonido "${type}" no encontrado.`);
+    if(matchSoundsAllowed){
+        if (sounds[type]) {
+            // Selecciona un índice aleatorio del array correspondiente
+            const randomIndex = Math.floor(Math.random() * sounds[type].length);
+            
+            // Reinicia el sonido si ya ha sido reproducido
+            sounds[type][randomIndex].currentTime = 0;
+            
+            // Reproduce el sonido seleccionado
+            sounds[type][randomIndex].play();
+        } else {
+            console.warn(`Tipo de sonido "${type}" no encontrado.`);
+        }
     }
 }

@@ -1,8 +1,6 @@
 ## Conexión al Servidor
 
-Al ingresar el nombre de usuario, se realiza la conexión al servidor y se puede crear un juego o unirse a uno. Si está realizando pruebas desde Postman, sugerimos crear el juego desde la página, ya que si lo inicia desde Postman, los jugadores conectados no se actualizarán (ya que no hemos podido actualizar el código a tiempo).
-
-Una vez creada la partida, la página mostrará el ID con el cual se creó el juego (con este podrá usar `join-game` desde Postman). Una vez unidos los jugadores, puede presionar "Iniciar partida" para llenar el tablero y empezar a "jugar" (está entre comillas ya que por los momentos solo se pueden enviar movimientos y mostrarlos en todos los tableros).
+Al ingresar el nombre de usuario, se realiza la conexión al servidor y se puede crear un juego o unirse a uno. Lo ideal es probarlo abriendo dos pestañas desde el navegador.
 
 ## Estructura de los Comandos
 
